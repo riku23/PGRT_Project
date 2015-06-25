@@ -1,6 +1,46 @@
+<html lang="en">
+	<head>
+		<title>PGTR 2013/2014 Es07</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				color: #000000;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+				z-index: 100;
+			}
+
+			b1 { color: red }
+			b2 { color: lightgreen }
+	
+		</style>
+	</head>
+	<body>
+		<script src="../mrdoob-three.js-74e7d09/build/three.min.js"></script>
+		<script src="../mrdoob-three.js-74e7d09/examples/js/Detector.js"></script>
+		<script src="../mrdoob-three.js-74e7d09/examples/js/controls/OrbitControls.js"></script>
+		<script src="../mrdoob-three.js-74e7d09/src/core/RayCaster.js"></script>
+		<script src="../mrdoob-three.js-74e7d09/examples/js/libs/stats.min.js"></script>
+		<script src="Three.FirstPersonControls.js"></script>
+  	<script src="../mrdoob-three.js-74e7d09/src/core/Raycaster.js"></script>
+  <script type="text/javascript" src="../chandlerprall-Physijs-d19a7bf/physi.js"></script>
+  <script type="text/javascript" src="../chandlerprall-Physijs-d19a7bf/examples/js/stats.js"></script>
+		<script>
 		
 		// controlla il supporto a WebGL (se la scheda grafica non lo supporta viene mostato un messaggio d'errore)
-			//if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 			
 			var container;
 			
@@ -10,47 +50,29 @@
 			// variabili per il "prato"
 			var planeGeometry, plane, planeMaterial;
 			
-			var raycaster = new THREE.Raycaster();
+			
 			// variabili per la camera
 			var camera, controls,
 			MOVESPEED = 5,
-			LOOKSPEED = 0.04;
+			LOOKSPEED = 0.02;
 		
-			var oggettiPrendibili;
-			var mouse = { x: 0, y: 0 }
-			oggettiPrendibili= [];
-			var oggetti=0, mura;
-			mura =[];
+			
+			var oggetti;
 			
 			// creo una istanza della classe Clock, per la gestione del tempo di esecuzione ecc
 			var clock = new THREE.Clock();
-			// Initialize and run on document ready
-			$(document).ready(function() {
-			$('body').append('<div id="intro">FIND THE LIGHT</div>');
-			$('#intro').css({width: innerWidth, height: innerHeight}).one('click', function(e) {
-					e.preventDefault();
-					$(this).fadeOut();
-					init();
-					
-					animate();
-	});
-	
-	
-});
-
-
+			
 			// prima chiamo funzione di inizializzazione, poi quella che gestisce il loop di rendering
 			init();
 			animate();
 			
-
 			// INIZIALIZZAZIONE
 			//Funzioni di inizializzazione della scena
 			function init() 
 			{
-					// Display HUD
-					$('body').append('<canvas id="radar" width="200" height="200"></canvas>');
-					$('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>');
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
 				
 				// SCENE
 				// creo una istanza della classe Scene (radice del grafo della scena che avrà come nodi i modelli, luce, ecc della scena)
@@ -76,27 +98,6 @@
 				controls.lookVertical = false; // Temporary solution; play on flat surfaces only
 				controls.noFly = true;
 				
-				// click to grab objects
-				$(document).click(function(e) {
-						e.preventDefault;
-						if (e.which === 1) { // Left click only
-						raycaster.setFromCamera( mouse, camera );
-						intersections = raycaster.intersectObjects( oggettiPrendibili );
-				
-						if ( intersections.length > 0 ) {
-
-				   			intersected = intersections[ 0 ].object;
-
-					// rimetto il colore di base all'oggetto selezionato prima
-							if ( intersected && oggetti < 1 ){ 
-								scene.remove(intersected);
-								oggetti = oggetti+1;
-								$('#oggetti').html(oggetti);}
-
-			
-					
-		}
-	}});
 
 				// PIANO - MESH
 				// dimensioni del piano
@@ -123,14 +124,12 @@
 				var squareMaterial = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
 				var MuraEsterneMesh = new THREE.Mesh(MuraEsterneGeometry, squareMaterial);
 				MuraEsterneMesh.position.y = 1;
-				mura.push(MuraEsterneMesh);
 				scene.add(MuraEsterneMesh);
 				//Mura interne
 				var MuraInterneGeometry = drawMura(5,0,5,10,5,10);
 				var squareMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
 				var MuraInterneMesh = new THREE.Mesh(MuraInterneGeometry, squareMaterial);
 				MuraInterneMesh.position.y = 1;
-				mura.push(MuraInterneMesh);
 				scene.add(MuraInterneMesh);
 
 				//MuraConPorta Orizzontale
@@ -138,14 +137,12 @@
 				var Porta1Matrial = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.DoubleSide } );
 				var Porta1 = new THREE.Mesh(Porta1Geometry, Porta1Matrial);
 				Porta1.position.y = 1;
-				mura.push(Porta1);
 				scene.add(Porta1);
 
 				//MuraConPorta Orizzontale
 				var Porta2Geometry = drawMuroConPorta(10,0,7.5,15,5,7.5,1.6,3.4,3)
 				var Porta2 = new THREE.Mesh(Porta2Geometry, Porta1Matrial);
 				Porta2.position.y = 1;
-				mura.push(Porta2);
 				scene.add(Porta2);
 
 				//MuraConPorta Verticale
@@ -154,7 +151,7 @@
 				Porta3.rotation.y = - Math.PI / 2;
 				Porta3.position.x = 7.5;
 				Porta3.position.y = 1;
-				mura.push(Porta3);
+
 				scene.add(Porta3);
 
 				//MuraConPorta Verticale
@@ -164,24 +161,15 @@
 				Porta4.position.x = 7.5;
 				Porta4.position.y = 1;
 				Porta4.position.z = 10;
-				mura.push(Porta4);
-				scene.add(Porta4);
 
-				// Health cube
-				healthcube = new Physijs.BoxMesh(
-				new THREE.BoxGeometry(1, 1, 1),
-				Physijs.createMaterial(new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('images/health.png')}),	.8, .4)
-				);
-				healthcube.position.set(20,1.5,20);
-				oggettiPrendibili.push(healthcube);
-				scene.add(healthcube)
+				scene.add(Porta4);
 
 				// RENDERER
 				// setting per il rendering della finestra
 				renderer = new THREE.WebGLRenderer( { antialias: false } );
 				renderer.setClearColor( 0x6699ff, 1.0 );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.body.appendChild( renderer.domElement );
+				container.appendChild( renderer.domElement );
 				/////////////////////
 				
 				// CONTROLLI DI CAMERA
@@ -299,3 +287,6 @@
 				renderer.render( scene, camera );
 			}
 			
+		</script>
+	</body>
+</html>
