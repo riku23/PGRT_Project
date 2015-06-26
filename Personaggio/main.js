@@ -123,6 +123,7 @@
 				var squareMaterial = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
 				var MuraEsterneMesh = new THREE.Mesh(MuraEsterneGeometry, squareMaterial);
 				MuraEsterneMesh.position.y = 1;
+				
 				mura.push(MuraEsterneMesh);
 				scene.add(MuraEsterneMesh);
 				//Mura interne
@@ -130,6 +131,7 @@
 				var squareMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
 				var MuraInterneMesh = new THREE.Mesh(MuraInterneGeometry, squareMaterial);
 				MuraInterneMesh.position.y = 1;
+				
 				mura.push(MuraInterneMesh);
 				scene.add(MuraInterneMesh);
 
@@ -138,6 +140,7 @@
 				var Porta1Matrial = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.DoubleSide } );
 				var Porta1 = new THREE.Mesh(Porta1Geometry, Porta1Matrial);
 				Porta1.position.y = 1;
+				
 				mura.push(Porta1);
 				scene.add(Porta1);
 
@@ -145,6 +148,7 @@
 				var Porta2Geometry = drawMuroConPorta(10,0,7.5,15,5,7.5,1.6,3.4,3)
 				var Porta2 = new THREE.Mesh(Porta2Geometry, Porta1Matrial);
 				Porta2.position.y = 1;
+
 				mura.push(Porta2);
 				scene.add(Porta2);
 
@@ -154,6 +158,7 @@
 				Porta3.rotation.y = - Math.PI / 2;
 				Porta3.position.x = 7.5;
 				Porta3.position.y = 1;
+				
 				mura.push(Porta3);
 				scene.add(Porta3);
 
@@ -164,6 +169,7 @@
 				Porta4.position.x = 7.5;
 				Porta4.position.y = 1;
 				Porta4.position.z = 10;
+
 				mura.push(Porta4);
 				scene.add(Porta4);
 

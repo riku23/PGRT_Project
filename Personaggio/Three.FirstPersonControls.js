@@ -153,6 +153,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 	};
 
+	
+
 	this.onKeyUp = function ( event ) {
 
 		switch( event.keyCode ) {
@@ -196,55 +198,85 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 				this.autoSpeedFactor = 0.0;
 
 			}
+
+
+				var axis = new THREE.Vector3( 0, 1, 0 );
+				var angle180 = Math.PI;
+				var angle90 = Math.PI/2;
+				var angle45 = Math.PI/6;
+				
 				//RAYCASTER FRONT 1
-				var vector1 = new THREE.Vector3(-.5,0,-1);
-				var vecrot1 = vector1.applyMatrix4( camera.matrix);
-				var raycaster1 = new THREE.Raycaster( camera.position, vecrot1.sub( camera.position ).normalize(), 0.5, 1 );
-				//RAYCASTER FRONT 2
-				var vector2 = new THREE.Vector3(.5,0,-1);
-				var vecrot2 = vector2.applyMatrix4( camera.matrix);
-				var raycaster2 = new THREE.Raycaster( camera.position, vecrot2.sub( camera.position ).normalize(), 0.5, 1 );
-				//RAYCASTER BACK 1
-				var vector3 = new THREE.Vector3(-.5,0,2);
-				var vecrot3 = vector3.applyMatrix4( camera.matrix.makeRotationX(Math.PI));
-				var raycaster3 = new THREE.Raycaster( camera.position, vecrot3.sub( camera.position ).normalize(), 0.5, 1 );
-				//RAYCASTER BACK 2
-				var vector4 = new THREE.Vector3(.5,0,2);
-				var vecrot4 = vector4.applyMatrix4( camera.matrix.makeRotationX(Math.PI));
-				var raycaster4 = new THREE.Raycaster( camera.position, vecrot4.sub( camera.position ).normalize(), 0.5, 1 );
-				//RAYCASTER RIGHT
-				//var vector5 = new THREE.Vector3(-1,0,1);
-				//var vecrot5 = vector5.applyMatrix4( camera.matrix.makeRotationX(90));
-				//var raycaster5 = new THREE.Raycaster( camera.position, vecrot5.sub( camera.position ).normalize(), 0.5, 1);
-				//RAYCASTER LEFT
-				//var vector6 = new THREE.Vector3(1,0,1);
-				//var vecrot6 = vector6.applyMatrix4( camera.matrix.makeRotationX(-90));
-				//var raycaster6 = new THREE.Raycaster( camera.position, vecrot6.sub( camera.position ).normalize(), 0.5, 1 );
-				
-				
+				var vector1 = controls.target.clone().sub( controls.object.position ).normalize();
+				var raycaster1 = new THREE.Raycaster( controls.object.position, vector1, 0.5, 1 );
 				var intersects1 = raycaster1.intersectObjects( mura );
+				
+				//RAYCASTER FRONT 45-1
+				var vector2 = controls.target.clone().sub( controls.object.position ).normalize();
+				var raycaster2 = new THREE.Raycaster( controls.object.position, vector2, 0.5, 1 );
+				vector2.applyAxisAngle(axis,angle45);
 				var intersects2 = raycaster2.intersectObjects( mura );
+				
+				//RAYCASTER FRONT 45-2
+				var vector3 = controls.target.clone().sub( controls.object.position ).normalize();
+				vector3.applyAxisAngle(axis,-angle45);
+				var raycaster3 = new THREE.Raycaster( controls.object.position, vector3, 0.5, 1 );
 				var intersects3 = raycaster3.intersectObjects( mura );
+
+				//RAYCASTER BACK 1
+				var vector4 = controls.target.clone().sub( controls.object.position ).normalize();
+				vector4.applyAxisAngle(axis,angle180);
+				var raycaster4 = new THREE.Raycaster( controls.object.position, vector4, 0.5, 1 );
 				var intersects4 = raycaster4.intersectObjects( mura );
-				//var intersects5 = raycaster5.intersectObjects( mura );
-				//var intersects6 = raycaster6.intersectObjects( mura );
+				
+				//RAYCASTER BACK 45-1
+				var vector5 = controls.target.clone().sub( controls.object.position ).normalize();
+				vector5.applyAxisAngle(axis,angle180+angle45);
+				var raycaster5 = new THREE.Raycaster( controls.object.position, vector5, 0.5, 1 );
+				var intersects5 = raycaster5.intersectObjects( mura );
+
+				//RAYCASTER BACK 45-2
+				var vector6 = controls.target.clone().sub( controls.object.position ).normalize();
+				vector6.applyAxisAngle(axis,angle180-angle45);
+				var raycaster6 = new THREE.Raycaster( controls.object.position, vector6, 0.5, 1 );
+				var intersects6 = raycaster6.intersectObjects( mura );
+				
+				//RAYCASTER RIGHT
+				var vector7 = controls.target.clone().sub( controls.object.position ).normalize();
+				vector7.applyAxisAngle(axis,-angle90);
+				var raycaster7 = new THREE.Raycaster( controls.object.position, vector7, 0.5, 1 );
+				var intersects7 = raycaster7.intersectObjects( mura );
+				
+				//RAYCASTER LEFT
+				var vector8 = controls.target.clone().sub( controls.object.position ).normalize();
+				vector8.applyAxisAngle(axis,angle90);
+				var raycaster8 = new THREE.Raycaster( controls.object.position, vector8, 0.5, 1 );
+				var intersects8 = raycaster8.intersectObjects( mura );
+				
+				
+				
+				
+				
+				
+				
+				
 
 			actualMoveSpeed = delta * this.movementSpeed;
 
-			if ( this.moveForward && (intersects1.length == 0 && intersects2.length == 0) ) {
+			if ( this.moveForward && (intersects1.length == 0 && intersects2.length == 0 && intersects3.length == 0) ) {
 				this.object.translateZ( -actualMoveSpeed);
 				}
 			
-			if ( this.moveBackward && (intersects3.length == 0 && intersects4.length == 0) ) {
+
+			if ( this.moveBackward && (intersects4.length == 0 && intersects5.length == 0 && intersects6.length == 0) ) {
 				this.object.translateZ( actualMoveSpeed );
 				
 			}
 
-			if ( this.moveLeft /*&& intersects6.length == 0*/) {
+			if ( this.moveLeft && intersects8.length == 0) {
 				this.object.translateX( - actualMoveSpeed );
 				
 			}
-			if ( this.moveRight /*&& intersects5.length == 0*/) {
+			if ( this.moveRight && intersects7.length == 0) {
 				this.object.translateX( actualMoveSpeed );
 				
 			}
