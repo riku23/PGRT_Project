@@ -14,11 +14,14 @@
 			// variabili per la camera
 			var camera, controls,
 			MOVESPEED = 5,
-			LOOKSPEED = 0.04;
-		
+			LOOKSPEED = 0.05;
+			var porta=false;
+			var Porta_Chiusa;
+			var healthcube;
 			var oggettiPrendibili;
 			var mouse = { x: 0, y: 0 }
 			oggettiPrendibili= [];
+			var inventario = [];
 			var oggetti=0, mura;
 			mura =[];
 			
@@ -67,8 +70,20 @@
 				// parametri: FOV, widht, height, near, far
 				// Imposto un valore di near molto + basso, in modo da evitare l'effetto del culling prima della collisione con il corpo rigido
 				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 100000 );
-				camera.position.y = 2;
+				camera.position.x = 1;
+				camera.position.y = 2.5;
+				camera.position.z = 1;
+
 				
+				// RENDERER
+				// setting per il rendering della finestra
+				renderer = new THREE.WebGLRenderer( { antialias: false } );
+				renderer.setClearColor( 0x6699ff, 1.0 );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+				/////////////////////
+				
+
 				//CONTROLLI
 				controls = new THREE.FirstPersonControls(camera);
 				controls.movementSpeed = MOVESPEED;
@@ -76,27 +91,55 @@
 				controls.lookVertical = false; // Temporary solution; play on flat surfaces only
 				controls.noFly = true;
 				
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				window.addEventListener( 'resize', onWindowResize, false );
+					
+
 				// click to grab objects
 				$(document).click(function(e) {
 						e.preventDefault;
-						if (e.which === 1) { // Left click only
+						
+						if(e.which == 1 && inventario.length >= 1){
+							inventario[0].position.x = 3;
+							inventario[0].position.y = 1.5;
+							inventario[0].position.z = 3;
+							inventario.pop(inventario[0]);
+							oggetti = oggetti-1;
+							$('#oggetti').html(oggetti);
+							console.log("inserito oggetto");
+
+						}
+						else{
+						if (e.which == 1) { // Left click only
 						raycaster.setFromCamera( mouse, camera );
 						intersections = raycaster.intersectObjects( oggettiPrendibili );
 				
 						if ( intersections.length > 0 ) {
 
 				   			intersected = intersections[ 0 ].object;
-
-					// rimetto il colore di base all'oggetto selezionato prima
-							if ( intersected && oggetti < 1 ){ 
-								scene.remove(intersected);
+				   			var distance = intersections[0].distance;
+							
+							if ( intersected && distance < 3 ){ 
+    							//removeElement(intersected);
+								intersected.position.x = 100;
+								intersected.position.y = 100;
+								intersected.position.z = 100;
+								inventario.push(intersected);
 								oggetti = oggetti+1;
 								$('#oggetti').html(oggetti);}
-
-			
+								console.log("preso oggetto");
+				
 					
-		}
-	}});
+									}
+
+								}}
+						
+						
+
+
+
+							});
+
 
 				// PIANO - MESH
 				// dimensioni del piano
@@ -115,95 +158,97 @@
 				// la aggiungo alla scena
 				scene.add( plane );
 				
-				
-
 				//Prova Mausoleo
 				// Mura esterne
-				var MuraEsterneGeometry = drawMura(0,0,0,15,5,15);
-				var squareMaterial = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
-				var MuraEsterneMesh = new THREE.Mesh(MuraEsterneGeometry, squareMaterial);
-				MuraEsterneMesh.position.y = 1;
+				var MuraEsterneGeometry = drawMuraEsterne(0,0,0,15,5,15);
+				var MuraEsterneMaterial = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
+				var MuraEsterne = new THREE.Mesh(MuraEsterneGeometry, MuraEsterneMaterial);
+				MuraEsterne.position.y = 1;
+				scene.add(MuraEsterne);
+				mura.push(MuraEsterne);
 				
-				mura.push(MuraEsterneMesh);
-				scene.add(MuraEsterneMesh);
 				//Mura interne
-				var MuraInterneGeometry = drawMura(5,0,5,10,5,10);
+				var MuraInterneGeometry = drawMuraInterne(5,0,5,10,5,10);
 				var squareMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
-				var MuraInterneMesh = new THREE.Mesh(MuraInterneGeometry, squareMaterial);
-				MuraInterneMesh.position.y = 1;
-				
-				mura.push(MuraInterneMesh);
-				scene.add(MuraInterneMesh);
+				var MuraInterne = new THREE.Mesh(MuraInterneGeometry, squareMaterial);
+				MuraInterne.position.y = 1;
+				scene.add(MuraInterne);
+				mura.push(MuraInterne);
 
-				//MuraConPorta Orizzontale
-				var Porta1Geometry = drawMuroConPorta(0,0,7.5,5,5,7.5,1.6,3.4,3)
-				var Porta1Matrial = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.DoubleSide } );
-				var Porta1 = new THREE.Mesh(Porta1Geometry, Porta1Matrial);
-				Porta1.position.y = 1;
-				
+				var MuroConPortaGeometry = drawMuroConPorta3D();
+				//MuraConPorta Orizzontale 1
+				var Porta1 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
+				Porta1.position.x = 0.8;
+				Porta1.position.y = 3.5;
+				Porta1.position.z = 7.5;
+				scene.add( Porta1 );
 				mura.push(Porta1);
-				scene.add(Porta1);
 
-				//MuraConPorta Orizzontale
-				var Porta2Geometry = drawMuroConPorta(10,0,7.5,15,5,7.5,1.6,3.4,3)
-				var Porta2 = new THREE.Mesh(Porta2Geometry, Porta1Matrial);
-				Porta2.position.y = 1;
-
+				//MuraConPorta Orizzontale 2
+				var Porta2 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
+				Porta2.position.x = 10.8;
+				Porta2.position.y = 3.5;
+				Porta2.position.z = 7.5;
+				scene.add( Porta2 );
 				mura.push(Porta2);
-				scene.add(Porta2);
 
-				//MuraConPorta Verticale
-				var Porta3Geometry = drawMuroConPorta(0,0,0,5,5,0,1.6,3.4,3)
-				var Porta3 = new THREE.Mesh(Porta3Geometry, Porta1Matrial);
+				//MuraConPorta Verticale 1
+				var Porta3 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
+				//Porta3.position.x = 0.8;
 				Porta3.rotation.y = - Math.PI / 2;
 				Porta3.position.x = 7.5;
-				Porta3.position.y = 1;
-				
+				Porta3.position.y = 3.5;
+				Porta3.position.z = 0.8;
+				scene.add( Porta3 );
 				mura.push(Porta3);
-				scene.add(Porta3);
 
-				//MuraConPorta Verticale
-				var Porta4Geometry = drawMuroConPorta(0,0,0,5,5,0,1.6,3.4,3)
-				var Porta4 = new THREE.Mesh(Porta4Geometry, Porta1Matrial);
+				//MuraConPorta Verticale 2
+				var Porta4 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
+				//Porta3.position.x = 0.8;
 				Porta4.rotation.y = - Math.PI / 2;
 				Porta4.position.x = 7.5;
-				Porta4.position.y = 1;
-				Porta4.position.z = 10;
-
+				Porta4.position.y = 3.5;
+				Porta4.position.z = 10.8;
+				scene.add( Porta4 );
 				mura.push(Porta4);
-				scene.add(Porta4);
+
+				//Porta
+				var Porta_ChiusaGeometry = new THREE.BoxGeometry(0.2,3,1.8);
+				Porta_Chiusa = new THREE.Mesh(Porta_ChiusaGeometry, new THREE.MeshBasicMaterial( { color: 0xff00ff } ));
+				Porta_Chiusa.position.x = 9.83;
+				Porta_Chiusa.position.y = 2.5;
+				Porta_Chiusa.position.z = 8.64;
+				scene.add( Porta_Chiusa );
+				mura.push(Porta_Chiusa);
 
 				// Health cube
-				healthcube = new Physijs.BoxMesh(
-				new THREE.BoxGeometry(1, 1, 1),
-				Physijs.createMaterial(new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('images/health.png')}),	.8, .4)
-				);
-				healthcube.position.set(20,1.5,20);
+				healthcube = new THREE.Mesh(
+				new THREE.BoxGeometry(.5, .5, .5),
+                                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('images/health.png')}));
+				healthcube.position.set(3,1.5,3);
 				oggettiPrendibili.push(healthcube);
-				scene.add(healthcube)
-
-				// RENDERER
-				// setting per il rendering della finestra
-				renderer = new THREE.WebGLRenderer( { antialias: false } );
-				renderer.setClearColor( 0x6699ff, 1.0 );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.body.appendChild( renderer.domElement );
-				/////////////////////
-				
-				// CONTROLLI DI CAMERA
-				//controls = new THREE.OrbitControls( camera );
-				/////////////////////
-				
-				window.addEventListener( 'resize', onWindowResize, false );
+				mura.push(healthcube);
+				scene.add(healthcube);
 				
 			}
-			////////////
+		
 
-			
+			function onDocumentMouseMove(e) {
+				e.preventDefault();
+				mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+				mouse.y = - (e.clientY / window.innerHeight) * 2 + 1;
+}
 		
 			
 			
 			
+				function removeElement(obj){
+  					//obj.geometry.dispose();
+    				scene.remove(obj);
+    				mura.pop(obj);
+    				oggettiPrendibili.pop(obj);
+    				animate();
+				}
 			
 			// EVENTO RESIZE
 			// gestione del resize, viene chiamata quando la finestra del browser viene ridimensionata
@@ -223,7 +268,7 @@
 			}
 			/////////////////
 
-			function drawMura(x1, y1, z1, x2, y2, z2)
+			function drawMuraEsterne(x1, y1, z1, x2, y2, z2)
 			{
 				var square = new THREE.Geometry();
 	
@@ -252,36 +297,78 @@
 				return square;
 			}
 
-			//disegna un muro con una porta
-			function drawMuroConPorta(x1,y1,z1,x2,y2,z2,d1,d2,d3) //d1,d2,d3 misure utili alla creazione della porta
+			function drawMuraInterne(x1, y1, z1, x2, y2, z2)
 			{
-				var muro = new THREE.Geometry();
+				var square = new THREE.Geometry();
+	
+				square.vertices.push( new THREE.Vector3( x1, y1, z1 ) );//0
+				square.vertices.push( new THREE.Vector3( x2, y1, z1 ) );//1
+				square.vertices.push( new THREE.Vector3( x2, y2, z1 ) );//2
+				square.vertices.push( new THREE.Vector3( x1, y2, z1 ) );//3
 
-				//stipite sinistro
-				muro.vertices.push( new THREE.Vector3( x1, y1, z1 ) );//0
-				muro.vertices.push( new THREE.Vector3( x1+d1, y1, z1 ) );//1
-				muro.vertices.push( new THREE.Vector3( x1+d1, y2, z1 ) );//2
-				muro.vertices.push( new THREE.Vector3( x1, y2, z1 ) );//3
-				//traversa
-				muro.vertices.push( new THREE.Vector3( x1+d1, y1+d3, z1 ) );//4
-				muro.vertices.push( new THREE.Vector3( x1+d2, y1+d3, z1 ) );//5
-				muro.vertices.push( new THREE.Vector3( x1+d2, y2, z1 ) );//6
-				//stipite destro
-				muro.vertices.push( new THREE.Vector3( x1+d2, y1, z1 ) );//7
-				muro.vertices.push( new THREE.Vector3( x2, y1, z1 ) );//8
-				muro.vertices.push( new THREE.Vector3( x2, y2, z1 ) );//9
+				square.vertices.push( new THREE.Vector3( x1, y1, z2 ) );//4
+				square.vertices.push( new THREE.Vector3( x1, y2, z2 ) );//5
 
-				//Stipite sinistro
-				muro.faces.push( new THREE.Face3( 0, 1, 2) ); 
-				muro.faces.push( new THREE.Face3( 0, 2, 3) );
-				//Traversa
-				muro.faces.push( new THREE.Face3( 4, 5, 6) );
-				muro.faces.push( new THREE.Face3( 4, 6, 2) );
-				//Stipite destro
-				muro.faces.push( new THREE.Face3( 7, 8, 9) ); 
-				muro.faces.push( new THREE.Face3( 7, 9, 6) );
+				square.vertices.push( new THREE.Vector3( x2, y2, z2 ) );//6
+				square.vertices.push( new THREE.Vector3( x2, y1, z2 ) );//7
+				
+				square.vertices.push( new THREE.Vector3( x2, y1, z1+4.5 ) );//8
+				square.vertices.push( new THREE.Vector3( x2, y1+3, z1+4.5 ) );//9
+				square.vertices.push( new THREE.Vector3( x2, y2, z1+4.5 ) );//10
+				square.vertices.push( new THREE.Vector3( x2, y1, z1+3 ) );//11
+				square.vertices.push( new THREE.Vector3( x2, y1+3, z1+3 ) );//12
+				square.vertices.push( new THREE.Vector3( x2, y2, z1+3 ) );//13
+				
+				//Faccia Nord
+				square.faces.push( new THREE.Face3( 0, 1, 2) );
+				square.faces.push( new THREE.Face3( 0, 2, 3) );
+				//Faccia Ovest
+				square.faces.push( new THREE.Face3( 0, 3, 4) );
+				square.faces.push( new THREE.Face3( 3, 4, 5) );
+				//Faccia Sud
+				square.faces.push( new THREE.Face3( 4, 5, 6) );
+				square.faces.push( new THREE.Face3( 4, 6, 7) );
+				//Faccia Est
+				
+				square.faces.push( new THREE.Face3( 6, 7, 8) );
+				square.faces.push( new THREE.Face3( 6, 8, 10) );
+				square.faces.push( new THREE.Face3( 10, 9, 12) );
+				square.faces.push( new THREE.Face3( 10, 12, 13) );
+				square.faces.push( new THREE.Face3( 13, 11, 1) );
+				square.faces.push( new THREE.Face3( 13, 1, 2) );
+				
+				return square;
+			}
+
+			function drawMuroConPorta3D()
+			{
+				var stipiteDestro = new THREE.BoxGeometry(1.59,5,0.4);
+				var material = new THREE.MeshBasicMaterial( );
+				var sDmesh = new THREE.Mesh(stipiteDestro, material);
+				sDmesh.position.x = 3.4;
+
+				var traversa = new THREE.BoxGeometry(1.82,2,0.4);
+				var tMesh = new THREE.Mesh(traversa, material);
+				tMesh.position.x = 1.7;
+				tMesh.position.y = 1.5;
+
+				var muro = new THREE.BoxGeometry(1.59,5,0.4);
+				THREE.GeometryUtils.merge(muro, tMesh);
+				THREE.GeometryUtils.merge(muro, sDmesh);
 
 				return muro;
+			}
+
+			function apriPorta(){
+				if(porta==false){
+					console.log("apro porta");
+					Porta_Chiusa.position.y=100;
+					porta = true;
+				}else{
+					console.log("chiudo porta");
+					Porta_Chiusa.position.y=2.5;
+					porta=false;
+				}
 			}
 
 

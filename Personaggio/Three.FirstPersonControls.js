@@ -23,7 +23,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	this.noFly = false;
 	this.lookVertical = true;
 	this.autoForward = false;
-	// this.invertVertical = false;
+	this.invertVertical = false;
 
 	this.activeLook = true;
 	this.clickMove = false;
@@ -171,6 +171,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			case 39: /*right*/
 			case 68: /*D*/ this.moveRight = false; break;
 
+			case 80: /*P*/ apriPorta(); break;
+
 			case 32: /*SPACEBAR*/ this.movementSpeed = 5; break;
 
 		}
@@ -203,53 +205,53 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 				var axis = new THREE.Vector3( 0, 1, 0 );
 				var angle180 = Math.PI;
 				var angle90 = Math.PI/2;
-				var angle45 = Math.PI/6;
-				
+				var angle45 = Math.PI/4;
+				var origin = new THREE.Vector3(controls.object.position.x,1.5,controls.object.position.z);
 				//RAYCASTER FRONT 1
 				var vector1 = controls.target.clone().sub( controls.object.position ).normalize();
-				var raycaster1 = new THREE.Raycaster( controls.object.position, vector1, 0.5, 1 );
+				var raycaster1 = new THREE.Raycaster( origin, vector1, 0.5, 1 );
 				var intersects1 = raycaster1.intersectObjects( mura );
 				
 				//RAYCASTER FRONT 45-1
 				var vector2 = controls.target.clone().sub( controls.object.position ).normalize();
-				var raycaster2 = new THREE.Raycaster( controls.object.position, vector2, 0.5, 1 );
 				vector2.applyAxisAngle(axis,angle45);
+                                var raycaster2 = new THREE.Raycaster(origin, vector2, 0.5, 1 );
 				var intersects2 = raycaster2.intersectObjects( mura );
 				
 				//RAYCASTER FRONT 45-2
 				var vector3 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector3.applyAxisAngle(axis,-angle45);
-				var raycaster3 = new THREE.Raycaster( controls.object.position, vector3, 0.5, 1 );
+				var raycaster3 = new THREE.Raycaster( origin, vector3, 0.5, 1 );
 				var intersects3 = raycaster3.intersectObjects( mura );
 
 				//RAYCASTER BACK 1
 				var vector4 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector4.applyAxisAngle(axis,angle180);
-				var raycaster4 = new THREE.Raycaster( controls.object.position, vector4, 0.5, 1 );
+				var raycaster4 = new THREE.Raycaster( origin, vector4, 0.5, 1 );
 				var intersects4 = raycaster4.intersectObjects( mura );
 				
 				//RAYCASTER BACK 45-1
 				var vector5 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector5.applyAxisAngle(axis,angle180+angle45);
-				var raycaster5 = new THREE.Raycaster( controls.object.position, vector5, 0.5, 1 );
+				var raycaster5 = new THREE.Raycaster( origin, vector5, 0.5, 1 );
 				var intersects5 = raycaster5.intersectObjects( mura );
 
 				//RAYCASTER BACK 45-2
 				var vector6 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector6.applyAxisAngle(axis,angle180-angle45);
-				var raycaster6 = new THREE.Raycaster( controls.object.position, vector6, 0.5, 1 );
+				var raycaster6 = new THREE.Raycaster( origin, vector6, 0.5, 1 );
 				var intersects6 = raycaster6.intersectObjects( mura );
 				
 				//RAYCASTER RIGHT
 				var vector7 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector7.applyAxisAngle(axis,-angle90);
-				var raycaster7 = new THREE.Raycaster( controls.object.position, vector7, 0.5, 1 );
+				var raycaster7 = new THREE.Raycaster( origin, vector7, 0.5, 1 );
 				var intersects7 = raycaster7.intersectObjects( mura );
 				
 				//RAYCASTER LEFT
 				var vector8 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector8.applyAxisAngle(axis,angle90);
-				var raycaster8 = new THREE.Raycaster( controls.object.position, vector8, 0.5, 1 );
+				var raycaster8 = new THREE.Raycaster( origin, vector8, 0.5, 1 );
 				var intersects8 = raycaster8.intersectObjects( mura );
 				
 				
@@ -301,7 +303,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			}
 
 			this.lon += this.mouseX * actualLookSpeed;
-			if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed; // * this.invertVertical?-1:1;
+			if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed * this.invertVertical?-1:1;
 
 			this.lat = Math.max( - 85, Math.min( 85, this.lat ) );
 			this.phi = ( 90 - this.lat ) * Math.PI / 180;
