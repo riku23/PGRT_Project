@@ -206,7 +206,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 				var angle180 = Math.PI;
 				var angle90 = Math.PI/2;
 				var angle45 = Math.PI/4;
-				var origin = new THREE.Vector3(controls.object.position.x,1.5,controls.object.position.z);
+				var origin = new THREE.Vector3(controls.object.position.x,2.1,controls.object.position.z);
 				//RAYCASTER FRONT 1
 				var vector1 = controls.target.clone().sub( controls.object.position ).normalize();
 				var raycaster1 = new THREE.Raycaster( origin, vector1, 0.5, 1 );
@@ -274,11 +274,11 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 				
 			}
 
-			if ( this.moveLeft && intersects8.length == 0) {
+			if ( this.moveLeft && intersects8.length == 0 && intersects2.length == 0 && intersects5.length == 0) {
 				this.object.translateX( - actualMoveSpeed );
 				
 			}
-			if ( this.moveRight && intersects7.length == 0) {
+			if ( this.moveRight && intersects7.length == 0 && intersects3.length == 0 && intersects6.length == 0) {
 				this.object.translateX( actualMoveSpeed );
 				
 			}

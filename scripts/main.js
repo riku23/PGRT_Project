@@ -15,10 +15,15 @@
 			var camera, controls,
 			MOVESPEED = 5,
 			LOOKSPEED = 0.05;
-			var porta=false;
+			var porta;
+			var faroOk=false;
 			var Porta_Chiusa;
-			var healthcube;
-			var oggettiPrendibili;
+			var spawnX=1, spawnY=2.5, spawnZ=1;
+                        var cube1, cube2, faro, tavolo1;
+			var INIBITELO=false;
+			var selectedObject, oggettoFaro, oggettoFaroBool=false;
+			var oldX, oldY, oldZ;
+			var oggettiPrendibili, filtri=1;
 			var mouse = { x: 0, y: 0 }
 			oggettiPrendibili= [];
 			var inventario = [];
@@ -54,7 +59,7 @@
 					// Display HUD
 					$('body').append('<canvas id="radar" width="200" height="200"></canvas>');
 					$('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>');
-				
+                                porta = false;
 				// SCENE
 				// creo una istanza della classe Scene (radice del grafo della scena che avrà come nodi i modelli, luce, ecc della scena)
 				scene = new THREE.Scene();
@@ -69,10 +74,10 @@
 				// CAMERA
 				// parametri: FOV, widht, height, near, far
 				// Imposto un valore di near molto + basso, in modo da evitare l'effetto del culling prima della collisione con il corpo rigido
-				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 100000 );
-				camera.position.x = 1;
-				camera.position.y = 2.5;
-				camera.position.z = 1;
+                                camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 100000 );
+				camera.position.x = spawnX;
+				camera.position.y = spawnY;
+				camera.position.z = spawnZ;
 
 				
 				// RENDERER
@@ -95,50 +100,78 @@
 				window.addEventListener( 'resize', onWindowResize, false );
 					
 
-				// click to grab objects
+				// FUNZIONE DI PICKING
 				$(document).click(function(e) {
 						e.preventDefault;
-						
-						if(e.which == 1 && inventario.length >= 1){
-							inventario[0].position.x = 3;
-							inventario[0].position.y = 1.5;
-							inventario[0].position.z = 3;
-							inventario.pop(inventario[0]);
-							oggetti = oggetti-1;
-							$('#oggetti').html(oggetti);
-							console.log("inserito oggetto");
-
-						}
-						else{
-						if (e.which == 1) { // Left click only
+							
 						raycaster.setFromCamera( mouse, camera );
 						intersections = raycaster.intersectObjects( oggettiPrendibili );
-				
-						if ( intersections.length > 0 ) {
-
-				   			intersected = intersections[ 0 ].object;
-				   			var distance = intersections[0].distance;
 							
-							if ( intersected && distance < 3 ){ 
-    							//removeElement(intersected);
-								intersected.position.x = 100;
-								intersected.position.y = 100;
-								intersected.position.z = 100;
-								inventario.push(intersected);
-								oggetti = oggetti+1;
-								$('#oggetti').html(oggetti);}
-								console.log("preso oggetto");
-				
+						if (e.which ==1 && INIBITELO==false){
+
+							if(intersections.length>0 && inventario.length==0){ 
+								//inventario vuoto
+				   				intersected = intersections[ 0 ].object;
+				   				var distance = intersections[0].distance;
+
+				   				if(intersected && intersected!=faro && distance <3){ 					
+				   					//prendo l'oggetto
+				   					if(oggettoFaro==intersected){
+				   						oggettoFaroBool=false;
+				   					}
+				   					inventario.push(intersected);
+				   					intersected.position.x =100;
+				   					intersected.position.y =100;
+				   					intersected.position.z =100;
+				   					selectedObject = intersected;
+				   					oggetti = oggetti + 1;
+									$('#oggetti').html(oggetti);
+									console.log("preso oggetto inventario vuoto");
+				   				}
+							}else{
+								if(intersections.length>0 && inventario.length>=filtri){
+									// inventario pieno
+				   					intersected = intersections[ 0 ].object;
+				   					var distance = intersections[0].distance;
+				   					
+				   					if(intersected &&intersected!=faro && distance <3){
+				   						//scambio i due oggetti
+				   						inventario[0].position.x = intersected.position.x;
+				   						inventario[0].position.y = intersected.position.y;
+				   						inventario[0].position.z = intersected.position.z;
+				   						intersected.position.x =100;
+				   						intersected.position.y =100;
+				   						intersected.position.z =100;
+				   						selectedObject = intersected;
+				   						if (oggettoFaroBool){
+				   							oggettoFaro = inventario[0];
+				   							checkFaro();
+				   						}
+				   						inventario.pop(inventario[0]);
+				   						inventario.push(intersected);
+				   						console.log("scambio oggetti");
+				   					}else{
+				   						if(intersected && intersected==faro && distance < 3 && oggettoFaroBool==false){
+											//se interseco il faro posiziono l'oggetto in inventario su di esso
+											selectedObject.position.x = faro.position.x;
+											selectedObject.position.y = faro.position.y+2.5;
+											selectedObject.position.z = faro.position.z;
+											inventario.pop(selectedObject);
+											oggettoFaroBool = true;
+											oggettoFaro = selectedObject;
+											checkFaro();
+											oggetti = oggetti - 1;
+											$('#oggetti').html(oggetti);
+											console.log("posizionato oggetto su faro");
+				   						}
+				   					}
+
+								}
+							}
+							
+						}
 					
-									}
-
-								}}
-						
-						
-
-
-
-							});
+				});
 
 
 				// PIANO - MESH
@@ -221,16 +254,78 @@
 				scene.add( Porta_Chiusa );
 				mura.push(Porta_Chiusa);
 
-				// Health cube
-				healthcube = new THREE.Mesh(
+				// cube 1
+				cube1 = new THREE.Mesh(
 				new THREE.BoxGeometry(.5, .5, .5),
-                                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('images/health.png')}));
-				healthcube.position.set(3,1.5,3);
-				oggettiPrendibili.push(healthcube);
-				mura.push(healthcube);
-				scene.add(healthcube);
+                                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/health.png')}));
+				cube1.position.set(14,2.4,1 );
+				oggettiPrendibili.push(cube1);
+				mura.push(cube1);
+				scene.add(cube1);
+
+				//  cube 2
+				cube2 = new THREE.Mesh(
+				new THREE.BoxGeometry(.5, .5, .5),
+                                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/ottone.jpg')}));
+				cube2.position.set(3,2,3);
+				oggettiPrendibili.push(cube2);
+				mura.push(cube2);
+				scene.add(cube2);
 				
+				//  faro
+				/*faro = new THREE.Mesh(
+				new THREE.BoxGeometry(.5, 3, .5),
+                                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/ground2.jpg')}));
+				faro.position.set(14,1.5,9);
+				mura.push(faro);
+				oggettiPrendibili.push(faro);
+				scene.add(faro);
+				*/
+
+				
+				
+				var loader = new THREE.JSONLoader();
+				loader.load( "models/faro2.js", function( geometry, materials ) { 
+						// applico i materiali definiti all'interno del modello
+						var materials =  new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg')});
+						faro = new THREE.Mesh( geometry,materials );
+						
+						// ruoto il modello di 180° sull'asse Y
+						faro.rotation.x = Math.PI/2;
+                                                faro.rotation.z = Math.PI/2.5;
+						// lo posiziono sopra il piano
+						faro.position.set( 14.45,1.6,9 );
+						// lo scalo per metterlo in scala con la scena
+						faro.scale.set( 0.02,0.02,0.02);
+						mura.push(faro);
+						oggettiPrendibili.push(faro);
+						geometry.computeBoundingBox();
+                                                scene.add(faro);
+						
+				} );
+                                
+                                
+                                loader.load( "models/tavolo.js", function( geometry, materials ) { 
+						// applico i materiali definiti all'interno del modello
+						var materials =  new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+						tavolo1 = new THREE.Mesh( geometry,materials );
+						
+						// ruoto il modello di 180° sull'asse Y
+						tavolo1.rotation.y = Math.PI;
+						// lo posiziono sopra il piano
+						tavolo1.position.set( 14,1,1 );
+						// lo scalo per metterlo in scala con la scena
+						tavolo1.scale.set( 0.035,0.035,0.035);
+						mura.push(tavolo1);
+						oggettiPrendibili.push(tavolo1);
+						scene.add(tavolo1);
+						
+				} );
+
+
 			}
+
+			
 		
 
 			function onDocumentMouseMove(e) {
@@ -241,14 +336,14 @@
 		
 			
 			
-			
-				function removeElement(obj){
-  					//obj.geometry.dispose();
-    				scene.remove(obj);
-    				mura.pop(obj);
-    				oggettiPrendibili.pop(obj);
-    				animate();
+			function checkFaro(){
+				if(oggettoFaro == cube1){
+					faroOk = true;
+					console.log("RISOLTO!")
+					porta = true;
+					INIBITELO=true;
 				}
+			}
 			
 			// EVENTO RESIZE
 			// gestione del resize, viene chiamata quando la finestra del browser viene ridimensionata
@@ -358,16 +453,23 @@
 
 				return muro;
 			}
-
+                        
+                        function nuovoLivello(){
+                            camera.position.x = spawnX;
+                            camera.position.y = spawnY;
+                            camera.position.z = spawnZ;
+                           
+                        }
+                        
 			function apriPorta(){
-				if(porta==false){
+				if(porta==true){
 					console.log("apro porta");
 					Porta_Chiusa.position.y=100;
-					porta = true;
+					porta = false;
 				}else{
 					console.log("chiudo porta");
 					Porta_Chiusa.position.y=2.5;
-					porta=false;
+					porta=true;
 				}
 			}
 
@@ -379,7 +481,10 @@
 				// richiedo un frame di rendering
 				requestAnimationFrame( animate );
 				// aggiorno la camerada
-			
+				if (porta==true){
+					apriPorta();
+                                 
+				}
 				// chiamo la funzione di rendering
 				render();
 			}
