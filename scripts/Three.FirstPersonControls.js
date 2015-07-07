@@ -210,49 +210,49 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 				//RAYCASTER FRONT 1
 				var vector1 = controls.target.clone().sub( controls.object.position ).normalize();
 				var raycaster1 = new THREE.Raycaster( origin, vector1, 0.5, 1 );
-				var intersects1 = raycaster1.intersectObjects( mura );
+				var intersects1 = raycaster1.intersectObjects( collisioni );
 				
 				//RAYCASTER FRONT 45-1
 				var vector2 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector2.applyAxisAngle(axis,angle45);
                                 var raycaster2 = new THREE.Raycaster(origin, vector2, 0.5, 1 );
-				var intersects2 = raycaster2.intersectObjects( mura );
+				var intersects2 = raycaster2.intersectObjects( collisioni );
 				
 				//RAYCASTER FRONT 45-2
 				var vector3 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector3.applyAxisAngle(axis,-angle45);
 				var raycaster3 = new THREE.Raycaster( origin, vector3, 0.5, 1 );
-				var intersects3 = raycaster3.intersectObjects( mura );
+				var intersects3 = raycaster3.intersectObjects( collisioni );
 
 				//RAYCASTER BACK 1
 				var vector4 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector4.applyAxisAngle(axis,angle180);
 				var raycaster4 = new THREE.Raycaster( origin, vector4, 0.5, 1 );
-				var intersects4 = raycaster4.intersectObjects( mura );
+				var intersects4 = raycaster4.intersectObjects( collisioni );
 				
 				//RAYCASTER BACK 45-1
 				var vector5 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector5.applyAxisAngle(axis,angle180+angle45);
 				var raycaster5 = new THREE.Raycaster( origin, vector5, 0.5, 1 );
-				var intersects5 = raycaster5.intersectObjects( mura );
+				var intersects5 = raycaster5.intersectObjects( collisioni );
 
 				//RAYCASTER BACK 45-2
 				var vector6 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector6.applyAxisAngle(axis,angle180-angle45);
 				var raycaster6 = new THREE.Raycaster( origin, vector6, 0.5, 1 );
-				var intersects6 = raycaster6.intersectObjects( mura );
+				var intersects6 = raycaster6.intersectObjects( collisioni );
 				
 				//RAYCASTER RIGHT
 				var vector7 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector7.applyAxisAngle(axis,-angle90);
 				var raycaster7 = new THREE.Raycaster( origin, vector7, 0.5, 1 );
-				var intersects7 = raycaster7.intersectObjects( mura );
+				var intersects7 = raycaster7.intersectObjects( collisioni );
 				
 				//RAYCASTER LEFT
 				var vector8 = controls.target.clone().sub( controls.object.position ).normalize();
 				vector8.applyAxisAngle(axis,angle90);
 				var raycaster8 = new THREE.Raycaster( origin, vector8, 0.5, 1 );
-				var intersects8 = raycaster8.intersectObjects( mura );
+				var intersects8 = raycaster8.intersectObjects( collisioni );
 				
 				
 				
@@ -274,11 +274,11 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 				
 			}
 
-			if ( this.moveLeft && intersects8.length == 0 && intersects2.length == 0 && intersects5.length == 0) {
+			if ( this.moveLeft && intersects8.length == 0 ) {
 				this.object.translateX( - actualMoveSpeed );
 				
 			}
-			if ( this.moveRight && intersects7.length == 0 && intersects3.length == 0 && intersects6.length == 0) {
+			if ( this.moveRight && intersects7.length == 0) {
 				this.object.translateX( actualMoveSpeed );
 				
 			}

@@ -27,8 +27,35 @@
 			var mouse = { x: 0, y: 0 }
 			oggettiPrendibili= [];
 			var inventario = [];
-			var oggetti=0, mura;
-			mura =[];
+			var oggetti=0, collisioni;
+			collisioni =[];
+
+			// parametro per lo "zoom" della camera top
+			var zoom = 0.33;
+
+			// variabili per le camere
+			var cameraTOP;
+			// helper per la visualizzazione dello stato della cameraFPS
+			var cameraHelper;
+
+			// variabile per la gestione del frustum culling
+			var frustum;
+			// variabile per indentificare il caso in cui passo dall'applicazione del frustum culling alla sua disabilitazione. Sarà utilizzata insieme alla GUI per ottimizzare l'impostazione di visibilità di tutti gli oggetti
+			var fromCulling;
+
+			//variabili per la gui
+			var cullingGui;
+			// tramite la gui, voglio attivare/disattivare il frustum culling, e alternare tra camera FPS e camera top
+			var cullingParam = {
+				useFrustumCulling : false,
+				map : false
+			};
+			
+
+
+
+
+
 			
 			// creo una istanza della classe Clock, per la gestione del tempo di esecuzione ecc
 			var clock = new THREE.Clock();
@@ -57,7 +84,7 @@
 			function init() 
 			{
 					// Display HUD
-					$('body').append('<canvas id="radar" width="200" height="200"></canvas>');
+					$('body').append('<div name="inventario" id="inventory" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
 					$('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>');
                                 porta = false;
 				// SCENE
@@ -79,7 +106,32 @@
 				camera.position.y = spawnY;
 				camera.position.z = spawnZ;
 
-				
+				cameraHelper = new THREE.CameraHelper( camera );
+				scene.add( cameraHelper );
+
+				// camera top
+				// La camera ortografica mi chiede i 6 piani che delimitano left/right/top/bottom/near/far
+				// se uso i parametri di width e heigth della finestra, il frustum ortografico mostrerà tutta la scena.
+				// se voglio mostrare solo una parte della scena (in questo caso, la griglia dei cubi), devo limitare le dimensioni del frustum. Lo faccio moltiplicando per un fattore "zoom".
+				cameraTop = new THREE.OrthographicCamera( -0.5*window.innerWidth*zoom, 0.5*window.innerWidth*zoom, 0.5*window.innerHeight*zoom, -0.5*window.innerHeight*zoom, 1, 100 );
+				cameraTop.position.set(0, 20 ,0);
+				cameraTop.lookAt(camera.position);
+
+				scene.add(cameraTop);
+				////////////
+
+				// FRUSTUM
+				// creo una istanza della classe Frustum
+				frustum = new THREE.Frustum();
+				////////////
+
+				// GUI
+				// imposto la GUI
+				setupGui();
+
+
+
+
 				// RENDERER
 				// setting per il rendering della finestra
 				renderer = new THREE.WebGLRenderer( { antialias: false } );
@@ -125,6 +177,7 @@
 				   					intersected.position.z =100;
 				   					selectedObject = intersected;
 				   					oggetti = oggetti + 1;
+									document.getElementById("inventory").style.backgroundImage = "url(textures/inventario/"+selectedObject.name+".jpg)";
 									$('#oggetti').html(oggetti);
 									console.log("preso oggetto inventario vuoto");
 				   				}
@@ -147,6 +200,7 @@
 				   							oggettoFaro = inventario[0];
 				   							checkFaro();
 				   						}
+				   						document.getElementById("inventory").style.backgroundImage = "url(textures/inventario/"+selectedObject.name+".jpg)";
 				   						inventario.pop(inventario[0]);
 				   						inventario.push(intersected);
 				   						console.log("scambio oggetti");
@@ -159,6 +213,7 @@
 											inventario.pop(selectedObject);
 											oggettoFaroBool = true;
 											oggettoFaro = selectedObject;
+											document.getElementById("inventory").style.backgroundImage = "";
 											checkFaro();
 											oggetti = oggetti - 1;
 											$('#oggetti').html(oggetti);
@@ -192,40 +247,40 @@
 				scene.add( plane );
 				
 				//Prova Mausoleo
-				// Mura esterne
-				var MuraEsterneGeometry = drawMuraEsterne(0,0,0,15,5,15);
-				var MuraEsterneMaterial = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
-				var MuraEsterne = new THREE.Mesh(MuraEsterneGeometry, MuraEsterneMaterial);
-				MuraEsterne.position.y = 1;
-				scene.add(MuraEsterne);
-				mura.push(MuraEsterne);
+				// collisioni esterne
+				var collisioniEsterneGeometry = drawcollisioniEsterne(0,0,0,15,5,15);
+				var collisioniEsterneMaterial = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
+				var collisioniEsterne = new THREE.Mesh(collisioniEsterneGeometry, collisioniEsterneMaterial);
+				collisioniEsterne.position.y = 1;
+				scene.add(collisioniEsterne);
+				collisioni.push(collisioniEsterne);
 				
-				//Mura interne
-				var MuraInterneGeometry = drawMuraInterne(5,0,5,10,5,10);
+				//collisioni interne
+				var collisioniInterneGeometry = drawcollisioniInterne(5,0,5,10,5,10);
 				var squareMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
-				var MuraInterne = new THREE.Mesh(MuraInterneGeometry, squareMaterial);
-				MuraInterne.position.y = 1;
-				scene.add(MuraInterne);
-				mura.push(MuraInterne);
+				var collisioniInterne = new THREE.Mesh(collisioniInterneGeometry, squareMaterial);
+				collisioniInterne.position.y = 1;
+				scene.add(collisioniInterne);
+				collisioni.push(collisioniInterne);
 
 				var MuroConPortaGeometry = drawMuroConPorta3D();
-				//MuraConPorta Orizzontale 1
+				//collisioniConPorta Orizzontale 1
 				var Porta1 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
 				Porta1.position.x = 0.8;
 				Porta1.position.y = 3.5;
 				Porta1.position.z = 7.5;
 				scene.add( Porta1 );
-				mura.push(Porta1);
+				collisioni.push(Porta1);
 
-				//MuraConPorta Orizzontale 2
+				//collisioniConPorta Orizzontale 2
 				var Porta2 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
 				Porta2.position.x = 10.8;
 				Porta2.position.y = 3.5;
 				Porta2.position.z = 7.5;
 				scene.add( Porta2 );
-				mura.push(Porta2);
+				collisioni.push(Porta2);
 
-				//MuraConPorta Verticale 1
+				//collisioniConPorta Verticale 1
 				var Porta3 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
 				//Porta3.position.x = 0.8;
 				Porta3.rotation.y = - Math.PI / 2;
@@ -233,9 +288,9 @@
 				Porta3.position.y = 3.5;
 				Porta3.position.z = 0.8;
 				scene.add( Porta3 );
-				mura.push(Porta3);
+				collisioni.push(Porta3);
 
-				//MuraConPorta Verticale 2
+				//collisioniConPorta Verticale 2
 				var Porta4 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
 				//Porta3.position.x = 0.8;
 				Porta4.rotation.y = - Math.PI / 2;
@@ -243,7 +298,7 @@
 				Porta4.position.y = 3.5;
 				Porta4.position.z = 10.8;
 				scene.add( Porta4 );
-				mura.push(Porta4);
+				collisioni.push(Porta4);
 
 				//Porta
 				var Porta_ChiusaGeometry = new THREE.BoxGeometry(0.2,3,1.8);
@@ -252,24 +307,26 @@
 				Porta_Chiusa.position.y = 2.5;
 				Porta_Chiusa.position.z = 8.64;
 				scene.add( Porta_Chiusa );
-				mura.push(Porta_Chiusa);
+				collisioni.push(Porta_Chiusa);
 
 				// cube 1
 				cube1 = new THREE.Mesh(
 				new THREE.BoxGeometry(.5, .5, .5),
                                 new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/health.png')}));
 				cube1.position.set(14,2.4,1 );
+				cube1.name="croce";
 				oggettiPrendibili.push(cube1);
-				mura.push(cube1);
+				collisioni.push(cube1);
 				scene.add(cube1);
 
 				//  cube 2
 				cube2 = new THREE.Mesh(
 				new THREE.BoxGeometry(.5, .5, .5),
                                 new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/ottone.jpg')}));
-				cube2.position.set(3,2,3);
+				cube2.position.set(2,2,2);
+				cube2.name="ottone";
 				oggettiPrendibili.push(cube2);
-				mura.push(cube2);
+				collisioni.push(cube2);
 				scene.add(cube2);
 				
 				//  faro
@@ -277,7 +334,7 @@
 				new THREE.BoxGeometry(.5, 3, .5),
                                 new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/ground2.jpg')}));
 				faro.position.set(14,1.5,9);
-				mura.push(faro);
+				collisioni.push(faro);
 				oggettiPrendibili.push(faro);
 				scene.add(faro);
 				*/
@@ -297,7 +354,7 @@
 						faro.position.set( 14.45,1.6,9 );
 						// lo scalo per metterlo in scala con la scena
 						faro.scale.set( 0.02,0.02,0.02);
-						mura.push(faro);
+						collisioni.push(faro);
 						oggettiPrendibili.push(faro);
 						geometry.computeBoundingBox();
                                                 scene.add(faro);
@@ -316,8 +373,7 @@
 						tavolo1.position.set( 14,1,1 );
 						// lo scalo per metterlo in scala con la scena
 						tavolo1.scale.set( 0.035,0.035,0.035);
-						mura.push(tavolo1);
-						oggettiPrendibili.push(tavolo1);
+						collisioni.push(tavolo1);
 						scene.add(tavolo1);
 						
 				} );
@@ -344,6 +400,43 @@
 					INIBITELO=true;
 				}
 			}
+
+			// CREO L'INTERFACCIA GRAFICA
+			function setupGui() {
+
+				// Creo e imposto l'interfaccia grafica
+				var cullingGui = new dat.GUI();
+				// creo un folder per i parametri di frustum culling
+				var cullingGuiFolder1 = cullingGui.addFolder('Frustum Culling');
+				cullingGuiFolder1.add( cullingParam, 'useFrustumCulling').onChange(function(value) {
+						// al cambiare del check, controllo se lo stato attuale era true. In questo caso setto a true il booleano fromCulling. Mi servirà per identificare l'unico caso in cui devo resettare tutti i cubi a visibili.
+						if (cullingParam.useFrustumCulling)
+							fromCulling = true;
+  
+				});
+				cullingGuiFolder1.open();
+
+				// creo un folder per i parametri di cambio di camera
+				var cullingGuiFolder2 = cullingGui.addFolder('Change camera');
+				cullingGuiFolder2.add( cullingParam, 'map');
+				cullingGuiFolder2.open();
+
+
+				// NOTA BENE:
+				// se, come in questo caso, la pagina prevede una sezione ("info") in alto, 
+				// sorge un problema con il posizionamento in profondità dell'interfaccia.
+				// La sezione "info" è impostata a 100, mentre la gui è posizionata a una profondità inferiore, impedendo 
+				// cosi' il controllo corretto dell'apertura/chiusura.
+				// Soluzioni:
+				//	1) posizionare la gui diversamente (es: un poco più in basso)
+				//	2) definire una nuova sezione ("gui") definendo un posizionamento in profondità che permetta di avere
+				// 		sempre il focus.
+				// Di seguito la soluzione 2) 
+				customContainer = document.createElement( 'gui' );
+ 				customContainer.style.cssText = "position:absolute;top:0px;right:0px;z-index:110;"; 
+ 				customContainer.appendChild(cullingGui.domElement);
+ 				document.body.appendChild( customContainer );
+			}
 			
 			// EVENTO RESIZE
 			// gestione del resize, viene chiamata quando la finestra del browser viene ridimensionata
@@ -363,7 +456,7 @@
 			}
 			/////////////////
 
-			function drawMuraEsterne(x1, y1, z1, x2, y2, z2)
+			function drawcollisioniEsterne(x1, y1, z1, x2, y2, z2)
 			{
 				var square = new THREE.Geometry();
 	
@@ -392,7 +485,7 @@
 				return square;
 			}
 
-			function drawMuraInterne(x1, y1, z1, x2, y2, z2)
+			function drawcollisioniInterne(x1, y1, z1, x2, y2, z2)
 			{
 				var square = new THREE.Geometry();
 	
@@ -481,10 +574,12 @@
 				// richiedo un frame di rendering
 				requestAnimationFrame( animate );
 				// aggiorno la camerada
+				
 				if (porta==true){
 					apriPorta();
                                  
 				}
+				
 				// chiamo la funzione di rendering
 				render();
 			}
@@ -495,5 +590,46 @@
 				var delta = clock.getDelta(), speed = delta * MOVESPEED;
 				controls.update(delta); // Move camera
 				renderer.render( scene, camera );
+
+				if (!cullingParam.map)
+				{	
+					// non mostro cameraHelper
+					scene.remove(cameraHelper);	
+				}
+				// se passo in modalità mappa (camera top)
+				else
+				{
+					// visualizzo la posizione della camera FPS
+					scene.add(cameraHelper);
+					// attivo il rendering tramite la camera top
+					renderer.render( scene, cameraTop );
+				}
+
+				// se attivo il frustum culling
+				if (cullingParam.useFrustumCulling){
+
+					// devo assegnare alla mia variabile frustum il volume definito dal frustum della camera fps, ma in coordinate mondo (ossia considerando la camera come un oggetto nella scena, con la sua posizione e orientamento)
+					// Per riportare il frustum in coordinate mondo, prendo la matrice di proiezione, e la moltiplico per l'inverso della matrice delle trasformazioni globali applicate alla camera
+					frustum.setFromMatrix( new THREE.Matrix4().multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse ) );
+
+					// devo passare tutto l'array dei cubi
+					for (var i=0; i<collisioni.length; i++) {
+						// applico il test di intersezione tra frustum e cubo, sulla base del risultato setto l'oggetto a visibile o invisibile (ossia non lo mando lungo la pipeline)                 
+						collisioni[i].visible = frustum.intersectsObject( collisioni[i] );     
+					}
+				}
+				// se il culling è disabilitato
+				else{
+					// solo se è stato appena disabilitato (subito dopo il check)
+					// NB: se non lo facessi, ad ogni frame rifarei il for su tutti i 2500 cubi per metterli a visibili, anche se non sarebbe necessario
+					if (fromCulling){
+						// passo tutto l'array dei cubi e li setto tutti a visibili
+						for (var i=0; i<collisioni.length; i++) { 
+							collisioni[i].visible = true;     
+						}
+					// setto fromCulling a false, in modo che non venga eseguito il for sopra.	
+					fromCulling = false;
+					}
+				}
 			}
 			
