@@ -1,6 +1,3 @@
-			// controlla il supporto a WebGL (se la scheda grafica non lo supporta viene mostato un messaggio d'errore)
-			//if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-			
 			var container;
 			
 			// variabili globali per la scena, il renderer ecc
@@ -17,7 +14,7 @@
 			var porta;
 			var faroOk=false;
 			var Porta_Chiusa;
-			var spawnX=14, spawnY=3, spawnZ=12;
+			var spawnX=1, spawnY=2.5, spawnZ=1;
                         var cube1, cube2, faro, tavolo1;
 			var INIBITELO=false;
 			var selectedObject, oggettoFaro, oggettoFaroBool=false;
@@ -56,7 +53,7 @@
 
 
 			
-			// creo una istanza della classe Clock, per la gestione del tempo di esecuzione ecc
+		// creo una istanza della classe Clock, per la gestione del tempo di esecuzione ecc
 			var clock = new THREE.Clock();
 			// Initialize and run on document ready
 			$(document).ready(function() {
@@ -72,24 +69,190 @@
 	
 });
 
+			var blocker = document.getElementById( 'blocker' );
+			var instructions = document.getElementById( 'instructions' );
 
-			// prima chiamo funzione di inizializzazione, poi quella che gestisce il loop di rendering
+			// http://www.html5rocks.com/en/tutorials/pointerlock/intro/
+
+			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+
+			if ( havePointerLock ) {
+
+				var element = document.body;
+
+				var pointerlockchange = function ( event ) {
+
+					if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
+
+						controlsEnabled = true;
+						controls.enabled = true;
+
+						blocker.style.display = 'none';
+
+					} else {
+
+						controls.enabled = false;
+
+						blocker.style.display = '-webkit-box';
+						blocker.style.display = '-moz-box';
+						blocker.style.display = 'box';
+
+						instructions.style.display = '';
+
+					}
+
+				}
+
+				var pointerlockerror = function ( event ) {
+
+					instructions.style.display = '';
+
+				}
+
+				// Hook pointer lock state change events
+				document.addEventListener( 'pointerlockchange', pointerlockchange, false );
+				document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
+				document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
+
+				document.addEventListener( 'pointerlockerror', pointerlockerror, false );
+				document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
+				document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
+
+				instructions.addEventListener( 'click', function ( event ) {
+
+					instructions.style.display = 'none';
+
+					// Ask the browser to lock the pointer
+					element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+
+					if ( /Firefox/i.test( navigator.userAgent ) ) {
+
+						var fullscreenchange = function ( event ) {
+
+							if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
+
+								document.removeEventListener( 'fullscreenchange', fullscreenchange );
+								document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+
+								element.requestPointerLock();
+							}
+
+						}
+
+						document.addEventListener( 'fullscreenchange', fullscreenchange, false );
+						document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
+
+						element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
+
+						element.requestFullscreen();
+
+					} else {
+
+						element.requestPointerLock();
+
+					}
+
+				}, false );
+
+			} else {
+
+				instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+
+			}
+
 			init();
 			animate();
-			
 
-			// INIZIALIZZAZIONE
-			//Funzioni di inizializzazione della scena
-			function init() 
-			{
-					// Display HUD
+			var controlsEnabled = false;
+
+			var moveForward = false;
+			var moveBackward = false;
+			var moveLeft = false;
+			var moveRight = false;
+
+			var prevTime = performance.now();
+			var velocity = new THREE.Vector3();
+
+			function init() {
+
+
+				 camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 100000 );
+				camera.position.x = spawnX;
+				camera.position.y = spawnY;
+				camera.position.z = spawnZ;
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
+
+				controls = new THREE.PointerLockControls( camera );
+				scene.add( controls.getObject() );
+
+				var onKeyDown = function ( event ) {
+
+					switch ( event.keyCode ) {
+
+						case 38: // up
+						case 87: // w
+							moveForward = true;
+							break;
+
+						case 37: // left
+						case 65: // a
+							moveLeft = true; break;
+
+						case 40: // down
+						case 83: // s
+							moveBackward = true;
+							break;
+
+						case 39: // right
+						case 68: // d
+							moveRight = true;
+							break;
+
+
+					}
+
+				};
+
+				var onKeyUp = function ( event ) {
+
+					switch( event.keyCode ) {
+
+						case 38: // up
+						case 87: // w
+							moveForward = false;
+							break;
+
+						case 37: // left
+						case 65: // a
+							moveLeft = false;
+							break;
+
+						case 40: // down
+						case 83: // s
+							moveBackward = false;
+							break;
+
+						case 39: // right
+						case 68: // d
+							moveRight = false;
+							break;
+
+					}
+
+				};
+
+				document.addEventListener( 'keydown', onKeyDown, false );
+				document.addEventListener( 'keyup', onKeyUp, false );
+
+				raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
+
+				// Display HUD
 					$('body').append('<div name="inventario" id="inventory" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
 					$('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>');
                                 porta = false;
-				// SCENE
-				// creo una istanza della classe Scene (radice del grafo della scena che avrà come nodi i modelli, luce, ecc della scena)
-				scene = new THREE.Scene();
-				////////////
+				
 
 				// LUCI
 				var light = new THREE.DirectionalLight( 0xffffff, 1.5 );
@@ -101,7 +264,6 @@
 				// parametri: FOV, widht, height, near, far
 				// Imposto un valore di near molto + basso, in modo da evitare l'effetto del culling prima della collisione con il corpo rigido
                 camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 100000 );
-				camera.rotation.y = Math.PI / 2;
 				camera.position.x = spawnX;
 				camera.position.y = spawnY;
 				camera.position.z = spawnZ;
@@ -114,7 +276,7 @@
 				// se uso i parametri di width e heigth della finestra, il frustum ortografico mostrerà tutta la scena.
 				// se voglio mostrare solo una parte della scena (in questo caso, la griglia dei cubi), devo limitare le dimensioni del frustum. Lo faccio moltiplicando per un fattore "zoom".
 				cameraTop = new THREE.OrthographicCamera( -0.5*window.innerWidth*zoom, 0.5*window.innerWidth*zoom, 0.5*window.innerHeight*zoom, -0.5*window.innerHeight*zoom, 1, 100 );
-				cameraTop.position.set(0, 10 ,0);
+				cameraTop.position.set(0, 20 ,0);
 				cameraTop.lookAt(camera.position);
 
 				scene.add(cameraTop);
@@ -141,10 +303,6 @@
 				/////////////////////
 				
 
-				//CONTROLLI
-				controls = new THREE.FirstPersonControls(camera, document);
-				controls.movementSpeed = MOVESPEED;
-				controls.lookSpeed = LOOKSPEED;
 				
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				window.addEventListener( 'resize', onWindowResize, false );
@@ -376,13 +534,9 @@
 						
 				} );
 
-
 			}
 
-			
-		
-
-			function onDocumentMouseMove(e) {
+					function onDocumentMouseMove(e) {
 				e.preventDefault();
 				mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
 				mouse.y = - (e.clientY / window.innerHeight) * 2 + 1;
@@ -398,6 +552,7 @@
 					INIBITELO=true;
 				}
 			}
+
 
 			// CREO L'INTERFACCIA GRAFICA
 			function setupGui() {
@@ -436,23 +591,7 @@
  				document.body.appendChild( customContainer );
 			}
 			
-			// EVENTO RESIZE
-			// gestione del resize, viene chiamata quando la finestra del browser viene ridimensionata
-			function onWindowResize()
-			{
 
-				//ricalcolo l'aspect ratio delle camere dopo il ridimensionamento
-				camera.aspect = window.innerWidth / window.innerHeight;
-				//update della matrice di proiezione sulla base della nuova dimensione della finestra
-				camera.updateProjectionMatrix();
-
-				//setto le nuove dimensioni di rendering
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				// chiamo la funzione di rendering
-				render();
-
-			}
-			/////////////////
 
 			function drawcollisioniEsterne(x1, y1, z1, x2, y2, z2)
 			{
@@ -564,29 +703,73 @@
 				}
 			}
 
+			function onWindowResize() {
 
-			// LOOP RENDERING
-			// chiamo una funzione animate, che si occupa di richiedere un nuovo frame, di gestire gli update delle librerie e controlli, e poi di chiamare la funzione di rendering
-			function animate() 
-			{
-				// richiedo un frame di rendering
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function animate() {
+
 				requestAnimationFrame( animate );
-				// aggiorno la camerada
-				
 				if (porta==true){
 					apriPorta();
                                  
 				}
-				
-				// chiamo la funzione di rendering
+				if ( controlsEnabled ) {
+					raycaster.ray.origin.copy( controls.getObject().position );
+					raycaster.ray.origin.y -= 10;
+
+					var intersections = raycaster.intersectObjects( objects );
+
+					var isOnObject = intersections.length > 0;
+
+					var time = performance.now();
+					var delta = ( time - prevTime ) / 1000;
+
+					velocity.x -= velocity.x * 10.0 * delta;
+					velocity.z -= velocity.z * 10.0 * delta;
+
+					velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+					if ( moveForward ) velocity.z -= 400.0 * delta;
+					if ( moveBackward ) velocity.z += 400.0 * delta;
+
+					if ( moveLeft ) velocity.x -= 400.0 * delta;
+					if ( moveRight ) velocity.x += 400.0 * delta;
+
+					if ( isOnObject === true ) {
+						velocity.y = Math.max( 0, velocity.y );
+
+						canJump = true;
+					}
+
+					controls.getObject().translateX( velocity.x * delta );
+					controls.getObject().translateY( velocity.y * delta );
+					controls.getObject().translateZ( velocity.z * delta );
+
+					if ( controls.getObject().position.y < 10 ) {
+
+						velocity.y = 0;
+						controls.getObject().position.y = 10;
+
+						canJump = true;
+
+					}
+
+					prevTime = time;
+
+				}
+
 				render();
+
 			}
-			
-			// funzione di rendering
+
 			function render()
-			{	
-				var delta = clock.getDelta(), speed = delta * MOVESPEED;
-				controls.update(delta); // Move camera
+			{
 				renderer.render( scene, camera );
 
 				if (!cullingParam.map)
