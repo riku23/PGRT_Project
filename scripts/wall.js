@@ -26,7 +26,8 @@ function set_ambient() {
     plane.position.z = 7.5;
     plane.position.y = 1;
     
-    plane.receiveShadow = true;
+   plane.receiveShadow = true;
+   plane.castShadow = true;
 
 // rotation.z is rotation around the z-axis, measured in radians (rather than degrees)
 // Math.PI = 180 degrees, Math.PI / 2 = 90 degrees, etc.
@@ -133,7 +134,7 @@ function set_ambient() {
     computeShadow(PortaE);
     computeShadow(PortaO);
     computeShadow(plane);
-    torchLight();
+
     
     
 }
