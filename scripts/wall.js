@@ -22,19 +22,26 @@ function set_ambient() {
     material = new THREE.MeshLambertMaterial({map: texture, color: 0xffffff});
     plane = new THREE.Mesh(new THREE.PlaneGeometry(side_plane, side_plane), material);
     plane.material.side = THREE.DoubleSide;
+     plane.rotation.x = Math.PI / 2;
     plane.position.x = 7.5;
     plane.position.z = 7.5;
     plane.position.y = 1;
     
     plane.receiveShadow = true;
 
-// rotation.z is rotation around the z-axis, measured in radians (rather than degrees)
-// Math.PI = 180 degrees, Math.PI / 2 = 90 degrees, etc.
-    plane.rotation.x = Math.PI / 2;
-
-
+   
     scene.add(plane);
 
+    var SoffittoMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
+    var soffitto = new THREE.Mesh(new THREE.PlaneGeometry(side_plane, side_plane), SoffittoMaterial);
+    soffitto.material.side = THREE.DoubleSide;
+    soffitto.rotation.x = Math.PI / 2;
+    soffitto.position.x = 7.5;
+    soffitto.position.z = 7.5;
+    soffitto.position.y = 6;
+    soffitto.receiveShadow = true;
+
+    scene.add(soffitto);
 
     //Prova Mausoleo
     // Mura esterne
