@@ -15,20 +15,20 @@
 			MOVESPEED = 5,
 			LOOKSPEED = 0.05;
 			var porta;
-			var faroOk=false;
+			var faroOk;
 			var Porta_Chiusa;
 			var spawnX=14, spawnY=3, spawnZ=12;
-                        var cube1, cube2, faro, tavolo1;
-			var INIBITELO=false;
-			var selectedObject, oggettoFaro, oggettoFaroBool=false;
+            var cube1, cube2, faro, tavolo1;
+			var INIBITELO;
+			var selectedObject, oggettoFaro, oggettoFaroBool;
 			var oldX, oldY, oldZ;
-			var oggettiPrendibili, filtri=1;
+			var filtri;
 			var mouse = { x: 0, y: 0 }
-			oggettiPrendibili= [];
-			var inventario = [];
-			var oggetti=0, collisioni;
-			collisioni =[];
-
+			var oggettiPrendibili;
+			var inventario;
+			var oggetti;
+			var mura =[];
+			var tentativi;
 			// parametro per lo "zoom" della camera top
 			var zoom = 0.33;
 
@@ -67,15 +67,22 @@
 					init();
 					
 					animate();
-	});
+				});
 	
 	
-});
+			});
 
-
-			// prima chiamo funzione di inizializzazione, poi quella che gestisce il loop di rendering
-			init();
-			animate();
+			function setDefaultVariables(){
+				//SETUP VARIABILI
+				tentativi = 1;
+				oggettoFaroBool=false;
+				INIBITELO=false;
+				faroOk=false;
+				filtri=1;
+				oggettiPrendibili= [];
+				inventario = [];
+				oggetti=0;
+			}
 			
 
 			// INIZIALIZZAZIONE
@@ -128,9 +135,9 @@
 				// GUI
 				// imposto la GUI
 				setupGui();
-
-
-
+				
+				//VARIABILI
+				setDefaultVariables();
 
 				// RENDERER
 				// setting per il rendering della finestra
@@ -245,40 +252,40 @@
 				scene.add( plane );
 				
 				//Prova Mausoleo
-				// collisioni esterne
-				var collisioniEsterneGeometry = drawcollisioniEsterne(0,0,0,15,5,15);
-				var collisioniEsterneMaterial = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
-				var collisioniEsterne = new THREE.Mesh(collisioniEsterneGeometry, collisioniEsterneMaterial);
-				collisioniEsterne.position.y = 1;
-				scene.add(collisioniEsterne);
-				collisioni.push(collisioniEsterne);
+				// mura esterne
+				var muraEsterneGeometry = drawmuraEsterne(0,0,0,15,5,15);
+				var muraEsterneMaterial = new THREE.MeshBasicMaterial( { color: 0xF6831E, side: THREE.DoubleSide } );
+				var muraEsterne = new THREE.Mesh(muraEsterneGeometry, muraEsterneMaterial);
+				muraEsterne.position.y = 1;
+				scene.add(muraEsterne);
+				mura.push(muraEsterne);
 				
-				//collisioni interne
-				var collisioniInterneGeometry = drawcollisioniInterne(5,0,5,10,5,10);
+				//mura interne
+				var muraInterneGeometry = drawmuraInterne(5,0,5,10,5,10);
 				var squareMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
-				var collisioniInterne = new THREE.Mesh(collisioniInterneGeometry, squareMaterial);
-				collisioniInterne.position.y = 1;
-				scene.add(collisioniInterne);
-				collisioni.push(collisioniInterne);
+				var muraInterne = new THREE.Mesh(muraInterneGeometry, squareMaterial);
+				muraInterne.position.y = 1;
+				scene.add(muraInterne);
+				mura.push(muraInterne);
 
 				var MuroConPortaGeometry = drawMuroConPorta3D();
-				//collisioniConPorta Orizzontale 1
+				//muraConPorta Orizzontale 1
 				var Porta1 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
 				Porta1.position.x = 0.8;
 				Porta1.position.y = 3.5;
 				Porta1.position.z = 7.5;
 				scene.add( Porta1 );
-				collisioni.push(Porta1);
+				mura.push(Porta1);
 
-				//collisioniConPorta Orizzontale 2
+				//muraConPorta Orizzontale 2
 				var Porta2 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
 				Porta2.position.x = 10.8;
 				Porta2.position.y = 3.5;
 				Porta2.position.z = 7.5;
 				scene.add( Porta2 );
-				collisioni.push(Porta2);
+				mura.push(Porta2);
 
-				//collisioniConPorta Verticale 1
+				//muraConPorta Verticale 1
 				var Porta3 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
 				//Porta3.position.x = 0.8;
 				Porta3.rotation.y = - Math.PI / 2;
@@ -286,9 +293,9 @@
 				Porta3.position.y = 3.5;
 				Porta3.position.z = 0.8;
 				scene.add( Porta3 );
-				collisioni.push(Porta3);
+				mura.push(Porta3);
 
-				//collisioniConPorta Verticale 2
+				//muraConPorta Verticale 2
 				var Porta4 = new THREE.Mesh(MuroConPortaGeometry, new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
 				//Porta3.position.x = 0.8;
 				Porta4.rotation.y = - Math.PI / 2;
@@ -296,7 +303,7 @@
 				Porta4.position.y = 3.5;
 				Porta4.position.z = 10.8;
 				scene.add( Porta4 );
-				collisioni.push(Porta4);
+				mura.push(Porta4);
 
 				//Porta
 				var Porta_ChiusaGeometry = new THREE.BoxGeometry(0.2,3,1.8);
@@ -305,7 +312,7 @@
 				Porta_Chiusa.position.y = 2.5;
 				Porta_Chiusa.position.z = 8.64;
 				scene.add( Porta_Chiusa );
-				collisioni.push(Porta_Chiusa);
+				mura.push(Porta_Chiusa);
 
 				// cube 1
 				cube1 = new THREE.Mesh(
@@ -314,7 +321,7 @@
 				cube1.position.set(14,2.4,1 );
 				cube1.name="croce";
 				oggettiPrendibili.push(cube1);
-				collisioni.push(cube1);
+				mura.push(cube1);
 				scene.add(cube1);
 
 				//  cube 2
@@ -324,21 +331,12 @@
 				cube2.position.set(2,2,2);
 				cube2.name="ottone";
 				oggettiPrendibili.push(cube2);
-				collisioni.push(cube2);
+				mura.push(cube2);
 				scene.add(cube2);
 				
-				//  faro
-				/*faro = new THREE.Mesh(
-				new THREE.BoxGeometry(.5, 3, .5),
-                                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/ground2.jpg')}));
-				faro.position.set(14,1.5,9);
-				collisioni.push(faro);
-				oggettiPrendibili.push(faro);
-				scene.add(faro);
-				*/
 
 				
-				
+				//FARO
 				var loader = new THREE.JSONLoader();
 				loader.load( "models/faro2.js", function( geometry, materials ) { 
 						// applico i materiali definiti all'interno del modello
@@ -352,7 +350,7 @@
 						faro.position.set( 14.45,1.6,9 );
 						// lo scalo per metterlo in scala con la scena
 						faro.scale.set( 0.02,0.02,0.02);
-						collisioni.push(faro);
+						mura.push(faro);
 						oggettiPrendibili.push(faro);
 						geometry.computeBoundingBox();
                                                 scene.add(faro);
@@ -360,7 +358,9 @@
 				} );
                                 
                                 
-                                loader.load( "models/tavolo.js", function( geometry, materials ) { 
+                
+				//TAVOLO
+                loader.load( "models/tavolo.js", function( geometry, materials ) { 
 						// applico i materiali definiti all'interno del modello
 						var materials =  new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
 						tavolo1 = new THREE.Mesh( geometry,materials );
@@ -371,7 +371,7 @@
 						tavolo1.position.set( 14,1,1 );
 						// lo scalo per metterlo in scala con la scena
 						tavolo1.scale.set( 0.035,0.035,0.035);
-						collisioni.push(tavolo1);
+						mura.push(tavolo1);
 						scene.add(tavolo1);
 						
 				} );
@@ -396,8 +396,11 @@
 					console.log("RISOLTO!")
 					porta = true;
 					INIBITELO=true;
-				}
-			}
+				}else{
+					tentativi = tentativi-1;
+				
+		}
+	}
 
 			// CREO L'INTERFACCIA GRAFICA
 			function setupGui() {
@@ -454,7 +457,7 @@
 			}
 			/////////////////
 
-			function drawcollisioniEsterne(x1, y1, z1, x2, y2, z2)
+			function drawmuraEsterne(x1, y1, z1, x2, y2, z2)
 			{
 				var square = new THREE.Geometry();
 	
@@ -483,7 +486,7 @@
 				return square;
 			}
 
-			function drawcollisioniInterne(x1, y1, z1, x2, y2, z2)
+			function drawmuraInterne(x1, y1, z1, x2, y2, z2)
 			{
 				var square = new THREE.Geometry();
 	
@@ -589,6 +592,19 @@
 				controls.update(delta); // Move camera
 				renderer.render( scene, camera );
 
+
+				// Death
+				if (tentativi <= 0) {
+				
+				$(renderer.domElement).fadeOut();
+				$('#radar, #hud, #credits').fadeOut();
+				$('#intro').fadeIn();
+				$('#intro').html('Darkness consumes you');
+				$('#intro').one('click', function() {
+								
+		});
+	}
+
 				if (!cullingParam.map)
 				{	
 					// non mostro cameraHelper
@@ -611,9 +627,9 @@
 					frustum.setFromMatrix( new THREE.Matrix4().multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse ) );
 
 					// devo passare tutto l'array dei cubi
-					for (var i=0; i<collisioni.length; i++) {
+					for (var i=0; i<mura.length; i++) {
 						// applico il test di intersezione tra frustum e cubo, sulla base del risultato setto l'oggetto a visibile o invisibile (ossia non lo mando lungo la pipeline)                 
-						collisioni[i].visible = frustum.intersectsObject( collisioni[i] );     
+						mura[i].visible = frustum.intersectsObject( mura[i] );     
 					}
 				}
 				// se il culling è disabilitato
@@ -622,8 +638,8 @@
 					// NB: se non lo facessi, ad ogni frame rifarei il for su tutti i 2500 cubi per metterli a visibili, anche se non sarebbe necessario
 					if (fromCulling){
 						// passo tutto l'array dei cubi e li setto tutti a visibili
-						for (var i=0; i<collisioni.length; i++) { 
-							collisioni[i].visible = true;     
+						for (var i=0; i<mura.length; i++) { 
+							mura[i].visible = true;     
 						}
 					// setto fromCulling a false, in modo che non venga eseguito il for sopra.	
 					fromCulling = false;
