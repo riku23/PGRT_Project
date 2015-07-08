@@ -59,9 +59,10 @@ var plane;
 var MuraEsterne, MuraInterne;
 var PortaN, PortaS, PortaO, PortaE;
 var faro;
-var cube1, cube2; 
+var cube1, cube2;
 var tavoloSE, tavoloNO, tavoloNE, tavoloSO;
 var Porta_Chiusa;
+
 //MATERIALS
 var wall_material;
 
@@ -290,7 +291,7 @@ function init()
         var materials = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg')});
         faro.geometry = geometry;
         faro.material = materials;
-        
+
         // ruoto il modello di 180° sull'asse Y
         faro.rotation.x = Math.PI / 2;
         faro.rotation.z = Math.PI / 2.5;
@@ -305,17 +306,22 @@ function init()
     });
 
 
+    tavoloSE = new THREE.Mesh();
+    tavoloSE.position.set(14, 1, 1);
+
 
     //TAVOLO Sud-Est
     loader.load("models/tavolo.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
         var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
-        tavoloSE = new THREE.Mesh(geometry, materials);
+        tavoloSE.geometry = geometry;
+        tavoloSE.material = materials;
+
 
         // ruoto il modello di 180° sull'asse Y
         tavoloSE.rotation.y = Math.PI;
         // lo posiziono sopra il piano
-        tavoloSE.position.set(14, 1, 1);
+        
         // lo scalo per metterlo in scala con la scena
         tavoloSE.scale.set(0.035, 0.035, 0.035);
         mura.push(tavoloSE);
@@ -325,15 +331,18 @@ function init()
 
 
     //TAVOLO Nord-Ovest
+    tavoloNO = new THREE.Mesh();
+    tavoloNO.position.set(1, 1, 14);
     loader.load("models/tavolo.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
         var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
-        tavoloNO = new THREE.Mesh(geometry, materials);
+        tavoloNO.geometry = geometry;
+        tavoloNO.material = materials;
 
         // ruoto il modello di 180° sull'asse Y
         tavoloNO.rotation.y = Math.PI;
         // lo posiziono sopra il piano
-        tavoloNO.position.set(1, 1, 14);
+        
         // lo scalo per metterlo in scala con la scena
         tavoloNO.scale.set(0.035, 0.035, 0.035);
         mura.push(tavoloNO);
@@ -342,15 +351,18 @@ function init()
     });
 
     //TAVOLO Nord-Est
+    tavoloNE = new THREE.Mesh();
+    tavoloNE.position.set(1, 1, 1);
     loader.load("models/tavolo.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
         var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
-        tavoloNE = new THREE.Mesh(geometry, materials);
+        tavoloNE.geometry = geometry;
+        tavoloNE.material = materials;
 
         // ruoto il modello di 180° sull'asse Y
         tavoloNE.rotation.y = Math.PI;
         // lo posiziono sopra il piano
-        tavoloNE.position.set(1, 1, 1);
+        
         // lo scalo per metterlo in scala con la scena
         tavoloNE.scale.set(0.035, 0.035, 0.035);
         mura.push(tavoloNE);
@@ -359,22 +371,30 @@ function init()
     });
 
     //TAVOLO Sud-Ovest
+    //TAVOLO Nord-Est
+    tavoloSO = new THREE.Mesh();
+    tavoloSO.position.set(14, 1, 14);
     loader.load("models/tavolo.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
         var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
-        tavoloSO = new THREE.Mesh(geometry, materials);
+        tavoloSO.geometry = geometry;
+        tavoloSO.material = materials;
 
         // ruoto il modello di 180° sull'asse Y
         tavoloSO.rotation.y = Math.PI;
         // lo posiziono sopra il piano
-        tavoloSO.position.set(14, 1, 14);
+        
         // lo scalo per metterlo in scala con la scena
         tavoloSO.scale.set(0.035, 0.035, 0.035);
         mura.push(tavoloSO);
         scene.add(tavoloSO);
-
-
     });
+    
+    computeShadow(tavoloSO);
+    computeShadow(tavoloSE);
+    computeShadow(tavoloNO);
+    computeShadow(tavoloNE);
+    computeShadow(faro);
 
 
 
@@ -383,8 +403,11 @@ function init()
     //Ho bisogno della posizione del faro per posizionare la spotlight, quindi richiamo la funzione dopo
     //piazzo la luce dal faretto
     spotLightDoor();
+    torchLight();
     //carico shader per mura
     cook_torrance();
+
+
 
 
 }
@@ -467,26 +490,28 @@ function onWindowResize()
 }
 
 function setDoorAnimation()
-            {   
-                
+{
 
-                
-                //posizione iniziale
-                var position = { z : Porta_Chiusa.position.z };
-                //posizione finale
-                var target = { z : 7 };
-                //curva usata per l'animazione
-                //L'esempio mentiva, ma messe nella creazione direttamente del tween funzionano, queste cose fanno bestemmiare duro
-                //var easing = TWEEN.easing(TWEEN.Easing.Quadratic.In);
-                //
-                //var update = TWEEN.onUpdate(function(){ porta.position.z = position.z});
 
-                tween = new TWEEN.Tween(position).to(target, 3000);
-                tween.easing(TWEEN.Easing.Linear.None);
-                tween.onUpdate(function(){ Porta_Chiusa.position.z = position.z});
 
-                tween.start();
-            }
+    //posizione iniziale
+    var position = {z: Porta_Chiusa.position.z};
+    //posizione finale
+    var target = {z: 7};
+    //curva usata per l'animazione
+    //L'esempio mentiva, ma messe nella creazione direttamente del tween funzionano, queste cose fanno bestemmiare duro
+    //var easing = TWEEN.easing(TWEEN.Easing.Quadratic.In);
+    //
+    //var update = TWEEN.onUpdate(function(){ porta.position.z = position.z});
+
+    tween = new TWEEN.Tween(position).to(target, 3000);
+    tween.easing(TWEEN.Easing.Linear.None);
+    tween.onUpdate(function () {
+        Porta_Chiusa.position.z = position.z
+    });
+
+    tween.start();
+}
 
 
 
