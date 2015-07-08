@@ -6,9 +6,10 @@ function set_ambient() {
     // dimensioni del piano
     var side_plane = 15;
     var height_plane = 2;
+
     var texture, material;
 
-    texture = THREE.ImageUtils.loadTexture("textures/ground2.jpg");
+    texture = THREE.ImageUtils.loadTexture("textures/stone.jpg");
 
 // assuming you want the texture to repeat in both directions:
     texture.wrapS = THREE.RepeatWrapping;
@@ -30,6 +31,7 @@ function set_ambient() {
 // rotation.z is rotation around the z-axis, measured in radians (rather than degrees)
 // Math.PI = 180 degrees, Math.PI / 2 = 90 degrees, etc.
     plane.rotation.x = Math.PI / 2;
+
 
     scene.add(plane);
 
