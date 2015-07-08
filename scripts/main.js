@@ -286,7 +286,7 @@ function init()
 
     loader.load("models/faro2.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
-        var materials = new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg')});
+        var materials = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg')});
         faro.geometry = geometry;
         faro.material = materials;
         
@@ -308,7 +308,7 @@ function init()
     //TAVOLO
     loader.load("models/tavolo.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
-        var materials = new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
         tavolo1 = new THREE.Mesh(geometry, materials);
 
         // ruoto il modello di 180° sull'asse Y

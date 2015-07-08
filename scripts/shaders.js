@@ -4,8 +4,8 @@ var shaders_CT, uniforms_CT;
 var uniforms;
 var guiParam = {
     chooseTexture: 'tex1',
-    frequency: 4.0,
-    power: 1.0
+    frequency: 2.0,
+    power: 0.5
 };
 function initGui() {
 
@@ -78,19 +78,19 @@ function cook_torrance() {
 
     var shaders_CT, uniforms_CT;
     // Peso per la componente diffusiva
-    var Kd = 0.7;
+    var Kd = 0.8;
     // Coefficiente Fresnel
-    var F0 = 1.4; // provare a mettere = 3
+    var F0 = 1.5; // provare a mettere = 3
     // Coefficiente rugosità
-    var roughnessValue = 0.2;
+    var roughnessValue = 0.1;
 
     uniforms_CT = {
         Kd: {type: "f", value: Kd},
         F0: {type: "f", value: F0},
         m: {type: "f", value: roughnessValue},
         tex: {type: "t", value: THREE.ImageUtils.loadTexture("textures/gradientmarble.png")},
-        frequency: {type: "f", value: 10},
-        power: {type: "f", value: 0.9},
+        frequency: {type: "f", value: 5},
+        power: {type: "f", value: 2},
         pointLightPosition: {type: "v3", value: doorLight.position},
     };
 

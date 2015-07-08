@@ -9,17 +9,17 @@ function set_ambient() {
     var side_plane = 15;
     var height_plane = 2;
     planeGeometry = new THREE.BoxGeometry(side_plane, height_plane, side_plane);
-    planeMaterial = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('textures/wall.png'), color: 0xffffff});
+    planeMaterial = new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/stone.jpg'), color: 0xffffff});
 
-    // parametri di applicazione della texture (al momento non approfondire)
-    planeMaterial.map.repeat.x = 20;
-    planeMaterial.map.repeat.y = 20;
-    planeMaterial.map.wrapS = THREE.RepeatWrapping;
-    planeMaterial.map.wrapT = THREE.RepeatWrapping;
-
+   
     // creo la mesh
     plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.position.set(7.5, 0, 7.5);
+     // parametri di applicazione della texture (al momento non approfondire)
+    planeMaterial.map.repeat.x = 10;
+    planeMaterial.map.repeat.y = 10;
+    planeMaterial.map.wrapS = THREE.RepeatWrapping;
+    planeMaterial.map.wrapT = THREE.RepeatWrapping;
     //plane.position.set(0,5,0);
     //plane.rotation.z = -Math.PI;
     // la aggiungo alla scena
