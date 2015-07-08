@@ -27,7 +27,8 @@ function set_ambient() {
     plane.position.z = 7.5;
     plane.position.y = 1;
     
-    plane.receiveShadow = true;
+   plane.receiveShadow = true;
+   plane.castShadow = true;
 
    
     scene.add(plane);
@@ -140,7 +141,7 @@ function set_ambient() {
     computeShadow(PortaE);
     computeShadow(PortaO);
     computeShadow(plane);
-    torchLight();
+
     
     
 }
