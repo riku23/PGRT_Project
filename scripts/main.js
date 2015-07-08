@@ -1,4 +1,6 @@
 
+/* global THREE */
+
 // controlla il supporto a WebGL (se la scheda grafica non lo supporta viene mostato un messaggio d'errore)
 //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
@@ -9,7 +11,7 @@ var container;
 var scene, renderer;
 
 // variabili per il "prato"
-var planeGeometry, plane, planeMaterial;
+var planeGeometry, planeMaterial;
 
 var raycaster = new THREE.Raycaster();
 // variabili per la camera
@@ -21,7 +23,7 @@ var Porta_Chiusa;
 var healthcube;
 var oggettiPrendibili;
 var cylinder;
-var mouse = {x: 0, y: 0}
+var mouse = {x: 0, y: 0};
 
 var doorLight;
 oggettiPrendibili = [];
@@ -29,11 +31,16 @@ var inventario = [];
 var oggetti = 0, mura;
 mura = [];
 
-//MESH
+//GEOMETRY
 var cylinder;
 
-//OBJECT
+//MESH
 var light_cone;
+var plane;
+var MuraEsterne, MuraInterne;
+var Porta1, Porta2, Porta3, Porta4;
+//MATERIALS
+var wall_material;
 
 // creo una istanza della classe Clock, per la gestione del tempo di esecuzione ecc
 var clock = new THREE.Clock();
@@ -52,7 +59,16 @@ $(document).ready(function () {
 });
 
 
-
+function loadMaterial(material)
+{
+    MuraEsterne.material = material;
+    MuraInterne.material = material;
+    Porta1.material = material;
+    Porta2.material = material;
+    Porta3.material = material;
+    Porta4.material = material;
+    alert(doorLight.position);
+}
 
 // INIZIALIZZAZIONE
 //Funzioni di inizializzazione della scena
@@ -61,7 +77,6 @@ function init()
 {
 
 
-    var wallMaterial = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('textures/wall.png'), color: 0xffffff, side: THREE.DoubleSide});
 
     // Display HUD
     $('body').append('<canvas id="radar" width="200" height="200"></canvas>');
@@ -86,6 +101,7 @@ function init()
     renderer = new THREE.WebGLRenderer({antialias: false});
     renderer.setClearColor(0x6699ff, 1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMapEnabled = true;
     document.body.appendChild(renderer.domElement);
     /////////////////////
 
@@ -119,27 +135,46 @@ function init()
             }
         }
     });
+
+
+
+
     var wall_material = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('textures/wall.png'), color: 0xffffff});
+
+
+    // posiziono il cubo al centro
+    //cubeMesh.position.x = +20;
+    /*wall_material.map.repeat.x = 2;
+     wall_material.map.repeat.y = 2;
+     wall_material.map.wrapS = THREE.RepeatWrapping;
+     wall_material.map.wrapT = THREE.RepeatWrapping;*/
+
+
     // PIANO - MESH
     // dimensioni del piano
-    var side_plane = 100
+    var side_plane = 15;
     var height_plane = 2;
     planeGeometry = new THREE.BoxGeometry(side_plane, height_plane, side_plane);
-    planeMaterial = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('textures/ground.jpg'), color: 0xffffff});
+    planeMaterial = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('textures/wall.png'), color: 0xffffff});
+
     // parametri di applicazione della texture (al momento non approfondire)
-    planeMaterial.map.repeat.x = 10;
-    planeMaterial.map.repeat.y = 10;
+    planeMaterial.map.repeat.x = 20;
+    planeMaterial.map.repeat.y = 20;
     planeMaterial.map.wrapS = THREE.RepeatWrapping;
     planeMaterial.map.wrapT = THREE.RepeatWrapping;
+
     // creo la mesh
     plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.position.set(7.5, 0, 7.5);
+    //plane.position.set(0,5,0);
+    //plane.rotation.z = -Math.PI;
     // la aggiungo alla scena
     scene.add(plane);
     //Prova Mausoleo
     // Mura esterne
     var MuraEsterneGeometry = drawMura(15, 5, 15, false);
     var MuraEsterneMaterial = new THREE.MeshBasicMaterial({color: 0xF6831E});
-    var MuraEsterne = new THREE.Mesh(MuraEsterneGeometry, wall_material);
+    MuraEsterne = new THREE.Mesh(MuraEsterneGeometry, wall_material);
     MuraEsterne.position.x = 7.5;
     MuraEsterne.position.y = 3.5;
     scene.add(MuraEsterne);
@@ -147,29 +182,43 @@ function init()
     //Mura interne
     var MuraInterneGeometry = drawMura(5, 5, 5, true);
     var MuraInterneMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
-    var MuraInterne = new THREE.Mesh(MuraInterneGeometry, MuraInterneMaterial);
+    MuraInterne = new THREE.Mesh(MuraInterneGeometry, wall_material);
     MuraInterne.position.x = 7.5;
     MuraInterne.position.y = 3.5;
     MuraInterne.position.z = 5;
     scene.add(MuraInterne);
     mura.push(MuraInterne);
+
+
     var MuroConPortaGeometry = drawMuroConPorta3D(1.59, 1.82, 1.59, 0.4);
-    //MuraConPorta Orizzontale 1
-    var Porta1 = new THREE.Mesh(MuroConPortaGeometry, wall_material);
+    //MuraConPorta Orizzontale 1 = PORTA A DESTRA
+    Porta1 = new THREE.Mesh(MuroConPortaGeometry, wall_material);
     Porta1.position.x = 0.8;
     Porta1.position.y = 3.5;
     Porta1.position.z = 7.5;
     scene.add(Porta1);
     mura.push(Porta1);
-    //MuraConPorta Orizzontale 2
-    var Porta2 = new THREE.Mesh(MuroConPortaGeometry, wall_material);
+
+    // PIAZZAMENTO LUCI TORCE PORTA A DESTRA
+    pointLightGenerator(Porta1.position.x, Porta1.position.z - torch_distance);
+    pointLightGenerator(Porta1.position.x + 1.82 + 1.59, Porta1.position.z - torch_distance);
+    pointLightGenerator(Porta1.position.x, Porta1.position.z + torch_distance);
+    pointLightGenerator(Porta1.position.x + 1.82 + 1.59, Porta1.position.z + torch_distance);
+
+    //MuraConPorta Orizzontale 2 = PORTA FARETTO
+    Porta2 = new THREE.Mesh(MuroConPortaGeometry, wall_material);
     Porta2.position.x = 10.8;
     Porta2.position.y = 3.5;
     Porta2.position.z = 7.5;
     scene.add(Porta2);
     mura.push(Porta2);
+
+    // PIAZZAMENTO LUCI TORCE PORTA 2  (QUELLA CON IL FARETTO)
+    pointLightGenerator(Porta2.position.x, Porta2.position.z - torch_distance);
+    pointLightGenerator(Porta2.position.x + 1.82 + 1.59, Porta2.position.z - torch_distance);
+
     //MuraConPorta Verticale 1
-    var Porta3 = new THREE.Mesh(MuroConPortaGeometry, wall_material);
+    Porta3 = new THREE.Mesh(MuroConPortaGeometry, wall_material);
     //Porta3.position.x = 0.8;
     Porta3.rotation.y = -Math.PI / 2;
     Porta3.position.x = 7.5;
@@ -177,8 +226,15 @@ function init()
     Porta3.position.z = 0.8;
     scene.add(Porta3);
     mura.push(Porta3);
+
+    // PIAZZAMENTO LUCI TORCE PORTA 3
+    pointLightGenerator(Porta3.position.x - torch_distance, Porta3.position.z);
+    pointLightGenerator(Porta3.position.x - torch_distance, Porta3.position.z + (1.82 + 1.59));
+    pointLightGenerator(Porta3.position.x + torch_distance, Porta3.position.z);
+    pointLightGenerator(Porta3.position.x + torch_distance, Porta3.position.z + (1.82 + 1.59));
+
     //MuraConPorta Verticale 2
-    var Porta4 = new THREE.Mesh(MuroConPortaGeometry, wall_material);
+    Porta4 = new THREE.Mesh(MuroConPortaGeometry, wall_material);
     //Porta3.position.x = 0.8;
     Porta4.rotation.y = -Math.PI / 2;
     Porta4.position.x = 7.5;
@@ -186,10 +242,18 @@ function init()
     Porta4.position.z = 10.8;
     scene.add(Porta4);
     mura.push(Porta4);
+
+
+    // PIAZZAMENTO LUCI TORCE PORTA 3
+    pointLightGenerator(Porta4.position.x - torch_distance, Porta4.position.z);
+    pointLightGenerator(Porta4.position.x - torch_distance, Porta4.position.z + (1.82 + 1.59));
+    pointLightGenerator(Porta4.position.x + torch_distance, Porta4.position.z);
+    pointLightGenerator(Porta4.position.x + torch_distance, Porta4.position.z + (1.82 + 1.59));
+
     //Porta
     var Porta_ChiusaGeometry = new THREE.BoxGeometry(0.2, 3, 1.8);
     //Porta_Chiusa = new THREE.Mesh(Porta_ChiusaGeometry, new THREE.MeshBasicMaterial({color: 0xff00ff}));
-    Porta_Chiusa = new THREE.Mesh(Porta_ChiusaGeometry, new THREE.MeshPhongMaterial({color: 0xff00ff}));
+    Porta_Chiusa = new THREE.Mesh(Porta_ChiusaGeometry, wall_material);
     Porta_Chiusa.position.x = 9.88;
     Porta_Chiusa.position.y = 2.5;
     Porta_Chiusa.position.z = 8.8;
@@ -204,8 +268,9 @@ function init()
     oggettiPrendibili.push(healthcube);
     mura.push(healthcube);
     scene.add(healthcube);
-    light_placing();
-    orientate_cone();
+    spotLightPlacing();
+    cook_torrance();
+    //orientate_cone();
 }
 
 
