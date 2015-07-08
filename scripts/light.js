@@ -24,8 +24,9 @@ function pointLightGenerator(x,z, target) {
 //crea una spotlight in origin e che punta a target
 //Piazza anche la source sphere
 function spotLightGenerator(origin,target){
-    
+
     var spotLight = new THREE.SpotLight("#ffffff");
+
     spotLight.position.set(origin.position.x,origin.position.y,origin.position.z);
     spotLight.castShadow = true;
     spotLight.shadowCameraNear = 0.01;
@@ -43,8 +44,9 @@ function spotLightGenerator(origin,target){
     
     spotLight.shadowDarkness = 0.5;
     spotLight.intensity = 2;
-    spotLight.shadowCameraVisible = true;
+
     spotLight.distance = 10;
+     spotLight.shadowCameraVisible = true;
     spotLight.target = target;
     scene.add(spotLight);    
     lightSource(spotLight);
