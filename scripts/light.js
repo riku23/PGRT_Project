@@ -86,7 +86,7 @@ function spotLightPlacing() {
     //////////////////////////////////////////////////////////////////////////////////
 
     // add spot light
-    var geometry = new THREE.CylinderGeometry(0.16, 1, 4, 32 * 2, 20, true);
+    var geometry = new THREE.CylinderGeometry(0.16, 1, 4.5, 32 * 2, 20, true);
 
     var material = new THREEx.VolumetricSpotLightMaterial();
     var mesh = new THREE.Mesh(geometry, material);
