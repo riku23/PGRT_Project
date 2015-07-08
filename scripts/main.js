@@ -317,6 +317,8 @@ function init()
         tavolo1.position.set(14, 1, 1);
         // lo scalo per metterlo in scala con la scena
         tavolo1.scale.set(0.035, 0.035, 0.035);
+        tavolo1.castShadow = true;
+        tavolo1.receiveShadow = true;
         mura.push(tavolo1);
         scene.add(tavolo1);
 
@@ -324,7 +326,7 @@ function init()
 
     //Ho bisogno della posizione del faro per posizionare la spotlight, quindi richiamo la funzione dopo
     //piazzo la luce dal faretto
-    spotLightPlacing();
+    spotLightDoor();
     //carico shader per mura
     cook_torrance();
 

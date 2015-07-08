@@ -1,29 +1,39 @@
+var plane;
+
 function set_ambient() {
-    // PIANO - MESH
-    // dimensioni del piano
-    var side_plane = 100
-    var height_plane = 2;
 
     // PIANO - MESH
     // dimensioni del piano
     var side_plane = 15;
     var height_plane = 2;
-    planeGeometry = new THREE.BoxGeometry(side_plane, height_plane, side_plane);
-    planeMaterial = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('textures/wall.png'), color: 0xffffff});
+    var texture, material;
 
-    // parametri di applicazione della texture (al momento non approfondire)
-    planeMaterial.map.repeat.x = 20;
-    planeMaterial.map.repeat.y = 20;
-    planeMaterial.map.wrapS = THREE.RepeatWrapping;
-    planeMaterial.map.wrapT = THREE.RepeatWrapping;
+    texture = THREE.ImageUtils.loadTexture("textures/ground2.jpg");
 
-    // creo la mesh
-    plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.position.set(7.5, 0, 7.5);
-    //plane.position.set(0,5,0);
-    //plane.rotation.z = -Math.PI;
-    // la aggiungo alla scena
+// assuming you want the texture to repeat in both directions:
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+
+// how many times to repeat in each direction; the default is (1,1),
+//   which is probably why your example wasn't working
+    texture.repeat.set(4, 4);
+
+    material = new THREE.MeshLambertMaterial({map: texture, color: 0xffffff});
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(side_plane, side_plane), material);
+    plane.material.side = THREE.DoubleSide;
+    plane.position.x = 7.5;
+    plane.position.z = 7.5;
+    plane.position.y = 1;
+    
+    plane.receiveShadow = true;
+
+// rotation.z is rotation around the z-axis, measured in radians (rather than degrees)
+// Math.PI = 180 degrees, Math.PI / 2 = 90 degrees, etc.
+    plane.rotation.x = Math.PI / 2;
+
     scene.add(plane);
+
+
     //Prova Mausoleo
     // Mura esterne
     var MuraEsterneGeometry = drawMura(15, 5, 15, false);
@@ -69,11 +79,7 @@ function set_ambient() {
     scene.add(PortaN);
     mura.push(PortaN);
 
-    // PIAZZAMENTO LUCI TORCE PORTA NORD
-    pointLightGenerator(PortaN.position.x, PortaN.position.z - torch_distance);
-    pointLightGenerator(PortaN.position.x + 1.82 + 1.59, PortaN.position.z - torch_distance);
-    pointLightGenerator(PortaN.position.x, PortaN.position.z + torch_distance);
-    pointLightGenerator(PortaN.position.x + 1.82 + 1.59, PortaN.position.z + torch_distance);
+    
 
     //MuraConPorta SUD = FARETTO
     PortaS = new THREE.Mesh(MuroConPortaGeometry, wall_material);
@@ -83,9 +89,7 @@ function set_ambient() {
     scene.add(PortaS);
     mura.push(PortaS);
 
-    // PIAZZAMENTO LUCI TORCE PORTA SUD
-    pointLightGenerator(PortaS.position.x, PortaS.position.z - torch_distance);
-    pointLightGenerator(PortaS.position.x + 1.82 + 1.59, PortaS.position.z - torch_distance);
+    
 
     //MuraConPorta EST
     PortaE = new THREE.Mesh(MuroConPortaGeometry, wall_material);
@@ -97,11 +101,7 @@ function set_ambient() {
     scene.add(PortaE);
     mura.push(PortaE);
 
-    // PIAZZAMENTO LUCI TORCE PORTA EST
-    pointLightGenerator(PortaE.position.x - torch_distance, PortaE.position.z);
-    pointLightGenerator(PortaE.position.x - torch_distance, PortaE.position.z + (1.82 + 1.59));
-    pointLightGenerator(PortaE.position.x + torch_distance, PortaE.position.z);
-    pointLightGenerator(PortaE.position.x + torch_distance, PortaE.position.z + (1.82 + 1.59));
+   
 
     //MuraConPorta OVEST
     PortaO = new THREE.Mesh(MuroConPortaGeometry, wall_material);
@@ -113,11 +113,7 @@ function set_ambient() {
     mura.push(PortaO);
 
 
-    // PIAZZAMENTO LUCI TORCE PORTA OVEST
-    pointLightGenerator(PortaO.position.x - torch_distance, PortaO.position.z);
-    pointLightGenerator(PortaO.position.x - torch_distance, PortaO.position.z + (1.82 + 1.59));
-    pointLightGenerator(PortaO.position.x + torch_distance, PortaO.position.z);
-    pointLightGenerator(PortaO.position.x + torch_distance, PortaO.position.z + (1.82 + 1.59));
+    
 
     //Porta
     var Porta_ChiusaGeometry = new THREE.BoxGeometry(0.2, 3, 1.8);
@@ -128,6 +124,16 @@ function set_ambient() {
     Porta_Chiusa.position.z = 8.8;
     scene.add(Porta_Chiusa);
     mura.push(Porta_Chiusa);
+    
+    computeShadow(MuraInterne);
+    computeShadow(PortaS);
+    computeShadow(PortaN);
+    computeShadow(PortaE);
+    computeShadow(PortaO);
+    computeShadow(plane);
+    torchLight();
+    
+    
 }
 
 /////////////////
