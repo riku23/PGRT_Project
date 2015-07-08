@@ -89,7 +89,7 @@ function cook_torrance() {
         F0: {type: "f", value: F0},
         m: {type: "f", value: roughnessValue},
         tex: {type: "t", value: THREE.ImageUtils.loadTexture("textures/gradientmarble.png")},
-        frequency: {type: "f", value: 5},
+        frequency: {type: "f", value: 10},
         power: {type: "f", value: 2},
         pointLightPosition: {type: "v3", value: doorLight.position},
     };
