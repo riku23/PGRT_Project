@@ -83,18 +83,21 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			case 39: /*right*/
 			case 68: /*D*/ this.moveRight = true; break;
 
+			case 69: /*E*/ checkFaro(); break;
+
+			case 73: /*I*/ alert("istruzioni"); break;
 
 			case 81: /*Q*/ this.freeze = !this.freeze; break;
 
 			case 32: /*SPACEBAR*/ this.movementSpeed = 10; break;
 
-			case 49: /*1*/ if(selectedObject){selectedObject=inventario[0]}; inventarioPos = 0; selectInventory(); break; 
+			case 49: /*1*/ if(1<=filtri){ inventarioPos = 0; selectInventory()}; break; 
 							
-			case 50: /*2*/  if(selectedObject){selectedObject=inventario[1]}; inventarioPos = 1; selectInventory(); break; 
+			case 50: /*2*/  if(2<=filtri){ inventarioPos = 1; selectInventory()}; break; 
 
-			case 51: /*3*/  if(selectedObject){selectedObject=inventario[2]}; inventarioPos = 2; selectInventory(); break;
+			case 51: /*3*/  if(3<=filtri){ inventarioPos = 2; selectInventory()}; break;
 
-			case 52: /*4*/ if(selectedObject){selectedObject=inventario[3]}; inventarioPos = 3; selectInventory(); break; 
+			case 52: /*4*/ if(4<=filtri){ inventarioPos = 3; selectInventory()}; break; 
 		}
 
 	};

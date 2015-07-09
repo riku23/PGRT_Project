@@ -128,7 +128,7 @@ function set_ambient() {
     //Porta
     var Porta_ChiusaGeometry = new THREE.BoxGeometry(0.2, 3, 1.8);
     //Porta_Chiusa = new THREE.Mesh(Porta_ChiusaGeometry, new THREE.MeshBasicMaterial({color: 0xff00ff}));
-    Porta_Chiusa = new THREE.Mesh(Porta_ChiusaGeometry, wall_material);
+    Porta_Chiusa = new THREE.Mesh(Porta_ChiusaGeometry, new THREE.MeshBasicMaterial({color: 0xff00ff}));
     Porta_Chiusa.position.x = 9.88;
     Porta_Chiusa.position.y = 2.5;
     Porta_Chiusa.position.z = 8.8;

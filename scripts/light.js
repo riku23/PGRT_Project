@@ -93,7 +93,7 @@ function spotLightDoor() {
     var mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(doorLight.position.x - (geometry.parameters.height / 2)-0.26, doorLight.position.y-0.08, doorLight.position.z-0.125);
     mesh.lookAt(new THREE.Vector3(doorLight.target.position.x, 100, doorLight.target.position.z));
-    material.uniforms.lightColor.value.set('white');
+    material.uniforms.lightColor.value.set(0xff00ff);
     material.uniforms.spotPosition.value = mesh.position;
     material.uniforms['anglePower'].value = 0.9;
     material.uniforms['attenuation'].value = 2.5;
