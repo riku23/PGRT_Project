@@ -25,30 +25,15 @@ var filtri;
 var mouse = {x: 0, y: 0}
 var oggettiPrendibili;
 var inventario;
+var inventarioPos;
 var oggetti;
 var mura = [];
 var tentativi;
 var tween;
-// parametro per lo "zoom" della camera top
-var zoom = 0.33;
 
-// variabili per le camere
-var cameraTOP;
-// helper per la visualizzazione dello stato della cameraFPS
-var cameraHelper;
 
 // variabile per la gestione del frustum culling
 var frustum;
-// variabile per indentificare il caso in cui passo dall'applicazione del frustum culling alla sua disabilitazione. Sarà utilizzata insieme alla GUI per ottimizzare l'impostazione di visibilità di tutti gli oggetti
-var fromCulling;
-
-//variabili per la gui
-var cullingGui;
-// tramite la gui, voglio attivare/disattivare il frustum culling, e alternare tra camera FPS e camera top
-var cullingParam = {
-    useFrustumCulling: false,
-    map: false
-};
 
 //GEOMETRY
 var cylinder;
@@ -93,10 +78,11 @@ function setDefaultVariables() {
     oggettoFaroBool = false;
     INIBITELO = false;
     faroOk = false;
-    filtri = 1;
+    filtri = 2;
     oggettiPrendibili = [];
     inventario = [];
     oggetti = 0;
+    inventarioPos= 0;
 }
 
 
@@ -109,7 +95,10 @@ function setDefaultVariables() {
 function init()
 {
     // Display HUD
-    $('body').append('<div name="inventario" id="inventory" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div name="inventario" id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div name="inventario" id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div name="inventario" id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div name="inventario" id="inventory4" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>');
     porta = false;
     // SCENE
@@ -127,28 +116,11 @@ function init()
     camera.position.y = spawnY;
     camera.position.z = spawnZ;
 
-    cameraHelper = new THREE.CameraHelper(camera);
-    scene.add(cameraHelper);
-
-    // camera top
-    // La camera ortografica mi chiede i 6 piani che delimitano left/right/top/bottom/near/far
-    // se uso i parametri di width e heigth della finestra, il frustum ortografico mostrerà tutta la scena.
-    // se voglio mostrare solo una parte della scena (in questo caso, la griglia dei cubi), devo limitare le dimensioni del frustum. Lo faccio moltiplicando per un fattore "zoom".
-    cameraTop = new THREE.OrthographicCamera(-0.5 * window.innerWidth * zoom, 0.5 * window.innerWidth * zoom, 0.5 * window.innerHeight * zoom, -0.5 * window.innerHeight * zoom, 1, 100);
-    cameraTop.position.set(0, 10, 0);
-    cameraTop.lookAt(camera.position);
-
-    scene.add(cameraTop);
-    ////////////
 
     // FRUSTUM
     // creo una istanza della classe Frustum
     frustum = new THREE.Frustum();
     ////////////
-
-    // GUI
-    // imposto la GUI
-    setupGui();
 
     //VARIABILI
     setDefaultVariables();
@@ -181,8 +153,8 @@ function init()
 
         if (e.which == 1 && INIBITELO == false) {
 
-            if (intersections.length > 0 && inventario.length == 0) {
-                //inventario vuoto
+            if (intersections.length > 0 && inventario.length < filtri) {
+                //inventario libero
                 intersected = intersections[ 0 ].object;
                 var distance = intersections[0].distance;
 
@@ -191,15 +163,17 @@ function init()
                     if (oggettoFaro == intersected) {
                         oggettoFaroBool = false;
                     }
-                    inventario.push(intersected);
+                    inventario[inventarioPos] = intersected;
+                    inventarioPos
                     intersected.position.x = 100;
                     intersected.position.y = 100;
                     intersected.position.z = 100;
                     selectedObject = intersected;
+                    document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + selectedObject.name + ".jpg)"
                     oggetti = oggetti + 1;
-                    document.getElementById("inventory").style.backgroundImage = "url(textures/inventario/" + selectedObject.name + ".jpg)";
                     $('#oggetti').html(oggetti);
-                    console.log("preso oggetto inventario vuoto");
+                    console.log(inventario.length);
+                    console.log("preso oggetto inventario libero");
                 }
             } else {
                 if (intersections.length > 0 && inventario.length >= filtri) {
@@ -209,20 +183,22 @@ function init()
 
                     if (intersected && intersected != faro && distance < 3) {
                         //scambio i due oggetti
-                        inventario[0].position.x = intersected.position.x;
-                        inventario[0].position.y = intersected.position.y;
-                        inventario[0].position.z = intersected.position.z;
+                        selectedObject.position.x = intersected.position.x;
+                        selectedObject.position.y = intersected.position.y;
+                        selectedObject.position.z = intersected.position.z;
                         intersected.position.x = 100;
                         intersected.position.y = 100;
                         intersected.position.z = 100;
-                        selectedObject = intersected;
+                        inventario.pop(selectedObject);
+                        inventario.push(intersected);
                         if (oggettoFaroBool) {
                             oggettoFaro = inventario[0];
                             checkFaro();
                         }
-                        document.getElementById("inventory").style.backgroundImage = "url(textures/inventario/" + selectedObject.name + ".jpg)";
-                        inventario.pop(inventario[0]);
-                        inventario.push(intersected);
+                        selectedObject = intersected;
+                        document.getElementById("inventory").style.backgroundImage = "url(textures/inventario/" + selectedObject.name + ".jpg)"
+                        
+                        
                         console.log("scambio oggetti");
                     } else {
                         if (intersected && intersected == faro && distance < 3 && oggettoFaroBool == false) {
@@ -275,6 +251,17 @@ function init()
     scene.add(cube2);
 
 
+     //  cube 3
+    cube3 = new THREE.Mesh(
+            new THREE.BoxGeometry(.5, .5, .5),
+            new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg')}));
+    cube3.position.set(1, 2.4, 14);
+    cube3.name = "steel";
+    oggettiPrendibili.push(cube3);
+    mura.push(cube3);
+    scene.add(cube3);
+
+
 
     //FARO
 
@@ -311,7 +298,7 @@ function init()
 
 
     //TAVOLO Sud-Est
-    loader.load("models/tavolo.js", function (geometry, materials) {
+    loader.load("models/tavolo2.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
         var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
         tavoloSE.geometry = geometry;
@@ -435,43 +422,6 @@ function checkFaro() {
     }
 }
 
-// CREO L'INTERFACCIA GRAFICA
-function setupGui() {
-
-    // Creo e imposto l'interfaccia grafica
-    var cullingGui = new dat.GUI();
-    // creo un folder per i parametri di frustum culling
-    var cullingGuiFolder1 = cullingGui.addFolder('Frustum Culling');
-    cullingGuiFolder1.add(cullingParam, 'useFrustumCulling').onChange(function (value) {
-        // al cambiare del check, controllo se lo stato attuale era true. In questo caso setto a true il booleano fromCulling. Mi servirà per identificare l'unico caso in cui devo resettare tutti i cubi a visibili.
-        if (cullingParam.useFrustumCulling)
-            fromCulling = true;
-
-    });
-    cullingGuiFolder1.open();
-
-    // creo un folder per i parametri di cambio di camera
-    var cullingGuiFolder2 = cullingGui.addFolder('Change camera');
-    cullingGuiFolder2.add(cullingParam, 'map');
-    cullingGuiFolder2.open();
-
-
-    // NOTA BENE:
-    // se, come in questo caso, la pagina prevede una sezione ("info") in alto, 
-    // sorge un problema con il posizionamento in profondità dell'interfaccia.
-    // La sezione "info" è impostata a 100, mentre la gui è posizionata a una profondità inferiore, impedendo 
-    // cosi' il controllo corretto dell'apertura/chiusura.
-    // Soluzioni:
-    //	1) posizionare la gui diversamente (es: un poco più in basso)
-    //	2) definire una nuova sezione ("gui") definendo un posizionamento in profondità che permetta di avere
-    // 		sempre il focus.
-    // Di seguito la soluzione 2) 
-    customContainer = document.createElement('gui');
-    customContainer.style.cssText = "position:absolute;top:0px;right:0px;z-index:110;";
-    customContainer.appendChild(cullingGui.domElement);
-    document.body.appendChild(customContainer);
-}
-
 // EVENTO RESIZE
 // gestione del resize, viene chiamata quando la finestra del browser viene ridimensionata
 function onWindowResize()
@@ -492,8 +442,6 @@ function onWindowResize()
 function setDoorAnimation()
 {
 
-
-
     //posizione iniziale
     var position = {z: Porta_Chiusa.position.z};
     //posizione finale
@@ -513,6 +461,19 @@ function setDoorAnimation()
     tween.start();
 }
 
+
+function selectInventory(){
+    
+    if(inventarioPos<filtri){
+    console.log(inventarioPos);
+    for (i=0; i<filtri; i++) {
+        var realIndex = i+1;
+        if(i==inventarioPos){
+            document.getElementById("inventory"+realIndex.toString()).style.border= "2px solid yellow";
+        }else{
+            document.getElementById("inventory"+realIndex.toString()).style.border= "1px solid black";
+        }}}
+}
 
 
 
@@ -550,23 +511,6 @@ function render()
         });
     }
 
-    if (!cullingParam.map)
-    {
-        // non mostro cameraHelper
-        scene.remove(cameraHelper);
-    }
-    // se passo in modalità mappa (camera top)
-    else
-    {
-        // visualizzo la posizione della camera FPS
-        scene.add(cameraHelper);
-        // attivo il rendering tramite la camera top
-        renderer.render(scene, cameraTop);
-    }
-
-    // se attivo il frustum culling
-    if (cullingParam.useFrustumCulling) {
-
         // devo assegnare alla mia variabile frustum il volume definito dal frustum della camera fps, ma in coordinate mondo (ossia considerando la camera come un oggetto nella scena, con la sua posizione e orientamento)
         // Per riportare il frustum in coordinate mondo, prendo la matrice di proiezione, e la moltiplico per l'inverso della matrice delle trasformazioni globali applicate alla camera
         frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
@@ -576,18 +520,7 @@ function render()
             // applico il test di intersezione tra frustum e cubo, sulla base del risultato setto l'oggetto a visibile o invisibile (ossia non lo mando lungo la pipeline)                 
             mura[i].visible = frustum.intersectsObject(mura[i]);
         }
-    }
+    
     // se il culling è disabilitato
-    else {
-        // solo se è stato appena disabilitato (subito dopo il check)
-        // NB: se non lo facessi, ad ogni frame rifarei il for su tutti i 2500 cubi per metterli a visibili, anche se non sarebbe necessario
-        if (fromCulling) {
-            // passo tutto l'array dei cubi e li setto tutti a visibili
-            for (var i = 0; i < mura.length; i++) {
-                mura[i].visible = true;
-            }
-            // setto fromCulling a false, in modo che non venga eseguito il for sopra.	
-            fromCulling = false;
-        }
-    }
+    
 }

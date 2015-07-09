@@ -87,6 +87,14 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			case 81: /*Q*/ this.freeze = !this.freeze; break;
 
 			case 32: /*SPACEBAR*/ this.movementSpeed = 10; break;
+
+			case 49: /*1*/ if(selectedObject){selectedObject=inventario[0]}; inventarioPos = 0; selectInventory(); break; 
+							
+			case 50: /*2*/  if(selectedObject){selectedObject=inventario[1]}; inventarioPos = 1; selectInventory(); break; 
+
+			case 51: /*3*/  if(selectedObject){selectedObject=inventario[2]}; inventarioPos = 2; selectInventory(); break;
+
+			case 52: /*4*/ if(selectedObject){selectedObject=inventario[3]}; inventarioPos = 3; selectInventory(); break; 
 		}
 
 	};
