@@ -22,7 +22,7 @@ var oldX, oldY, oldZ;
 var filtri;
 var livello;
 var mouse = {x: 0, y: 0}
-var oggettiPrendibili;
+var oggettiPrendibili=[];
 var inventario;
 var inventarioPos;
 var oggetti;
@@ -42,7 +42,7 @@ var plane;
 var MuraEsterne, MuraInterne;
 var PortaN, PortaS, PortaO, PortaE;
 var faro;
-var cube1, cube2;
+var filtroVerde, filtroRosso;
 var tavoloSE, tavoloNO, tavoloNE, tavoloSO;
 var mesh;
 var Porta_Chiusa;
@@ -72,13 +72,12 @@ $(document).ready(function () {
 
 });
 
-function setDefaultVariables() {
+function setDefaultVariables(livello,filtri) {
     //SETUP VARIABILI
-    livello = 1;
+    this.livello = livello;
     tentativi = 1;
+    this.filtri = filtri;
     INIBITELO = false;
-    filtri = 2;
-    oggettiPrendibili = [];
     inventario = [];
     oggetti = 0;
     inventarioPos= 0;
@@ -93,13 +92,8 @@ function setDefaultVariables() {
 //Funzioni di inizializzazione della scena
 function init()
 {
-    // Display HUD
-    $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
-    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="inventory4" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>');
+    
+    
     // SCENE
     // creo una istanza della classe Scene (radice del grafo della scena che avrà come nodi i modelli, luce, ecc della scena)
     scene = new THREE.Scene();
@@ -122,7 +116,11 @@ function init()
     ////////////
 
     //VARIABILI
-    setDefaultVariables();
+    setDefaultVariables(1,1);
+
+    //HUD
+    setupHUD(livello);
+    document.getElementById("inventory1").style.border= "2px solid yellow";
 
     // RENDERER
     // setting per il rendering della finestra
@@ -144,86 +142,8 @@ function init()
 
     //setto l'ambiente con mura esterne, interne, di passaggio, piano 
     set_ambient();
-
+    createFiltri();
     setFiltri(livello);
-
-    // FUNZIONE DI PICKING
-    $(document).click(function (e) {
-        e.preventDefault;
-
-        raycaster.setFromCamera(mouse, camera);
-        intersections = raycaster.intersectObjects(oggettiPrendibili);
-
-        if (e.which == 1 && INIBITELO == false) {
-
-             if (intersections.length > 0) {
-                //inventario libero
-                intersected = intersections[ 0 ].object;
-                var distance = intersections[0].distance;
-
-                if (intersected && intersected != faro && distance < 3) {
-                    //prendo l'oggetto
-                    if(inventario[inventarioPos]==null){
-                        if(intersected==oggettoFaro){
-                            light_cone.material.uniforms.lightColor.value.set(0xffffff);
-                            oggettoFaro=null;
-                        }
-                        inventario[inventarioPos] = intersected;
-                        intersected.position.x = 100;
-                        intersected.position.y = 100;
-                        intersected.position.z = 100;
-                        var realIndex = inventarioPos+1;
-                        document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
-                        oggetti = oggetti + 1;
-                        $('#oggetti').html(oggetti);
-                        console.log(inventario.length);
-                        console.log("preso oggetto inventario libero");
-                    }else{
-                        if(intersected==oggettoFaro){
-                            light_cone.material.uniforms.lightColor.value.set(inventario[inventarioPos].material.color);
-                            oggettoFaro=inventario[inventarioPos];
-                            checkFaro();
-                        }
-                        inventario[inventarioPos].position.x = intersected.position.x;
-                        inventario[inventarioPos].position.y = intersected.position.y;
-                        inventario[inventarioPos].position.z = intersected.position.z;
-                        intersected.position.x = 100;
-                        intersected.position.y = 100;
-                        intersected.position.z = 100;
-                        inventario[inventarioPos] = intersected;
-                        var realIndex = inventarioPos+1;
-                        document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
-                        console.log("scambio oggetti");
-
-                        }
-                    }else{
-                        if (inventario[inventarioPos] != null &&intersected && intersected == faro && distance < 3 && oggettoFaro == null) {
-                            //se interseco il faro posiziono l'oggetto in inventario su di esso
-                            inventario[inventarioPos].position.x = faro.position.x-0.3;
-                            inventario[inventarioPos].position.y = faro.position.y + 1.2;
-                            inventario[inventarioPos].position.z = faro.position.z+0.05;
-                            oggettoFaro = inventario[inventarioPos];
-                            console.log(oggettoFaro.material.color.getHex() +" - " + Porta_Chiusa.material.color.getHex());
-                            inventario[inventarioPos]=null;
-                            var realIndex = inventarioPos+1;
-                            light_cone.material.uniforms.lightColor.value.set(oggettoFaro.material.color);
-                            document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
-                            checkFaro();
-                            oggetti = oggetti - 1;
-                            $('#oggetti').html(oggetti);
-                            console.log("posizionato oggetto su faro");
-                        }
-
-                    }
-                }
-            }
-    });
-
-
-
-
-    
-
 
     //FARO
 
@@ -294,7 +214,7 @@ function init()
         // lo posiziono sopra il piano
         
         // lo scalo per metterlo in scala con la scena
-        tavoloNO.scale.set(0.035, 0.035, 0.035);
+        tavoloNO.scale.set(0.035, 0.04, 0.035);
         mura.push(tavoloNO);
         scene.add(tavoloNO);
 
@@ -314,7 +234,7 @@ function init()
         // lo posiziono sopra il piano
         
         // lo scalo per metterlo in scala con la scena
-        tavoloNE.scale.set(0.035, 0.035, 0.035);
+        tavoloNE.scale.set(0.035, 0.04, 0.035);
         mura.push(tavoloNE);
         scene.add(tavoloNE);
 
@@ -336,7 +256,7 @@ function init()
         // lo posiziono sopra il piano
         
         // lo scalo per metterlo in scala con la scena
-        tavoloSO.scale.set(0.035, 0.035, 0.035);
+        tavoloSO.scale.set(0.035, 0.04, 0.035);
         mura.push(tavoloSO);
         scene.add(tavoloSO);
     });
@@ -363,6 +283,78 @@ function init()
 
 }
 
+    // FUNZIONE DI PICKING
+    $(document).click(function (e) {
+        e.preventDefault;
+
+        raycaster.setFromCamera(mouse, camera);
+        intersections = raycaster.intersectObjects(oggettiPrendibili);
+
+        if (e.which == 1 && INIBITELO == false) {
+
+             if (intersections.length > 0) {
+                //inventario libero
+                intersected = intersections[ 0 ].object;
+                var distance = intersections[0].distance;
+
+                if (intersected && intersected != faro && distance < 3) {
+                    //prendo l'oggetto
+                    if(inventario[inventarioPos]==null){
+                        if(intersected==oggettoFaro){
+                            light_cone.material.uniforms.lightColor.value.set(0xffffff);
+                            oggettoFaro=null;
+                        }
+                        inventario[inventarioPos] = intersected;
+                        intersected.position.x = 100;
+                        intersected.position.y = 100;
+                        intersected.position.z = 100;
+                        var realIndex = inventarioPos+1;
+                        document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
+                        oggetti = oggetti + 1;
+                        $('#oggetti').html(oggetti);
+                        console.log(inventario.length);
+                        console.log("preso oggetto inventario libero");
+                    }else{
+                        if(intersected==oggettoFaro){
+                            light_cone.material.uniforms.lightColor.value.set(inventario[inventarioPos].material.color);
+                            oggettoFaro=inventario[inventarioPos];
+                            checkFaro();
+                        }
+                        inventario[inventarioPos].position.x = intersected.position.x;
+                        inventario[inventarioPos].position.y = intersected.position.y;
+                        inventario[inventarioPos].position.z = intersected.position.z;
+                        intersected.position.x = 100;
+                        intersected.position.y = 100;
+                        intersected.position.z = 100;
+                        inventario[inventarioPos] = intersected;
+                        var realIndex = inventarioPos+1;
+                        document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
+                        console.log("scambio oggetti");
+
+                        }
+                    }else{
+                        if (inventario[inventarioPos] != null &&intersected && intersected == faro && distance < 3 && oggettoFaro == null) {
+                            //se interseco il faro posiziono l'oggetto in inventario su di esso
+                            inventario[inventarioPos].position.x = faro.position.x-0.3;
+                            inventario[inventarioPos].position.y = faro.position.y + 1.24;
+                            inventario[inventarioPos].position.z = faro.position.z+0.03;
+                            oggettoFaro = inventario[inventarioPos];
+                            console.log(oggettoFaro.material.color.getHex() +" - " + Porta_Chiusa.material.color.getHex());
+                            inventario[inventarioPos]=null;
+                            var realIndex = inventarioPos+1;
+                            light_cone.material.uniforms.lightColor.value.set(oggettoFaro.material.color);
+                            document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
+                            checkFaro();
+                            oggetti = oggetti - 1;
+                            $('#oggetti').html(oggetti);
+                            console.log("posizionato oggetto su faro");
+                        }
+
+                    }
+                }
+            }
+    });
+
 
 
 
@@ -373,10 +365,18 @@ function onDocumentMouseMove(e) {
 }
 
 function addColors(color1, color2, colorResult){
-        var h = (color1.getHSL().h + color2.getHSL().h)/2;
-        var s = (color1.getHSL().s + color2.getHSL().s)/2;
-        var l = (color1.getHSL().l + color2.getHSL().l)/2;
-        colorResult.setHSL(h,s,l);
+        a0 = color1.getHSL().h*360;
+        a1 = color2.getHSL().h*360;
+        r0 = (a0+a1)/2.; 
+        r1 = ((a0+a1+360)/2.)%360; 
+        console.log(r0,r1);
+        if(Math.min(Math.abs(a1-r0), Math.abs(a0-r0)) < Math.min(Math.abs(a0-r1), Math.abs(a1-r1))){
+        colorResult.setHSL(r0/360,1.0,0.5);
+        }
+        else{
+        
+        colorResult.setHSL(r1/360,1.0,0.5);
+        }
     }
 
 function checkFaro() {
@@ -385,7 +385,7 @@ function checkFaro() {
         setDoorAnimation();
         INIBITELO = true;
     } else {
-        alert("ERRORE!");
+        console.log("ERRORE!");
         //tentativi = tentativi - 1;
 
     }
@@ -430,43 +430,120 @@ function setDoorAnimation()
     tween.start();
 }
 
+function nuovoLivello(){
+    livello=livello+1;
+    filtri=filtri+1;
+    if(livello>=3){
+        $(renderer.domElement).fadeOut();
+        $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine').fadeOut();
+        $('#intro').fadeIn();
+        $('#intro').html('Sei Bello, hai vinto!');
+    }
+    camera.rotation.y = Math.PI / 2;
+    camera.position.x = spawnX;
+    camera.position.y = spawnY;
+    camera.position.z = spawnZ;
+    Porta_Chiusa.position.x = portaX;
+    Porta_Chiusa.position.y = portaY;
+    Porta_Chiusa.position.z = portaZ;
+    var doorColor = new THREE.Color().setHSL(0.6,1.0,0.5);
+    Porta_Chiusa.material.color = doorColor;
+    light_cone.material.uniforms.lightColor.value.set(0xffffff);
+    oggettoFaro=null;
+    setDefaultVariables(livello,filtri); //Dovrei fare livello+1 e filtri+1
+    setupHUD(livello);
+    setFiltri(livello);
+    console.log(INIBITELO);
+
+
+}
+
+function setupHUD(livello){
+
+    // Display HUD
+    switch(livello){
+    
+    case 1:
+    $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
+    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>'); break;
+    
+    case 2:
+    $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
+    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>'); break;
+
+    }
+}
+
+function createFiltri(){
+                //filtro Verde
+                var filterColor = new THREE.Color().setHSL(0.3,1.0,0.5);
+                filtroVerde = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroVerde.position.set(100,100, 100);
+                filtroVerde.name = "verde";
+                oggettiPrendibili.push(filtroVerde);
+                mura.push(filtroVerde);
+                scene.add(filtroVerde);
+
+                //  filtro Rosso
+                var filterColor = new THREE.Color().setHSL(0,1.0,0.5);
+                filtroRosso = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroRosso.position.set(100,100, 100);
+                filtroRosso.name = "rosso";
+                filtroRosso.color = filterColor;
+                oggettiPrendibili.push(filtroRosso);
+                mura.push(filtroRosso);
+                scene.add(filtroRosso);
+
+
+                //  filtro Blu
+                var filterColor = new THREE.Color().setHSL(0.6,1.0,0.5);
+                filtroBlu = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroBlu.position.set(100,100,100);
+                filtroBlu.name = "blu";
+                oggettiPrendibili.push(filtroBlu);
+                mura.push(filtroBlu);
+                scene.add(filtroBlu); 
+
+                //  filtro Giallo
+                var filterColor = new THREE.Color().setHSL(0.17,1.0,0.5);
+                filtroGiallo = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroGiallo.position.set(100,100,100);
+                filtroGiallo.name = "giallo";
+                oggettiPrendibili.push(filtroGiallo);
+                mura.push(filtroGiallo);
+                scene.add(filtroGiallo); 
+}
 
 function setFiltri(livello){
     switch( livello ) {
-        case 1: // cube 1
-                var cubeColor = new THREE.Color().setHSL(0.3,1.0,0.5);
-                cube1 = new THREE.Mesh(
-                new THREE.BoxGeometry(.01, .5, .5),
-                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/health.png'), color: cubeColor}));
-                cube1.position.set(14, 2.4, 1);
-                cube1.name = "croce";
-                oggettiPrendibili.push(cube1);
-                mura.push(cube1);
-                scene.add(cube1);
+        case 1:
+                filtroVerde.position.set(14, 2.4, 1);
+    
+                filtroRosso.position.set(1, 2.4, 1);
+                
+                filtroBlu.position.set(1, 2.4, 14);
+                
+                break;
 
-                //  cube 2
-                var cubeColor = new THREE.Color().setHSL(0,1.0,0.5);
-                cube2 = new THREE.Mesh(
-                new THREE.BoxGeometry(.01, .5, .5),
-                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/ottone.jpg'), color: cubeColor}));
-                cube2.position.set(1, 2.4, 1);
-                cube2.name = "ottone";
-                cube2.color = cubeColor;
-                oggettiPrendibili.push(cube2);
-                mura.push(cube2);
-                scene.add(cube2);
+        case 2:             
+                filtroVerde.position.set(14, 2.4, 1);
+              
+                filtroRosso.position.set(1, 2.4, 1);
+              
+                filtroBlu.position.set(1, 2.4, 14);
 
-
-                //  cube 3
-                var cubeColor = new THREE.Color().setHSL(0.6,1.0,0.5);
-                cube3 = new THREE.Mesh(
-                new THREE.BoxGeometry(.01, .5, .5),
-                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg'), color: cubeColor}));
-                cube3.position.set(1, 2.4, 14);
-                cube3.name = "steel";
-                oggettiPrendibili.push(cube3);
-                mura.push(cube3);
-                scene.add(cube3); 
+                filtroGiallo.position.set(14, 2.4, 14);
                 break;
 
     }
@@ -505,6 +582,9 @@ function animate()
         $('#intro').fadeIn();
         $('#intro').html('Darkness consumes you');
     
+    }
+    if(INIBITELO && camera.position.x<portaX && camera.position.z>portaZ){
+       nuovoLivello();
     }
 
     // chiamo la funzione di rendering
