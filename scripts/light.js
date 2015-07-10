@@ -23,6 +23,10 @@ var torchNE1, torchNE2, torchNE3, torchNE4;
 var torchSE1, torchSE2, torchSE3, torchSE4;
 var torchSO3, torchSO4;
 
+var PortaN = new THREE.Vector3(0.8,3.5,7.5);
+var PortaS = new THREE.Vector3(10.8,3.5,7.5);
+var PortaE = new THREE.Vector3(7.5,3.5,0.8);
+var PortaO = new THREE.Vector3(7.5,3.5,10.8);
 
 //piazza una pointLight alla posizione indicata e diverse spotlight nella stessa posizione che puntano ai target
 function pointLightGenerator(x, z, target) {
@@ -36,7 +40,7 @@ function pointLightGenerator(x, z, target) {
     lightSource(pointLight);
 
 
-    //spotLightGenerator(pointLight,target);
+    spotLightGenerator(pointLight,target);
 
     return pointLight;
 
@@ -118,9 +122,6 @@ function spotLightDoor() {
     material.uniforms.spotPosition.value = light_cone.position;
     material.uniforms['anglePower'].value = 0.9;
     material.uniforms['attenuation'].value = 2.5;
-    //0.9 2.5 
-    //material.uniforms.lightColor.value.set(options.lightColor);
-    //mesh.position.set(11, 4, 8.64);
     scene.add(light_cone);
 
 
@@ -129,18 +130,7 @@ function spotLightDoor() {
 
 
 
-    // SFERA DI PROVA//////////
-    /*var sphereGeometryT = new THREE.SphereGeometry(0.25, 20, 20);
-     sphereGeometryT.computeTangents(); 
-     var sphereT = new THREE.Mesh(sphereGeometryT, this.wall_material);
-     sphereT.position.x = doorLight.position.x - 4;
-     sphereT.position.y = doorLight.position.y - 1;
-     sphereT.position.z = doorLight.position.z;
-     
-     sphereT.castShadow = true;
-     sphereT.receiveShadow = true;
-     scene.add(sphereT);*/
-    ////////////////////
+   
 }
 
 function computeShadow(object) {
@@ -149,31 +139,33 @@ function computeShadow(object) {
 }
 
 
-//posiziona la luce delle torce sui muri
-function torchLight() {
+
+function torchLight(){
 
     // PIAZZAMENTO LUCI TORCE PORTA NORD
-    torchNE1 = pointLightGenerator(PortaN.position.x, PortaN.position.z - torch_distance, tavoloNE);
-    torchNE2 = pointLightGenerator(PortaN.position.x + 1.82 + 1.59, PortaN.position.z - torch_distance, tavoloNE);
+    torchNE1 = pointLightGenerator(PortaN.x, PortaN.z - torch_distance, tavoloNE);
+    torchNE2 = pointLightGenerator(PortaN.x + 1.82 + 1.59, PortaN.z - torch_distance, tavoloNE);
 
-    torchNO3 = pointLightGenerator(PortaN.position.x, PortaN.position.z + torch_distance, tavoloNO);
-    torchNO4 = pointLightGenerator(PortaN.position.x + 1.82 + 1.59, PortaN.position.z + torch_distance, tavoloNO);
+    torchNO3 = pointLightGenerator(PortaN.x, PortaN.z + torch_distance, tavoloNO);
+    torchNO4 = pointLightGenerator(PortaN.x + 1.82 + 1.59, PortaN.z + torch_distance, tavoloNO);
 
     // PIAZZAMENTO LUCI TORCE PORTA EST
-    torchNE3 = pointLightGenerator(PortaE.position.x - torch_distance, PortaE.position.z, tavoloNE);
-    torchNE4 = pointLightGenerator(PortaE.position.x - torch_distance, PortaE.position.z + (1.82 + 1.59), tavoloNE);
-    torchSE1 = pointLightGenerator(PortaE.position.x + torch_distance, PortaE.position.z, tavoloSE);
-    torchSE2 = pointLightGenerator(PortaE.position.x + torch_distance, PortaE.position.z + (1.82 + 1.59), tavoloSE);
+    torchNE3 = pointLightGenerator(PortaE.x - torch_distance, PortaE.z, tavoloNE);
+    torchNE4 = pointLightGenerator(PortaE.x - torch_distance, PortaE.z + (1.82 + 1.59), tavoloNE);
+    torchSE1 = pointLightGenerator(PortaE.x + torch_distance, PortaE.z, tavoloSE);
+    torchSE2 = pointLightGenerator(PortaE.x + torch_distance, PortaE.z + (1.82 + 1.59), tavoloSE);
 
     // PIAZZAMENTO LUCI TORCE PORTA OVEST
-    torchNO1 = pointLightGenerator(PortaO.position.x - torch_distance, PortaO.position.z + (1.82 + 1.59), tavoloNO);
-    torchNO2 = pointLightGenerator(PortaO.position.x - torch_distance, PortaO.position.z, tavoloNO);
-    torchSO3 = pointLightGenerator(PortaO.position.x + torch_distance, PortaO.position.z, tavoloSO);
-    torchSO4 = pointLightGenerator(PortaO.position.x + torch_distance, PortaO.position.z + (1.82 + 1.59), tavoloSO);
+    torchNO1 = pointLightGenerator(PortaO.x - torch_distance, PortaO.z + (1.82 + 1.59), tavoloNO);
+    torchNO2 = pointLightGenerator(PortaO.x - torch_distance, PortaO.z, tavoloNO);
+    torchSO3 = pointLightGenerator(PortaO.x + torch_distance, PortaO.z, tavoloSO);
+    torchSO4 = pointLightGenerator(PortaO.x + torch_distance, PortaO.z + (1.82 + 1.59), tavoloSO);
 
     // PIAZZAMENTO LUCI TORCE PORTA SUD
-    torchSE3 = pointLightGenerator(PortaS.position.x, PortaS.position.z - torch_distance, tavoloSE);
-    torchSE4 = pointLightGenerator(PortaS.position.x + 1.82 + 1.59, PortaS.position.z - torch_distance, tavoloSE);
+
+    torchSE3 = pointLightGenerator(PortaS.x, PortaS.z - torch_distance, tavoloSE);
+    torchSE4 = pointLightGenerator(PortaS.x + 1.82 + 1.59, PortaS.z - torch_distance, tavoloSE);
+
 }
 
 function orientate_cone() {
