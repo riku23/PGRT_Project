@@ -44,6 +44,7 @@ var PortaN, PortaS, PortaO, PortaE;
 var faro;
 var cube1, cube2;
 var tavoloSE, tavoloNO, tavoloNE, tavoloSO;
+var mesh;
 var Porta_Chiusa;
 var material;
 //MATERIALS
@@ -92,7 +93,7 @@ function setDefaultVariables() {
 function init()
 {
     // Display HUD
-    $('body').append('<button id="combine" type"button> COMBINE </button>');
+    $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
     $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
@@ -361,7 +362,7 @@ function onDocumentMouseMove(e) {
 
 
 function checkFaro() {
-    if (oggettoFaro==cube1/*Porta_Chiusa.color ==  material.uniforms.lightColor.value*/) {
+    if (oggettoFaro==cube1/*Porta_Chiusa.color ==  mesh.uniforms.lightColor.value.getHexString()*/) {
         console.log("RISOLTO!")
         setDoorAnimation();
         INIBITELO = true;
@@ -477,12 +478,10 @@ function animate()
     if (tentativi <= 0) {
 
         $(renderer.domElement).fadeOut();
-        $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti').fadeOut();
+        $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine').fadeOut();
         $('#intro').fadeIn();
         $('#intro').html('Darkness consumes you');
-        $('#intro').one('click', function () {
-
-        });
+    
     }
 
     // chiamo la funzione di rendering
