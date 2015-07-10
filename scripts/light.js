@@ -3,6 +3,7 @@
 /* global doorLight, Porta_Chiusa, light, Porta1, THREE, wall_material, faro, PortaO, PortaS, PortaN, PortaE, scene, tavoloNE, tavoloNO */
 var torch_y = 3.5;
 var torch_distance = 0.6;
+var light_cone;
 
 //piazza una pointLight alla posizione indicata e diverse spotlight nella stessa posizione che puntano ai target
 function pointLightGenerator(x,z, target) {
@@ -16,7 +17,7 @@ function pointLightGenerator(x,z, target) {
     lightSource(pointLight);
     
     
-    spotLightGenerator(pointLight,target);
+    //spotLightGenerator(pointLight,target);
     
     
 }
@@ -90,17 +91,17 @@ function spotLightDoor() {
     var geometry = new THREE.CylinderGeometry(0.16, 1, 4.5, 32 * 2, 20, true);
 
     var material = new THREEx.VolumetricSpotLightMaterial();
-    var mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(doorLight.position.x - (geometry.parameters.height / 2)-0.26, doorLight.position.y-0.08, doorLight.position.z-0.125);
-    mesh.lookAt(new THREE.Vector3(doorLight.target.position.x, 100, doorLight.target.position.z));
+    var light_cone = new THREE.Mesh(geometry, material);
+    light_cone.position.set(doorLight.position.x - (geometry.parameters.height / 2)-0.26, doorLight.position.y-0.08, doorLight.position.z-0.125);
+    light_cone.lookAt(new THREE.Vector3(doorLight.target.position.x, 100, doorLight.target.position.z));
     material.uniforms.lightColor.value.set(0xff00ff);
-    material.uniforms.spotPosition.value = mesh.position;
+    material.uniforms.spotPosition.value = light_cone.position;
     material.uniforms['anglePower'].value = 0.9;
     material.uniforms['attenuation'].value = 2.5;
     //0.9 2.5 
     //material.uniforms.lightColor.value.set(options.lightColor);
     //mesh.position.set(11, 4, 8.64);
-    scene.add(mesh);
+    scene.add(light_cone);
 
 
     lightSource(doorLight);

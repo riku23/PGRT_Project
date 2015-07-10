@@ -92,6 +92,8 @@ function cook_torrance() {
         frequency: {type: "f", value: 10},
         power: {type: "f", value: 2},
         pointLightPosition: {type: "v3", value: doorLight.position},
+
+        
     };
 
     shaders_CT = {
