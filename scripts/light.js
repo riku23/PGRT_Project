@@ -130,7 +130,7 @@ function computeShadow(object){
 
 //posiziona la luce delle torce sui muri
 function torchLight(){
-    
+    /*
     // PIAZZAMENTO LUCI TORCE PORTA NORD
     pointLightGenerator(PortaN.position.x, PortaN.position.z - torch_distance, tavoloNE);
     pointLightGenerator(PortaN.position.x + 1.82 + 1.59, PortaN.position.z - torch_distance, tavoloNE);
@@ -153,6 +153,7 @@ function torchLight(){
     // PIAZZAMENTO LUCI TORCE PORTA SUD
     pointLightGenerator(PortaS.position.x, PortaS.position.z - torch_distance, tavoloSE);
     pointLightGenerator(PortaS.position.x + 1.82 + 1.59, PortaS.position.z - torch_distance, tavoloSE);
+    */
 }
 
 function orientate_cone() {
