@@ -75,7 +75,6 @@ function set_ambient() {
      *   |  <-spawn    |
      *    -------------
      *          S
-     * 
      */
 
 
