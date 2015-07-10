@@ -46,6 +46,7 @@ var cube1, cube2;
 var tavoloSE, tavoloNO, tavoloNE, tavoloSO;
 var mesh;
 var Porta_Chiusa;
+var light_cone;
 var material;
 //MATERIALS
 var wall_material;
@@ -141,6 +142,10 @@ function init()
     document.addEventListener('mousemove', onDocumentMouseMove, false);
     window.addEventListener('resize', onWindowResize, false);
 
+    //setto l'ambiente con mura esterne, interne, di passaggio, piano 
+    set_ambient();
+
+    setFiltri(livello);
 
     // FUNZIONE DI PICKING
     $(document).click(function (e) {
@@ -159,6 +164,10 @@ function init()
                 if (intersected && intersected != faro && distance < 3) {
                     //prendo l'oggetto
                     if(inventario[inventarioPos]==null){
+                        if(intersected==oggettoFaro){
+                            light_cone.material.uniforms.lightColor.value.set(0xffffff);
+                            oggettoFaro=null;
+                        }
                         inventario[inventarioPos] = intersected;
                         intersected.position.x = 100;
                         intersected.position.y = 100;
@@ -170,6 +179,11 @@ function init()
                         console.log(inventario.length);
                         console.log("preso oggetto inventario libero");
                     }else{
+                        if(intersected==oggettoFaro){
+                            light_cone.material.uniforms.lightColor.value.set(inventario[inventarioPos].material.color);
+                            oggettoFaro=inventario[inventarioPos];
+                            checkFaro();
+                        }
                         inventario[inventarioPos].position.x = intersected.position.x;
                         inventario[inventarioPos].position.y = intersected.position.y;
                         inventario[inventarioPos].position.z = intersected.position.z;
@@ -183,14 +197,16 @@ function init()
 
                         }
                     }else{
-                        if (intersected && intersected == faro && distance < 3) {
+                        if (inventario[inventarioPos] != null &&intersected && intersected == faro && distance < 3 && oggettoFaro == null) {
                             //se interseco il faro posiziono l'oggetto in inventario su di esso
                             inventario[inventarioPos].position.x = faro.position.x-0.3;
                             inventario[inventarioPos].position.y = faro.position.y + 1.2;
                             inventario[inventarioPos].position.z = faro.position.z+0.05;
                             oggettoFaro = inventario[inventarioPos];
+                            console.log(oggettoFaro.material.color.getHex() +" - " + Porta_Chiusa.material.color.getHex());
                             inventario[inventarioPos]=null;
                             var realIndex = inventarioPos+1;
+                            light_cone.material.uniforms.lightColor.value.set(oggettoFaro.material.color);
                             document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
                             checkFaro();
                             oggetti = oggetti - 1;
@@ -204,10 +220,7 @@ function init()
     });
 
 
-    //setto l'ambiente con mura esterne, interne, di passaggio, piano 
-    set_ambient();
 
-    setFiltri(livello);
 
     
 
@@ -359,15 +372,21 @@ function onDocumentMouseMove(e) {
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 }
 
-
+function addColors(color1, color2, colorResult){
+        var h = (color1.getHSL().h + color2.getHSL().h)/2;
+        var s = (color1.getHSL().s + color2.getHSL().s)/2;
+        var l = (color1.getHSL().l + color2.getHSL().l)/2;
+        colorResult.setHSL(h,s,l);
+    }
 
 function checkFaro() {
-    if (oggettoFaro==cube1/*Porta_Chiusa.color ==  mesh.uniforms.lightColor.value.getHexString()*/) {
+    if (oggettoFaro.material.color.getHex() == Porta_Chiusa.material.color.getHex()) {
         console.log("RISOLTO!")
         setDoorAnimation();
         INIBITELO = true;
     } else {
-        tentativi = tentativi - 1;
+        alert("ERRORE!");
+        //tentativi = tentativi - 1;
 
     }
 }
@@ -415,9 +434,10 @@ function setDoorAnimation()
 function setFiltri(livello){
     switch( livello ) {
         case 1: // cube 1
+                var cubeColor = new THREE.Color().setHSL(0.3,1.0,0.5);
                 cube1 = new THREE.Mesh(
                 new THREE.BoxGeometry(.01, .5, .5),
-                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/health.png')}));
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/health.png'), color: cubeColor}));
                 cube1.position.set(14, 2.4, 1);
                 cube1.name = "croce";
                 oggettiPrendibili.push(cube1);
@@ -425,20 +445,23 @@ function setFiltri(livello){
                 scene.add(cube1);
 
                 //  cube 2
+                var cubeColor = new THREE.Color().setHSL(0,1.0,0.5);
                 cube2 = new THREE.Mesh(
                 new THREE.BoxGeometry(.01, .5, .5),
-                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/ottone.jpg')}));
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/ottone.jpg'), color: cubeColor}));
                 cube2.position.set(1, 2.4, 1);
                 cube2.name = "ottone";
+                cube2.color = cubeColor;
                 oggettiPrendibili.push(cube2);
                 mura.push(cube2);
                 scene.add(cube2);
 
 
                 //  cube 3
+                var cubeColor = new THREE.Color().setHSL(0.6,1.0,0.5);
                 cube3 = new THREE.Mesh(
                 new THREE.BoxGeometry(.01, .5, .5),
-                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg')}));
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg'), color: cubeColor}));
                 cube3.position.set(1, 2.4, 14);
                 cube3.name = "steel";
                 oggettiPrendibili.push(cube3);
