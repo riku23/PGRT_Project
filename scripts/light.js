@@ -24,10 +24,7 @@ var torchNE1, torchNE2, torchNE3, torchNE4;
 var torchSE1, torchSE2, torchSE3, torchSE4;
 var torchSO3, torchSO4;
 
-var PortaN = new THREE.Vector3(0.8,3.5,7.5);
-var PortaS = new THREE.Vector3(10.8,3.5,7.5);
-var PortaE = new THREE.Vector3(7.5,3.5,0.8);
-var PortaO = new THREE.Vector3(7.5,3.5,10.8);
+
 
 
 //piazza una pointLight alla posizione indicata e diverse spotlight nella stessa posizione che puntano ai target

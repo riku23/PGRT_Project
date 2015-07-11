@@ -44,9 +44,12 @@ var plane;
 var MuraEsterne, MuraInterne;
 var PortaN, PortaS, PortaO, PortaE;
 var faro;
-var filtroVerde, filtroRosso;
+var filtroRisultato, filtroRosso;
 var tavoloSE, tavoloNO, tavoloNE, tavoloSO;
-var torciaN1,torciaN2,torciaN3,torciaN4;
+var torciaNE1,torciaNE2,torciaNE3,torciaNE4;
+var torciaNO1,torciaNO2,torciaNO3,torciaNO4;
+var torciaNO1,torciaSE2,torciaSE3,torciaSE4;
+var torciaSO3,torciaSO4;
 var mesh;
 var Porta_Chiusa;
 var light_cone;
@@ -54,7 +57,10 @@ var material;
 //MATERIALS
 var wall_material;
 
-
+var PortaN = new THREE.Vector3(0.8,3.5,7.5);
+var PortaS = new THREE.Vector3(10.8,3.5,7.5);
+var PortaE = new THREE.Vector3(7.5,3.5,0.8);
+var PortaO = new THREE.Vector3(7.5,3.5,10.8);
 
 
 
@@ -102,7 +108,8 @@ function init()
     // creo una istanza della classe Scene (radice del grafo della scena che avrà come nodi i modelli, luce, ecc della scena)
     scene = new THREE.Scene();
     ////////////
-
+    $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
+    document.getElementById("combine").onclick = function() {combine()};
 
     // CAMERA
     // parametri: FOV, widht, height, near, far
@@ -178,12 +185,12 @@ function init()
 
     });
 
-
+    //TAVOLO Sud-Est
     tavoloSE = new THREE.Mesh();
     tavoloSE.position.set(14, 1, 1);
 
 
-    //TAVOLO Sud-Est
+    
     loader.load("models/tavolo2.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
         var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
@@ -264,30 +271,303 @@ function init()
         scene.add(tavoloSO);
     });
 
-    //torcia SO
-    torciaS = new THREE.Mesh();
-    torciaSO.position.set(14, 3, 14);
+    //torcia NO1
+    torciaNO1 = new THREE.Mesh();
+    torciaNO1.position.set(7, 3, PortaO.z);
     loader.load("models/torcia.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
         var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
-        torciaSO.geometry = geometry;
-        torciaSO.material = materials;
+        torciaNO1.geometry = geometry;
+        torciaNO1.material = materials;
 
         // ruoto il modello di 180° sull'asse Y
-        torciaSO.rotation.y = -Math.PI/2;
+        torciaNO1.rotation.y = -Math.PI/2;
 
         // lo posiziono sopra il piano
         
         // lo scalo per metterlo in scala con la scena
-        torciaSO.scale.set(0.01, 0.01, 0.01);
-        mura.push(torciaSO);
-        scene.add(torciaSO);
+        torciaNO1.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNO1);
+        scene.add(torciaNO1);
     });
+
+       //torcia NO2
+    torciaNO2 = new THREE.Mesh();
+    torciaNO2.position.set(7, 3, PortaO.z+1.82+1.59);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNO2.geometry = geometry;
+        torciaNO2.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNO2.rotation.y = -Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNO2.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNO2);
+        scene.add(torciaNO2);
+    });
+
+   //torcia NO3
+    torciaNO3 = new THREE.Mesh();
+    torciaNO3.position.set(PortaN.x+1.82+1.59, 3, 8 );
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNO3.geometry = geometry;
+        torciaNO3.material = materials;
+
+    
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNO3.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNO3);
+        scene.add(torciaNO3);
+    });
+   //torcia NO4
+    torciaNO4 = new THREE.Mesh();
+    torciaNO4.position.set(PortaN.x, 3,8 );
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNO4.geometry = geometry;
+        torciaNO4.material = materials;
+
+       
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNO4.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNO4);
+        scene.add(torciaNO4);
+    });
+
+
+        //torcia NE1
+    torciaNE1 = new THREE.Mesh();
+    torciaNE1.position.set(PortaN.x, 3, 7);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNE1.geometry = geometry;
+        torciaNE1.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNE1.rotation.y = Math.PI;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNE1.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNE1);
+        scene.add(torciaNE1);
+    });
+
+       //torcia NE2
+    torciaNE2 = new THREE.Mesh();
+    torciaNE2.position.set((PortaN.x+1.82+1.59), 3, 7);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNE2.geometry = geometry;
+        torciaNE2.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNE2.rotation.y = Math.PI;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNE2.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNE2);
+        scene.add(torciaNE2);
+    });
+
+   //torcia NE3
+    torciaNE3 = new THREE.Mesh();
+    torciaNE3.position.set(7, 3, PortaE.z);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNE3.geometry = geometry;
+        torciaNE3.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNE3.rotation.y = -Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNE3.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNE3);
+        scene.add(torciaNE3);
+    });
+
+   //torcia NE4
+    torciaNE4 = new THREE.Mesh();
+    torciaNE4.position.set(7, 3, (PortaE.z+1.82+1.59));
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNE4.geometry = geometry;
+        torciaNE4.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNE4.rotation.y = -Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNE4.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNE4);
+        scene.add(torciaNE4);
+    });
+
+       //torcia SE1
+    torciaSE1 = new THREE.Mesh();
+    torciaSE1.position.set(8, 3, PortaE.z);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSE1.geometry = geometry;
+        torciaSE1.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSE1.rotation.y = Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSE1.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSE1);
+        scene.add(torciaSE1);
+    });
+
+       //torcia SE2
+    torciaSE2 = new THREE.Mesh();
+    torciaSE2.position.set(8, 3, PortaE.z+1.82+1.59);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSE2.geometry = geometry;
+        torciaSE2.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSE2.rotation.y = Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSE2.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSE2);
+        scene.add(torciaSE2);
+    });
+
+   //torcia SE3
+    torciaSE3 = new THREE.Mesh();
+    torciaSE3.position.set(PortaS.x, 3, 7);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSE3.geometry = geometry;
+        torciaSE3.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSE3.rotation.y = Math.PI;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSE3.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSE3);
+        scene.add(torciaSE3);
+    });
+
+   //torcia SE4
+    torciaSE4 = new THREE.Mesh();
+    torciaSE4.position.set(PortaS.x+1.82+1.59, 3, 7);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSE4.geometry = geometry;
+        torciaSE4.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSE4.rotation.y = Math.PI;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSE4.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSE4);
+        scene.add(torciaSE4);
+    });
+
+
+   //torcia SO3
+    torciaSO3 = new THREE.Mesh();
+    torciaSO3.position.set(8, 3, PortaO.z+1.82+1.59);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSO3.geometry = geometry;
+        torciaSO3.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSO3.rotation.y = Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSO3.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSO3);
+        scene.add(torciaSO3);
+    });
+   //torcia SO4
+    torciaSO4 = new THREE.Mesh();
+    torciaSO4.position.set(8, 3, PortaO.z);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSO4.geometry = geometry;
+        torciaSO4.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSO4.rotation.y = Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSO4.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSO4);
+        scene.add(torciaSO4);
+    });
+
+
     
     computeShadow(tavoloSO);
     computeShadow(tavoloSE);
     computeShadow(tavoloNO);
     computeShadow(tavoloNE);
+    computeShadow(torciaNO1);
+    computeShadow(torciaNO2);
+    computeShadow(torciaNO3);
+    computeShadow(torciaNO4);
+    computeShadow(torciaNE1);
+    computeShadow(torciaNE2);
+    computeShadow(torciaNE3);
+    computeShadow(torciaNE4);
+    computeShadow(torciaSE1);
+    computeShadow(torciaSE2);
+    computeShadow(torciaSE3);
+    computeShadow(torciaSE4);
+    computeShadow(torciaSO3);
+    computeShadow(torciaSO4);
     computeShadow(SORum);
     computeShadow(SERum);
     computeShadow(NORum);
@@ -475,14 +755,16 @@ function nuovoLivello(){
     Porta_Chiusa.position.x = portaX;
     Porta_Chiusa.position.y = portaY;
     Porta_Chiusa.position.z = portaZ;
-    var doorColor = new THREE.Color().setHSL(0.6,1.0,0.5);
+    var doorColor = new THREE.Color().setHSL(0.385,1.0,0.5);
     Porta_Chiusa.material.color = doorColor;
     light_cone.material.uniforms.lightColor.value.set(0xffffff);
     oggettoFaro=null;
+    console.log(livello);
     setDefaultVariables(livello,filtri); //Dovrei fare livello+1 e filtri+1
+    
     setupHUD(livello);
     setFiltri(livello);
-    console.log(INIBITELO);
+    console.log(livello);
 
 
 }
@@ -493,12 +775,12 @@ function setupHUD(livello){
     switch(livello){
     
     case 1:
-    $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
+   
     $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>'); break;
     
     case 2:
-    $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
+
     $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>'); break;
@@ -506,17 +788,47 @@ function setupHUD(livello){
     }
 }
 
+
+function combine() {
+    if(livello==1){
+        alert("Al livello 1 non si combina");
+    }else{
+        for(i=0;i<filtri;i++){
+            if(inventario[i]==null){
+                alert("Riempi l'inventario prima");
+                return;
+            }
+
+        }
+        addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
+        for(i=0;i<filtri;i++){
+            var realIndex = i+1;
+            document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
+            console.log(inventario[0].name+inventario[1].name);
+            document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + inventario[0].name + inventario[1].name + ".jpg";
+            
+            
+        }
+         for(i=0;i<filtri;i++){
+            inventario[i]=null;
+         }
+        inventario[0] = filtroRisultato;
+        console.log(filtroRisultato.material.color.getHSL().h);    
+
+    }
+}
+
 function createFiltri(){
-                //filtro Verde
-                var filterColor = new THREE.Color().setHSL(0.3,1.0,0.5);
-                filtroVerde = new THREE.Mesh(
+                //filtro Risultato
+                var filterColor = new THREE.Color().setHSL(0,1.0,0.5);
+                filtroRisultato = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
                 new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
-                filtroVerde.position.set(100,100, 100);
-                filtroVerde.name = "verde";
-                oggettiPrendibili.push(filtroVerde);
-                mura.push(filtroVerde);
-                scene.add(filtroVerde);
+                filtroRisultato.position.set(100,100, 100);
+                filtroRisultato.name = "risultato";
+                oggettiPrendibili.push(filtroRisultato);
+                mura.push(filtroRisultato);
+                scene.add(filtroRisultato);
 
                 //  filtro Rosso
                 var filterColor = new THREE.Color().setHSL(0,1.0,0.5);
@@ -557,16 +869,16 @@ function createFiltri(){
 function setFiltri(livello){
     switch( livello ) {
         case 1:
-                filtroVerde.position.set(14, 2.4, 1);
     
                 filtroRosso.position.set(1, 2.4, 1);
                 
                 filtroBlu.position.set(1, 2.4, 14);
+
+                filtroGiallo.position.set(14, 2.4, 14);
                 
                 break;
 
         case 2:             
-                filtroVerde.position.set(14, 2.4, 1);
               
                 filtroRosso.position.set(1, 2.4, 1);
               
