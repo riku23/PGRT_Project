@@ -349,10 +349,11 @@ function init()
     spotLightDoor();
     torchLight();
     //carico shader per mura
-    cook_torrance(NORum,[torchNO1,torchNO2,torchNO3,torchNO4]);
-    //cook_torrance(SORum,[torchSO3,torchSO4]);
+    
+    cook_torrance(SORum,[torchSO3,torchSO4]);
     cook_torrance(SERum,[torchSE1,torchSE2,torchSE3,torchSE4]);
     cook_torrance(NERum,[torchNE1,torchNE2,torchNE3,torchNE4]);
+    cook_torrance(NORum,[torchNO1,torchNO2,torchNO3,torchNO4]);
 
 
 
