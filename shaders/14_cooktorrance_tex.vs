@@ -26,7 +26,13 @@ attribute vec3 normal;
 
 // la posizione della point light è passata come uniform
 // NB) anche in questo caso, se ci fossero + luci e di diverso tipo, lo shader dovrebbe essere modificato con un ciclo for, e con diversa considerazione di direzioni, angoli di cutoff per gli spotlight ecc
-uniform vec3 pointLightPosition;
+uniform vec3 pointLightPosition1;
+uniform vec3 pointLightPosition2;
+uniform vec3 pointLightPosition3;
+uniform vec3 pointLightPosition4;
+
+//numero di luci considerate
+uniform int num_lights;
 
 // coordinate UV del modello
 attribute vec2 uv;
@@ -35,7 +41,10 @@ varying vec2 vUv;
 
 varying vec3 vNormal;
 varying vec3 vViewPosition;
-varying vec3 lightDir;
+varying vec3 lightDir1;
+varying vec3 lightDir2;
+varying vec3 lightDir3;
+varying vec3 lightDir4;
 
 
 void main(){
@@ -53,8 +62,20 @@ void main(){
   vNormal = normalize( normalMatrix * normal );
 
   // calcolo del vettore di incidenza della luce.
-  vec4 lightPos = viewMatrix  * vec4( pointLightPosition, 1.0 );
-  lightDir = lightPos.xyz - mvPosition.xyz;
+  vec4 lightPos1 = viewMatrix  * vec4( pointLightPosition1, 1.0 );
+  lightDir1 = lightPos1.xyz - mvPosition.xyz;
+  vec4 lightPos2 = viewMatrix  * vec4( pointLightPosition2, 1.0 );
+  lightDir2 = lightPos2.xyz - mvPosition.xyz;
+    
+    vec4 lightPos3;
+    vec4 lightPos4;
+
+  if (num_lights == 4){
+  lightPos3 = viewMatrix  * vec4( pointLightPosition3, 1.0 );
+  lightDir3 = lightPos3.xyz - mvPosition.xyz;
+  lightPos4 = viewMatrix  * vec4( pointLightPosition4, 1.0 );
+  lightDir4 = lightPos4.xyz - mvPosition.xyz;
+    }
 
 
   // calcolo posizione vertici in coordinate vista

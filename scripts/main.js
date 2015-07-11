@@ -1,4 +1,6 @@
 
+/* global torchNO1, torchNO2, SORum, torchSO1, torchSO2, NORum, SERum, NERum, torchNO3, torchNO4 */
+
 // controlla il supporto a WebGL (se la scheda grafica non lo supporta viene mostato un messaggio d'errore)
 //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
@@ -332,6 +334,10 @@ function init()
     computeShadow(tavoloSE);
     computeShadow(tavoloNO);
     computeShadow(tavoloNE);
+    computeShadow(SORum);
+    computeShadow(SERum);
+    computeShadow(NORum);
+    computeShadow(NERum);
     computeShadow(faro);
 
 
@@ -343,7 +349,10 @@ function init()
     spotLightDoor();
     torchLight();
     //carico shader per mura
-    cook_torrance();
+    //cook_torrance(NORum,[torchNO1,torchNO2,torchNO3,torchNO4],4);
+    cook_torrance(SORum,[torchSO3,torchSO4],2);
+    //cook_torrance(SERum,[torchSE1,torchSE2,torchSE3,torchSE4],4);
+    //cook_torrance(NERum,[torchNE1,torchNE2,torchNE3,torchNE4],4);
 
 
 
