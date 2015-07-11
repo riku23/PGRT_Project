@@ -207,29 +207,28 @@ function set_ambient() {
     */
 
     var RumGeometry = drawRum();
-    var NORum = new THREE.Mesh(RumGeometry, wall_material);
-    scene.add(NORum);
-    mura.push(NORum);
-
-    var NERum = new THREE.Mesh(RumGeometry, wall_material);
-    NERum.rotation.y = -Math.PI / 2;
-    NERum.position.x = 15;
+    NERum = new THREE.Mesh(RumGeometry, wall_material);
     scene.add(NERum);
     mura.push(NERum);
 
-    var SORum = new THREE.Mesh(RumGeometry, wall_material);
-    SORum.rotation.y = Math.PI / 2;
-    SORum.position.z = 15;
-    //NERum.position.z = 3.75;
-    scene.add(SORum);
-    mura.push(SORum);
-
-    var SERum = new THREE.Mesh(drawRum("arr"), wall_material);
-    SERum.rotation.y = Math.PI;
+    SERum = new THREE.Mesh(RumGeometry, wall_material);
+    SERum.rotation.y = -Math.PI / 2;
     SERum.position.x = 15;
-    SERum.position.z = 15;
     scene.add(SERum);
     mura.push(SERum);
+
+    NORum = new THREE.Mesh(RumGeometry, wall_material);
+    NORum.rotation.y = Math.PI / 2;
+    NORum.position.z = 15;
+    scene.add(NORum);
+    mura.push(NORum);
+
+    SORum = new THREE.Mesh(drawRum("arr"), wall_material);
+    SORum.rotation.y = Math.PI;
+    SORum.position.x = 15;
+    SORum.position.z = 15;
+    scene.add(SORum);
+    mura.push(SORum);
 
     //Porta
     var Porta_ChiusaGeometry = new THREE.BoxGeometry(0.2, 3, 1.8);

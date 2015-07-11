@@ -45,6 +45,11 @@ varying vec3 vNormal;
 varying vec3 vViewPosition;
 varying vec3 lightDir1;
 varying vec3 lightDir2;
+varying vec3 lightDir3;
+varying vec3 lightDir4;
+
+//numero di luci
+//uniform int num_lights;
 
 // devo copiare e incollare il codice all'interno del codice del mio shader
 // non è possibile includere o linkare un file esterno
@@ -211,15 +216,9 @@ float sum_specular(vec3 N, vec3 L, inout float NdotL, float old_specular){
         return old_specular += ((fresnel * geoAtt * roughness) / (NdotV * NdotL * PI));
 
         
-        } else {return old_specular;}
-
-    
+        } else {return old_specular;}   
     }
 
-
-float prova(){
-    return 1.0;
-}
 void main()
 {
     // creo la turbolenza sulla base dei parametri passati dall'utente.
@@ -233,15 +232,26 @@ void main()
     vec4 surfaceColor = texture2D(tex, vec2(value, 0.0));
 
     vec3 N = normalize(vNormal);
-    vec3 L = normalize(lightDir1.xyz);
+    vec3 L1 = normalize(lightDir1.xyz);
     vec3 L2 = normalize(lightDir2.xyz);
-    float NdotL = 0.0;
+
+    //Definisco le variabili in caso mi si richieda di considerare 4 luci
+    vec3 L3;
+    vec3 L4;
+    
+    
+
+    float NdotL1 = 0.0;
     float NdotL2 = 0.0;
-    float ospecular = 0.0;
-    float specular = sum_specular(N,L, NdotL, ospecular);
-    specular = sum_specular(N,L2,NdotL2, specular);
+    float NdotL3 = 0.0;
+    float NdotL4 = 0.0;
+
+    float specular = 0.0;
+
+    specular = sum_specular(N,L1, NdotL1, specular);
+    specular = sum_specular(N,L2, NdotL2, specular);
 
     // calcolo colore finale con anche la componente diffusiva
-    vec4 finalValue = surfaceColor * (NdotL+NdotL2) * (Kd + specular * (1.0 - Kd));
+    vec4 finalValue = surfaceColor * (NdotL1+NdotL2) * (Kd + specular * (1.0 - Kd));
     gl_FragColor = finalValue;
 }
