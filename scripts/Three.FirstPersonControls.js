@@ -83,8 +83,6 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			case 39: /*right*/
 			case 68: /*D*/ this.moveRight = true; break;
 
-			case 69: /*E*/ checkFaro(); break;
-
 			case 73: /*I*/ alert("istruzioni"); break;
 
 			case 81: /*Q*/ this.freeze = !this.freeze; break;

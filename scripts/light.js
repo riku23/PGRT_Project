@@ -24,10 +24,7 @@ var torchNE1, torchNE2, torchNE3, torchNE4;
 var torchSE1, torchSE2, torchSE3, torchSE4;
 var torchSO3, torchSO4;
 
-var PortaN = new THREE.Vector3(0.8,3.5,7.5);
-var PortaS = new THREE.Vector3(10.8,3.5,7.5);
-var PortaE = new THREE.Vector3(7.5,3.5,0.8);
-var PortaO = new THREE.Vector3(7.5,3.5,10.8);
+
 
 
 //piazza una pointLight alla posizione indicata e diverse spotlight nella stessa posizione che puntano ai target
@@ -118,11 +115,11 @@ function spotLightDoor() {
     var geometry = new THREE.CylinderGeometry(0.16, 1, 4.5, 32 * 2, 20, true);
 
     var material = new THREEx.VolumetricSpotLightMaterial();
-    var light_cone = new THREE.Mesh(geometry, material);
+    light_cone = new THREE.Mesh(geometry, material);
     light_cone.position.set(doorLight.position.x - (geometry.parameters.height / 2)-0.26, doorLight.position.y-0.08, doorLight.position.z-0.125);
 
     light_cone.lookAt(new THREE.Vector3(doorLight.target.position.x, 100, doorLight.target.position.z));
-    material.uniforms.lightColor.value.set(0xff00ff);
+    material.uniforms.lightColor.value.set(0xffffff);
     material.uniforms.spotPosition.value = light_cone.position;
     material.uniforms['anglePower'].value = 0.9;
     material.uniforms['attenuation'].value = 2.5;

@@ -24,7 +24,7 @@ var oldX, oldY, oldZ;
 var filtri;
 var livello;
 var mouse = {x: 0, y: 0}
-var oggettiPrendibili;
+var oggettiPrendibili=[];
 var inventario;
 var inventarioPos;
 var oggetti;
@@ -44,15 +44,23 @@ var plane;
 var MuraEsterne, MuraInterne;
 var PortaN, PortaS, PortaO, PortaE;
 var faro;
-var cube1, cube2;
+var filtroRisultato, filtroRosso;
 var tavoloSE, tavoloNO, tavoloNE, tavoloSO;
+var torciaNE1,torciaNE2,torciaNE3,torciaNE4;
+var torciaNO1,torciaNO2,torciaNO3,torciaNO4;
+var torciaNO1,torciaSE2,torciaSE3,torciaSE4;
+var torciaSO3,torciaSO4;
 var mesh;
 var Porta_Chiusa;
+var light_cone;
 var material;
 //MATERIALS
 var wall_material;
 
-
+var PortaN = new THREE.Vector3(0.8,3.5,7.5);
+var PortaS = new THREE.Vector3(10.8,3.5,7.5);
+var PortaE = new THREE.Vector3(7.5,3.5,0.8);
+var PortaO = new THREE.Vector3(7.5,3.5,10.8);
 
 
 
@@ -73,13 +81,12 @@ $(document).ready(function () {
 
 });
 
-function setDefaultVariables() {
+function setDefaultVariables(livello,filtri) {
     //SETUP VARIABILI
-    livello = 1;
+    this.livello = livello;
     tentativi = 1;
+    this.filtri = filtri;
     INIBITELO = false;
-    filtri = 2;
-    oggettiPrendibili = [];
     inventario = [];
     oggetti = 0;
     inventarioPos= 0;
@@ -90,22 +97,19 @@ function setDefaultVariables() {
 
 
 
+
 // INIZIALIZZAZIONE
 //Funzioni di inizializzazione della scena
 function init()
 {
-    // Display HUD
-    $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
-    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="inventory4" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>');
+    
+    
     // SCENE
     // creo una istanza della classe Scene (radice del grafo della scena che avrà come nodi i modelli, luce, ecc della scena)
     scene = new THREE.Scene();
     ////////////
-
+    $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
+    document.getElementById("combine").onclick = function() {combine()};
 
     // CAMERA
     // parametri: FOV, widht, height, near, far
@@ -123,7 +127,11 @@ function init()
     ////////////
 
     //VARIABILI
-    setDefaultVariables();
+    setDefaultVariables(1,1);
+
+    //HUD
+    setupHUD(livello);
+    document.getElementById("inventory1").style.border= "2px solid yellow";
 
     // RENDERER
     // setting per il rendering della finestra
@@ -143,76 +151,10 @@ function init()
     document.addEventListener('mousemove', onDocumentMouseMove, false);
     window.addEventListener('resize', onWindowResize, false);
 
-
-    // FUNZIONE DI PICKING
-    $(document).click(function (e) {
-        e.preventDefault;
-
-        raycaster.setFromCamera(mouse, camera);
-        intersections = raycaster.intersectObjects(oggettiPrendibili);
-
-        if (e.which == 1 && INIBITELO == false) {
-
-             if (intersections.length > 0) {
-                //inventario libero
-                intersected = intersections[ 0 ].object;
-                var distance = intersections[0].distance;
-
-                if (intersected && intersected != faro && distance < 3) {
-                    //prendo l'oggetto
-                    if(inventario[inventarioPos]==null){
-                        inventario[inventarioPos] = intersected;
-                        intersected.position.x = 100;
-                        intersected.position.y = 100;
-                        intersected.position.z = 100;
-                        var realIndex = inventarioPos+1;
-                        document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
-                        oggetti = oggetti + 1;
-                        $('#oggetti').html(oggetti);
-                        console.log(inventario.length);
-                        console.log("preso oggetto inventario libero");
-                    }else{
-                        inventario[inventarioPos].position.x = intersected.position.x;
-                        inventario[inventarioPos].position.y = intersected.position.y;
-                        inventario[inventarioPos].position.z = intersected.position.z;
-                        intersected.position.x = 100;
-                        intersected.position.y = 100;
-                        intersected.position.z = 100;
-                        inventario[inventarioPos] = intersected;
-                        var realIndex = inventarioPos+1;
-                        document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
-                        console.log("scambio oggetti");
-
-                        }
-                    }else{
-                        if (intersected && intersected == faro && distance < 3) {
-                            //se interseco il faro posiziono l'oggetto in inventario su di esso
-                            inventario[inventarioPos].position.x = faro.position.x-0.3;
-                            inventario[inventarioPos].position.y = faro.position.y + 1.2;
-                            inventario[inventarioPos].position.z = faro.position.z+0.05;
-                            oggettoFaro = inventario[inventarioPos];
-                            inventario[inventarioPos]=null;
-                            var realIndex = inventarioPos+1;
-                            document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
-                            checkFaro();
-                            oggetti = oggetti - 1;
-                            $('#oggetti').html(oggetti);
-                            console.log("posizionato oggetto su faro");
-                        }
-
-                    }
-                }
-            }
-    });
-
-
     //setto l'ambiente con mura esterne, interne, di passaggio, piano 
     set_ambient();
-
+    createFiltri();
     setFiltri(livello);
-
-    
-
 
     //FARO
 
@@ -243,12 +185,12 @@ function init()
 
     });
 
-
+    //TAVOLO Sud-Est
     tavoloSE = new THREE.Mesh();
     tavoloSE.position.set(14, 1, 1);
 
 
-    //TAVOLO Sud-Est
+    
     loader.load("models/tavolo2.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
         var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
@@ -283,7 +225,7 @@ function init()
         // lo posiziono sopra il piano
         
         // lo scalo per metterlo in scala con la scena
-        tavoloNO.scale.set(0.035, 0.035, 0.035);
+        tavoloNO.scale.set(0.035, 0.04, 0.035);
         mura.push(tavoloNO);
         scene.add(tavoloNO);
 
@@ -303,14 +245,13 @@ function init()
         // lo posiziono sopra il piano
         
         // lo scalo per metterlo in scala con la scena
-        tavoloNE.scale.set(0.035, 0.035, 0.035);
+        tavoloNE.scale.set(0.035, 0.04, 0.035);
         mura.push(tavoloNE);
         scene.add(tavoloNE);
 
     });
 
     //TAVOLO Sud-Ovest
-    //TAVOLO Nord-Est
     tavoloSO = new THREE.Mesh();
     tavoloSO.position.set(14, 1, 14);
     loader.load("models/tavolo2.js", function (geometry, materials) {
@@ -325,15 +266,308 @@ function init()
         // lo posiziono sopra il piano
         
         // lo scalo per metterlo in scala con la scena
-        tavoloSO.scale.set(0.035, 0.035, 0.035);
+        tavoloSO.scale.set(0.035, 0.04, 0.035);
         mura.push(tavoloSO);
         scene.add(tavoloSO);
     });
+
+    //torcia NO1
+    torciaNO1 = new THREE.Mesh();
+    torciaNO1.position.set(7, 3, PortaO.z);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNO1.geometry = geometry;
+        torciaNO1.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNO1.rotation.y = -Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNO1.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNO1);
+        scene.add(torciaNO1);
+    });
+
+       //torcia NO2
+    torciaNO2 = new THREE.Mesh();
+    torciaNO2.position.set(7, 3, PortaO.z+1.82+1.59);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNO2.geometry = geometry;
+        torciaNO2.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNO2.rotation.y = -Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNO2.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNO2);
+        scene.add(torciaNO2);
+    });
+
+   //torcia NO3
+    torciaNO3 = new THREE.Mesh();
+    torciaNO3.position.set(PortaN.x+1.82+1.59, 3, 8 );
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNO3.geometry = geometry;
+        torciaNO3.material = materials;
+
+    
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNO3.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNO3);
+        scene.add(torciaNO3);
+    });
+   //torcia NO4
+    torciaNO4 = new THREE.Mesh();
+    torciaNO4.position.set(PortaN.x, 3,8 );
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNO4.geometry = geometry;
+        torciaNO4.material = materials;
+
+       
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNO4.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNO4);
+        scene.add(torciaNO4);
+    });
+
+
+        //torcia NE1
+    torciaNE1 = new THREE.Mesh();
+    torciaNE1.position.set(PortaN.x, 3, 7);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNE1.geometry = geometry;
+        torciaNE1.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNE1.rotation.y = Math.PI;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNE1.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNE1);
+        scene.add(torciaNE1);
+    });
+
+       //torcia NE2
+    torciaNE2 = new THREE.Mesh();
+    torciaNE2.position.set((PortaN.x+1.82+1.59), 3, 7);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNE2.geometry = geometry;
+        torciaNE2.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNE2.rotation.y = Math.PI;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNE2.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNE2);
+        scene.add(torciaNE2);
+    });
+
+   //torcia NE3
+    torciaNE3 = new THREE.Mesh();
+    torciaNE3.position.set(7, 3, PortaE.z);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNE3.geometry = geometry;
+        torciaNE3.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNE3.rotation.y = -Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNE3.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNE3);
+        scene.add(torciaNE3);
+    });
+
+   //torcia NE4
+    torciaNE4 = new THREE.Mesh();
+    torciaNE4.position.set(7, 3, (PortaE.z+1.82+1.59));
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaNE4.geometry = geometry;
+        torciaNE4.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaNE4.rotation.y = -Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaNE4.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaNE4);
+        scene.add(torciaNE4);
+    });
+
+       //torcia SE1
+    torciaSE1 = new THREE.Mesh();
+    torciaSE1.position.set(8, 3, PortaE.z);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSE1.geometry = geometry;
+        torciaSE1.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSE1.rotation.y = Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSE1.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSE1);
+        scene.add(torciaSE1);
+    });
+
+       //torcia SE2
+    torciaSE2 = new THREE.Mesh();
+    torciaSE2.position.set(8, 3, PortaE.z+1.82+1.59);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSE2.geometry = geometry;
+        torciaSE2.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSE2.rotation.y = Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSE2.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSE2);
+        scene.add(torciaSE2);
+    });
+
+   //torcia SE3
+    torciaSE3 = new THREE.Mesh();
+    torciaSE3.position.set(PortaS.x, 3, 7);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSE3.geometry = geometry;
+        torciaSE3.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSE3.rotation.y = Math.PI;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSE3.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSE3);
+        scene.add(torciaSE3);
+    });
+
+   //torcia SE4
+    torciaSE4 = new THREE.Mesh();
+    torciaSE4.position.set(PortaS.x+1.82+1.59, 3, 7);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSE4.geometry = geometry;
+        torciaSE4.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSE4.rotation.y = Math.PI;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSE4.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSE4);
+        scene.add(torciaSE4);
+    });
+
+
+   //torcia SO3
+    torciaSO3 = new THREE.Mesh();
+    torciaSO3.position.set(8, 3, PortaO.z+1.82+1.59);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSO3.geometry = geometry;
+        torciaSO3.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSO3.rotation.y = Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSO3.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSO3);
+        scene.add(torciaSO3);
+    });
+   //torcia SO4
+    torciaSO4 = new THREE.Mesh();
+    torciaSO4.position.set(8, 3, PortaO.z);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSO4.geometry = geometry;
+        torciaSO4.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSO4.rotation.y = Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSO4.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSO4);
+        scene.add(torciaSO4);
+    });
+
+
     
     computeShadow(tavoloSO);
     computeShadow(tavoloSE);
     computeShadow(tavoloNO);
     computeShadow(tavoloNE);
+    computeShadow(torciaNO1);
+    computeShadow(torciaNO2);
+    computeShadow(torciaNO3);
+    computeShadow(torciaNO4);
+    computeShadow(torciaNE1);
+    computeShadow(torciaNE2);
+    computeShadow(torciaNE3);
+    computeShadow(torciaNE4);
+    computeShadow(torciaSE1);
+    computeShadow(torciaSE2);
+    computeShadow(torciaSE3);
+    computeShadow(torciaSE4);
+    computeShadow(torciaSO3);
+    computeShadow(torciaSO4);
     computeShadow(SORum);
     computeShadow(SERum);
     computeShadow(NORum);
@@ -356,9 +590,75 @@ function init()
     cook_torrance(NORum,[torchNO1,torchNO2,torchNO3,torchNO4]);
 
 
-
-
 }
+
+
+    // FUNZIONE DI PICKING
+    $(document).click(function (e) {
+        e.preventDefault;
+
+        raycaster.setFromCamera(mouse, camera);
+        intersections = raycaster.intersectObjects(oggettiPrendibili);
+
+        if (e.which == 1 && INIBITELO == false) {
+
+             if (intersections.length > 0) {
+                //inventario libero
+                intersected = intersections[ 0 ].object;
+                var distance = intersections[0].distance;
+
+                if (intersected && intersected != faro && distance < 3) {
+                    //prendo l'oggetto
+                    if(inventario[inventarioPos]==null){
+                        if(intersected==oggettoFaro){
+                            light_cone.material.uniforms.lightColor.value.set(0xffffff);
+                            oggettoFaro=null;
+                        }
+                        inventario[inventarioPos] = intersected;
+                        intersected.position.x = 100;
+                        intersected.position.y = 100;
+                        intersected.position.z = 100;
+                        var realIndex = inventarioPos+1;
+                        document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
+                        console.log("preso oggetto inventario libero");
+                    }else{
+                        if(intersected==oggettoFaro){
+                            light_cone.material.uniforms.lightColor.value.set(inventario[inventarioPos].material.color);
+                            oggettoFaro=inventario[inventarioPos];
+                            checkFaro();
+                        }
+                        inventario[inventarioPos].position.x = intersected.position.x;
+                        inventario[inventarioPos].position.y = intersected.position.y;
+                        inventario[inventarioPos].position.z = intersected.position.z;
+                        intersected.position.x = 100;
+                        intersected.position.y = 100;
+                        intersected.position.z = 100;
+                        inventario[inventarioPos] = intersected;
+                        var realIndex = inventarioPos+1;
+                        document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
+                        console.log("scambio oggetti");
+
+                        }
+                    }else{
+                        if (inventario[inventarioPos] != null &&intersected && intersected == faro && distance < 3 && oggettoFaro == null) {
+                            //se interseco il faro posiziono l'oggetto in inventario su di esso
+                            inventario[inventarioPos].position.x = faro.position.x-0.3;
+                            inventario[inventarioPos].position.y = faro.position.y + 1.24;
+                            inventario[inventarioPos].position.z = faro.position.z+0.03;
+                            oggettoFaro = inventario[inventarioPos];
+                            console.log(oggettoFaro.material.color.getHex() +" - " + Porta_Chiusa.material.color.getHex());
+                            inventario[inventarioPos]=null;
+                            var realIndex = inventarioPos+1;
+                            light_cone.material.uniforms.lightColor.value.set(oggettoFaro.material.color);
+                            document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
+                            checkFaro();
+                            console.log("posizionato oggetto su faro");
+                        }
+
+                    }
+                }
+            }
+    });
 
 
 
@@ -369,15 +669,29 @@ function onDocumentMouseMove(e) {
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 }
 
-
+function addColors(color1, color2, colorResult){
+        a0 = color1.getHSL().h*360;
+        a1 = color2.getHSL().h*360;
+        r0 = (a0+a1)/2.; 
+        r1 = ((a0+a1+360)/2.)%360; 
+        console.log(r0,r1);
+        if(Math.min(Math.abs(a1-r0), Math.abs(a0-r0)) < Math.min(Math.abs(a0-r1), Math.abs(a1-r1))){
+        colorResult.setHSL(r0/360,1.0,0.5);
+        }
+        else{
+        
+        colorResult.setHSL(r1/360,1.0,0.5);
+        }
+    }
 
 function checkFaro() {
-    if (oggettoFaro==cube1/*Porta_Chiusa.color ==  mesh.uniforms.lightColor.value.getHexString()*/) {
+    if (oggettoFaro.material.color.getHex() == Porta_Chiusa.material.color.getHex()) {
         console.log("RISOLTO!")
         setDoorAnimation();
         INIBITELO = true;
     } else {
-        tentativi = tentativi - 1;
+        console.log("ERRORE!");
+        //tentativi = tentativi - 1;
 
     }
 }
@@ -421,39 +735,150 @@ function setDoorAnimation()
     tween.start();
 }
 
+function nuovoLivello(){
+    livello=livello+1;
+    filtri=filtri+1;
+    if(livello>=3){
+        $(renderer.domElement).fadeOut();
+        $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine').fadeOut();
+        $('#intro').fadeIn();
+        $('#intro').html('Sei Bello, hai vinto!');
+    }
+    camera.rotation.y = Math.PI / 2;
+    camera.position.x = spawnX;
+    camera.position.y = spawnY;
+    camera.position.z = spawnZ;
+    Porta_Chiusa.position.x = portaX;
+    Porta_Chiusa.position.y = portaY;
+    Porta_Chiusa.position.z = portaZ;
+    var doorColor = new THREE.Color().setHSL(0.385,1.0,0.5);
+    Porta_Chiusa.material.color = doorColor;
+    light_cone.material.uniforms.lightColor.value.set(0xffffff);
+    oggettoFaro=null;
+    console.log(livello);
+    setDefaultVariables(livello,filtri); //Dovrei fare livello+1 e filtri+1
+    
+    setupHUD(livello);
+    setFiltri(livello);
+    console.log(livello);
+
+
+}
+
+function setupHUD(livello){
+
+    // Display HUD
+    switch(livello){
+    
+    case 1:
+   
+    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>'); break;
+    
+    case 2:
+
+    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>'); break;
+
+    }
+}
+function svuotaInventario(){
+     for(i=0;i<filtri;i++){
+            var realIndex = i+1;
+            document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
+            inventario[i]=null;
+        }
+
+}
+
+function combine() {
+    if(livello==1){
+        alert("Al livello 1 non si combina");
+    }else{
+        for(i=0;i<filtri;i++){
+            if(inventario[i]==null){
+                alert("Riempi l'inventario prima");
+                return;
+            }
+
+        }
+        addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
+        var nome =inventario[0].name + inventario[1].name;
+        svuotaInventario();
+        console.log(nome);
+        document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
+        inventario[0] = filtroRisultato;
+    }
+}
+
+function createFiltri(){
+                //filtro Risultato
+                var filterColor = new THREE.Color().setHSL(0,1.0,0.5);
+                filtroRisultato = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroRisultato.position.set(100,100, 100);
+                filtroRisultato.name = "risultato";
+                oggettiPrendibili.push(filtroRisultato);
+                mura.push(filtroRisultato);
+                scene.add(filtroRisultato);
+
+                //  filtro Rosso
+                var filterColor = new THREE.Color().setHSL(0,1.0,0.5);
+                filtroRosso = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroRosso.position.set(100,100, 100);
+                filtroRosso.name = "rosso";
+                filtroRosso.color = filterColor;
+                oggettiPrendibili.push(filtroRosso);
+                mura.push(filtroRosso);
+                scene.add(filtroRosso);
+
+
+                //  filtro Blu
+                var filterColor = new THREE.Color().setHSL(0.6,1.0,0.5);
+                filtroBlu = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroBlu.position.set(100,100,100);
+                filtroBlu.name = "blu";
+                oggettiPrendibili.push(filtroBlu);
+                mura.push(filtroBlu);
+                scene.add(filtroBlu); 
+
+                //  filtro Giallo
+                var filterColor = new THREE.Color().setHSL(0.17,1.0,0.5);
+                filtroGiallo = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroGiallo.position.set(100,100,100);
+                filtroGiallo.name = "giallo";
+                oggettiPrendibili.push(filtroGiallo);
+                mura.push(filtroGiallo);
+                scene.add(filtroGiallo); 
+}
 
 function setFiltri(livello){
     switch( livello ) {
-        case 1: // cube 1
-                cube1 = new THREE.Mesh(
-                new THREE.BoxGeometry(.01, .5, .5),
-                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/health.png')}));
-                cube1.position.set(14, 2.4, 1);
-                cube1.name = "croce";
-                oggettiPrendibili.push(cube1);
-                mura.push(cube1);
-                scene.add(cube1);
+        case 1:
+    
+                filtroRosso.position.set(1, 2.4, 1);
+                
+                filtroBlu.position.set(1, 2.4, 14);
 
-                //  cube 2
-                cube2 = new THREE.Mesh(
-                new THREE.BoxGeometry(.01, .5, .5),
-                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/ottone.jpg')}));
-                cube2.position.set(1, 2.4, 1);
-                cube2.name = "ottone";
-                oggettiPrendibili.push(cube2);
-                mura.push(cube2);
-                scene.add(cube2);
+                filtroGiallo.position.set(14, 2.4, 14);
+                
+                break;
 
+        case 2:             
+              
+                filtroRosso.position.set(1, 2.4, 1);
+              
+                filtroBlu.position.set(1, 2.4, 14);
 
-                //  cube 3
-                cube3 = new THREE.Mesh(
-                new THREE.BoxGeometry(.01, .5, .5),
-                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg')}));
-                cube3.position.set(1, 2.4, 14);
-                cube3.name = "steel";
-                oggettiPrendibili.push(cube3);
-                mura.push(cube3);
-                scene.add(cube3); 
+                filtroGiallo.position.set(14, 2.4, 14);
                 break;
 
     }
@@ -493,10 +918,13 @@ function animate()
         $('#intro').html('Darkness consumes you');
     
     }
+    if(INIBITELO && camera.position.x<portaX && camera.position.z>portaZ){
+       nuovoLivello();
+    }
 
     // chiamo la funzione di rendering
     render();
-    TWEEN.update()
+    TWEEN.update();
 }
 
 // funzione di rendering
