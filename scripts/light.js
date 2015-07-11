@@ -1,8 +1,8 @@
 
 
 /* global doorLight, Porta_Chiusa, light, Porta1, THREE, wall_material, faro, PortaO, PortaS, PortaN, PortaE, scene, tavoloNE, tavoloNO */
-var torch_y = 3.5;
-var torch_distance = 0.6;
+var torch_y = 3.68;
+var torch_distance = 0.7;
 var light_cone;
 
 
@@ -205,7 +205,7 @@ function orientate_cone() {
 //posiziona sfera che evidenzi la sorgente della luce
 function lightSource(source) {
     // LIGHT SOURCE SPHERE //////////////////
-    var sphereGeometry = new THREE.SphereGeometry(0.15, 20, 20);
+    var sphereGeometry = new THREE.SphereGeometry(0.025, 20, 20);
     var darkMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
 
     var wireframeMaterial = new THREE.MeshBasicMaterial(
