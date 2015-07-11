@@ -1,4 +1,6 @@
 
+/* global torchNO1, torchNO2, SORum, torchSO1, torchSO2, NORum, SERum, NERum, torchNO3, torchNO4 */
+
 // controlla il supporto a WebGL (se la scheda grafica non lo supporta viene mostato un messaggio d'errore)
 //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
@@ -44,7 +46,7 @@ var PortaN, PortaS, PortaO, PortaE;
 var faro;
 var filtroVerde, filtroRosso;
 var tavoloSE, tavoloNO, tavoloNE, tavoloSO;
-var torciaSO;
+var torciaN1,torciaN2,torciaN3,torciaN4;
 var mesh;
 var Porta_Chiusa;
 var light_cone;
@@ -263,7 +265,7 @@ function init()
     });
 
     //torcia SO
-    torciaSO = new THREE.Mesh();
+    torciaS = new THREE.Mesh();
     torciaSO.position.set(14, 3, 14);
     loader.load("models/torcia.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
@@ -286,6 +288,10 @@ function init()
     computeShadow(tavoloSE);
     computeShadow(tavoloNO);
     computeShadow(tavoloNE);
+    computeShadow(SORum);
+    computeShadow(SERum);
+    computeShadow(NORum);
+    computeShadow(NERum);
     computeShadow(faro);
 
 
@@ -297,11 +303,10 @@ function init()
     spotLightDoor();
     torchLight();
     //carico shader per mura
-    cook_torrance();
-    engine = new ParticleEngine();
-    engine.setValues( Examples.clouds );
-    engine.initialize();
-
+    //cook_torrance(NORum,[torchNO1,torchNO2,torchNO3,torchNO4],4);
+    cook_torrance(SORum,[torchSO3,torchSO4],2);
+    //cook_torrance(SERum,[torchSE1,torchSE2,torchSE3,torchSE4],4);
+    //cook_torrance(NERum,[torchNE1,torchNE2,torchNE3,torchNE4],4);
 
 
 }
@@ -622,7 +627,6 @@ function render()
     var delta = clock.getDelta(), speed = delta * MOVESPEED;
     controls.update(delta); // Move camera
     renderer.render(scene, camera);
-     engine.update( 0.01 * 0.5 );
 
 
     

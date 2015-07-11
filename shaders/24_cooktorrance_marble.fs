@@ -43,7 +43,13 @@ varying vec2 vUv;
 
 varying vec3 vNormal;
 varying vec3 vViewPosition;
-varying vec3 lightDir;
+varying vec3 lightDir1;
+varying vec3 lightDir2;
+varying vec3 lightDir3;
+varying vec3 lightDir4;
+
+//numero di luci
+//uniform int num_lights;
 
 // devo copiare e incollare il codice all'interno del codice del mio shader
 // non è possibile includere o linkare un file esterno
@@ -170,6 +176,48 @@ float turbulence_abs()
   return value;
 }
 
+float sum_specular(vec3 N, vec3 L, inout float NdotL, float old_specular){
+    NdotL = max(dot(N, L), 0.0);
+
+    if(NdotL > 0.0){
+        vec3 V = normalize( vViewPosition );    
+        
+        // half vector
+        vec3 H = normalize(L + V);
+
+        // implementazione delle formule viste nelle slide
+        // spezzo in componenti
+
+        // preparo gli angoli e i parametri che mi serviranno per il calcolo delle varie componenti
+        float NdotH = max(dot(N, H), 0.0); 
+        float NdotV = max(dot(N, V), 0.0); 
+        float VdotH = max(dot(V, H), 0.0);
+        float mSquared = m * m;
+
+        // Attenuazione geometrica G
+        float NH2 = 2.0 * NdotH;
+        float g1 = (NH2 * NdotV) / VdotH;
+        float g2 = (NH2 * NdotL) / VdotH;
+        float geoAtt = min(1.0, min(g1, g2));
+
+        // Rugosità D
+        // Distribuzione di Beckmann
+        // posso semplificare la tangente all'esponente cosi':
+        // tan = sen/cos -> tan^2 = sen^2/cos^2 -> tan^2 = (1-cos)^2/cos^2
+        float r1 = 1.0 / ( 4.0 * mSquared * pow(NdotH, 4.0));
+        float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
+        float roughness = r1 * exp(r2);
+
+        // Riflettanza di Fresnel F (approx Schlick)
+        float fresnel = pow(1.0 - VdotH, 5.0);
+        fresnel *= (1.0 - F0);
+        fresnel += F0;
+
+        return old_specular += ((fresnel * geoAtt * roughness) / (NdotV * NdotL * PI));
+
+        
+        } else {return old_specular;}   
+    }
 
 void main()
 {
@@ -184,53 +232,26 @@ void main()
     vec4 surfaceColor = texture2D(tex, vec2(value, 0.0));
 
     vec3 N = normalize(vNormal);
-    vec3 L = normalize(lightDir.xyz);
+    vec3 L1 = normalize(lightDir1.xyz);
+    vec3 L2 = normalize(lightDir2.xyz);
 
-    // componente diffusiva lambertiana
-    float NdotL = max(dot(N, L), 0.0);
+    //Definisco le variabili in caso mi si richieda di considerare 4 luci
+    vec3 L3;
+    vec3 L4;
     
+    
+
+    float NdotL1 = 0.0;
+    float NdotL2 = 0.0;
+    float NdotL3 = 0.0;
+    float NdotL4 = 0.0;
+
     float specular = 0.0;
-    if(NdotL > 0.0)
-    {
-        vec3 V = normalize( vViewPosition );    
-        
-        // half vector
-        vec3 H = normalize(L + V);
-        
-        // implementazione delle formule viste nelle slide
-        // spezzo in componenti
 
-        // preparo gli angoli e i parametri che mi serviranno per il calcolo delle varie componenti
-        float NdotH = max(dot(N, H), 0.0); 
-        float NdotV = max(dot(N, V), 0.0); 
-        float VdotH = max(dot(V, H), 0.0);
-        float mSquared = m * m;
-        
-        // Attenuazione geometrica G
-        float NH2 = 2.0 * NdotH;
-        float g1 = (NH2 * NdotV) / VdotH;
-        float g2 = (NH2 * NdotL) / VdotH;
-        float geoAtt = min(1.0, min(g1, g2));
+    specular = sum_specular(N,L1, NdotL1, specular);
+    specular = sum_specular(N,L2, NdotL2, specular);
 
-
-        // Rugosità D
-        // Distribuzione di Beckmann
-        // posso semplificare la tangente all'esponente cosi':
-        // tan = sen/cos -> tan^2 = sen^2/cos^2 -> tan^2 = (1-cos)^2/cos^2
-        float r1 = 1.0 / ( 4.0 * mSquared * pow(NdotH, 4.0));
-        float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
-        float roughness = r1 * exp(r2);
-        
-        // Riflettanza di Fresnel F (approx Schlick)
-        float fresnel = pow(1.0 - VdotH, 5.0);
-        fresnel *= (1.0 - F0);
-        fresnel += F0;
-        
-        // metto tutto assieme per la componente speculare
-        specular = (fresnel * geoAtt * roughness) / (NdotV * NdotL * PI);
-    }
-    
     // calcolo colore finale con anche la componente diffusiva
-    vec4 finalValue = surfaceColor * NdotL * (Kd + specular * (1.0 - Kd));
+    vec4 finalValue = surfaceColor * (NdotL1+NdotL2) * (Kd + specular * (1.0 - Kd));
     gl_FragColor = finalValue;
 }
