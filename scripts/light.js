@@ -147,6 +147,7 @@ function computeShadow(object) {
 
 function torchLight(){
 
+
     // PIAZZAMENTO LUCI TORCE PORTA NORD
     torchNE1 = pointLightGenerator(PortaN.x, PortaN.z - torch_distance, tavoloNE);
     torchNE2 = pointLightGenerator(PortaN.x + 1.82 + 1.59, PortaN.z - torch_distance, tavoloNE);
@@ -167,6 +168,7 @@ function torchLight(){
     torchSO4 = pointLightGenerator(PortaO.x + torch_distance, PortaO.z + (1.82 + 1.59), tavoloSO);
 
     // PIAZZAMENTO LUCI TORCE PORTA SUD
+
 
     torchSE3 = pointLightGenerator(PortaS.x, PortaS.z - torch_distance, tavoloSE);
     torchSE4 = pointLightGenerator(PortaS.x + 1.82 + 1.59, PortaS.z - torch_distance, tavoloSE);

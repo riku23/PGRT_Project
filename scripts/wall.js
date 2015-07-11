@@ -230,6 +230,7 @@ function set_ambient() {
     scene.add(SORum);
     mura.push(SORum);
 
+
     //Porta
     var Porta_ChiusaGeometry = new THREE.BoxGeometry(0.2, 3, 1.8);
     //Porta_Chiusa = new THREE.Mesh(Porta_ChiusaGeometry, new THREE.MeshBasicMaterial({color: 0xff00ff}));
