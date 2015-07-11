@@ -44,7 +44,7 @@ var plane;
 var MuraEsterne, MuraInterne;
 var PortaN, PortaS, PortaO, PortaE;
 var faro;
-var filtroRisultato, filtroRosso;
+var filtroRisultato, filtroRosso, fitroGiallo, filtroBlu, filtroSaturazione;
 var tavoloSE, tavoloNO, tavoloNE, tavoloSO;
 var torciaNE1,torciaNE2,torciaNE3,torciaNE4;
 var torciaNO1,torciaNO2,torciaNO3,torciaNO4;
@@ -606,8 +606,14 @@ function init()
                 //inventario libero
                 intersected = intersections[ 0 ].object;
                 var distance = intersections[0].distance;
-
-                if (intersected && intersected != faro && distance < 3) {
+                if(intersected.name=="saturazione"){
+                    inventario[2]=filtroSaturazione;
+                    intersected.position.x = 100;
+                    intersected.position.y = 100;
+                    intersected.position.z = 100;
+                    document.getElementById("inventory3").style.backgroundImage = "url(textures/inventario/saturazione.jpg)"
+                }else{
+                if (intersected && intersected != faro && distance < 3 && inventarioPos!=2) {
                     //prendo l'oggetto
                     if(inventario[inventarioPos]==null){
                         if(intersected==oggettoFaro){
@@ -622,7 +628,7 @@ function init()
                         document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
                         console.log("preso oggetto inventario libero");
                     }else{
-                        if(intersected==oggettoFaro){
+                        if(intersected==oggettoFaro &&  inventarioPos!=2){
                             light_cone.material.uniforms.lightColor.value.set(inventario[inventarioPos].material.color);
                             oggettoFaro=inventario[inventarioPos];
                             checkFaro();
@@ -640,7 +646,7 @@ function init()
 
                         }
                     }else{
-                        if (inventario[inventarioPos] != null &&intersected && intersected == faro && distance < 3 && oggettoFaro == null) {
+                        if (inventario[inventarioPos] != null &&intersected && intersected == faro && distance < 3 && oggettoFaro == null  &&  inventarioPos!=2) {
                             //se interseco il faro posiziono l'oggetto in inventario su di esso
                             inventario[inventarioPos].position.x = faro.position.x-0.3;
                             inventario[inventarioPos].position.y = faro.position.y + 1.24;
@@ -657,6 +663,7 @@ function init()
 
                     }
                 }
+            }
             }
     });
 
@@ -688,7 +695,6 @@ function checkFaro() {
     if (oggettoFaro.material.color.getHex() == Porta_Chiusa.material.color.getHex()) {
         console.log("RISOLTO!")
         setDoorAnimation();
-        INIBITELO = true;
     } else {
         console.log("ERRORE!");
         //tentativi = tentativi - 1;
@@ -733,17 +739,12 @@ function setDoorAnimation()
     });
 
     tween.start();
+    INIBITELO = true;
 }
 
 function nuovoLivello(){
     livello=livello+1;
     filtri=filtri+1;
-    if(livello>=3){
-        $(renderer.domElement).fadeOut();
-        $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine').fadeOut();
-        $('#intro').fadeIn();
-        $('#intro').html('Sei Bello, hai vinto!');
-    }
     camera.rotation.y = Math.PI / 2;
     camera.position.x = spawnX;
     camera.position.y = spawnY;
@@ -754,6 +755,9 @@ function nuovoLivello(){
     var doorColor = new THREE.Color().setHSL(0.385,1.0,0.5);
     Porta_Chiusa.material.color = doorColor;
     light_cone.material.uniforms.lightColor.value.set(0xffffff);
+    oggettoFaro.position.x=100;
+    oggettoFaro.position.y=100;
+    oggettoFaro.position.z=100;
     oggettoFaro=null;
     console.log(livello);
     setDefaultVariables(livello,filtri); //Dovrei fare livello+1 e filtri+1
@@ -773,13 +777,20 @@ function setupHUD(livello){
     case 1:
    
     $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>'); break;
+    break;
     
     case 2:
 
     $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="hud"><p>Oggetti: <span id="oggetti">0</span></p></div>'); break;
+    break;
+
+    case 3:
+
+    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    break;
 
     }
 }
@@ -860,6 +871,19 @@ function createFiltri(){
                 oggettiPrendibili.push(filtroGiallo);
                 mura.push(filtroGiallo);
                 scene.add(filtroGiallo); 
+
+
+                //  filtro Saturazione
+                var filterColor = new THREE.Color().setHSL(0,0.5,0);
+                filtroSaturazione = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroSaturazione.position.set(100,100,100);
+                filtroSaturazione.name = "saturazione";
+                oggettiPrendibili.push(filtroSaturazione);
+                mura.push(filtroSaturazione);
+                scene.add(filtroSaturazione); 
+
 }
 
 function setFiltri(livello){
@@ -881,7 +905,21 @@ function setFiltri(livello){
                 filtroBlu.position.set(1, 2.4, 14);
 
                 filtroGiallo.position.set(14, 2.4, 14);
+
                 break;
+
+        case 3:             
+              
+                filtroRosso.position.set(1, 2.4, 1);
+              
+                filtroBlu.position.set(1, 2.4, 14);
+
+                filtroGiallo.position.set(14, 2.4, 14);
+
+                filtroSaturazione.position.set(14,2.4,1);
+                
+                break;
+
 
     }
 }
@@ -907,11 +945,8 @@ function selectInventory(){
 // chiamo una funzione animate, che si occupa di richiedere un nuovo frame, di gestire gli update delle librerie e controlli, e poi di chiamare la funzione di rendering
 function animate()
 {
-    // richiedo un frame di rendering
     requestAnimationFrame(animate);
-    // aggiorno la camerada
-
-    // Death
+    // Gameover
     if (tentativi <= 0) {
 
         $(renderer.domElement).fadeOut();
@@ -923,8 +958,6 @@ function animate()
     if(INIBITELO && camera.position.x<portaX && camera.position.z>portaZ){
        nuovoLivello();
     }
-
-    // chiamo la funzione di rendering
     render();
     TWEEN.update();
 }
@@ -935,20 +968,8 @@ function render()
     var delta = clock.getDelta(), speed = delta * MOVESPEED;
     controls.update(delta); // Move camera
     renderer.render(scene, camera);
-
-
-    
-
-        // devo assegnare alla mia variabile frustum il volume definito dal frustum della camera fps, ma in coordinate mondo (ossia considerando la camera come un oggetto nella scena, con la sua posizione e orientamento)
-        // Per riportare il frustum in coordinate mondo, prendo la matrice di proiezione, e la moltiplico per l'inverso della matrice delle trasformazioni globali applicate alla camera
-        frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
-
-        // devo passare tutto l'array dei cubi
-        for (var i = 0; i < mura.length; i++) {
-            // applico il test di intersezione tra frustum e cubo, sulla base del risultato setto l'oggetto a visibile o invisibile (ossia non lo mando lungo la pipeline)                 
-            mura[i].visible = frustum.intersectsObject(mura[i]);
-        }
-    
-    // se il culling è disabilitato
-    
+    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+    for (var i = 0; i < mura.length; i++) {            
+         mura[i].visible = frustum.intersectsObject(mura[i]);
+    }   
 }
