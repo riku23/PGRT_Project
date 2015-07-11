@@ -49,7 +49,7 @@ varying vec3 lightDir3;
 varying vec3 lightDir4;
 
 //numero di luci
-//uniform int num_lights;
+uniform highp int num_lights;
 
 // devo copiare e incollare il codice all'interno del codice del mio shader
 // non è possibile includere o linkare un file esterno
@@ -247,11 +247,22 @@ void main()
     float NdotL4 = 0.0;
 
     float specular = 0.0;
-
+    
     specular = sum_specular(N,L1, NdotL1, specular);
     specular = sum_specular(N,L2, NdotL2, specular);
-
+    vec4 finalValue;
+    
+    if(num_lights == 4){
+        L3 = normalize(lightDir3.xyz);
+        L4 = normalize(lightDir4.xyz);
+        //specular = sum_specular(N,L3, NdotL3, specular);
+        //specular = sum_specular(N,L4, NdotL4, specular);
+        finalValue = surfaceColor * (NdotL1+NdotL2+NdotL3+NdotL4) * (Kd + specular * (1.0 - Kd));
+    } else {
+        finalValue = surfaceColor * (NdotL1+NdotL2) * (Kd + specular * (1.0 - Kd));
+        }
+    
     // calcolo colore finale con anche la componente diffusiva
-    vec4 finalValue = surfaceColor * (NdotL1+NdotL2) * (Kd + specular * (1.0 - Kd));
+    //finalValue = surfaceColor * (NdotL1+NdotL2) * (Kd + specular * (1.0 - Kd));
     gl_FragColor = finalValue;
 }

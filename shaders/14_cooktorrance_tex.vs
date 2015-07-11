@@ -31,8 +31,8 @@ uniform vec3 pointLightPosition2;
 uniform vec3 pointLightPosition3;
 uniform vec3 pointLightPosition4;
 
-//numero di luci considerate
-uniform int num_lights;
+//numero di luci
+uniform highp int num_lights;
 
 // coordinate UV del modello
 attribute vec2 uv;
@@ -67,16 +67,17 @@ void main(){
   vec4 lightPos2 = viewMatrix  * vec4( pointLightPosition2, 1.0 );
   lightDir2 = lightPos2.xyz - mvPosition.xyz;
     
-    vec4 lightPos3;
-    vec4 lightPos4;
 
-  if (num_lights == 4){
-  lightPos3 = viewMatrix  * vec4( pointLightPosition3, 1.0 );
-  lightDir3 = lightPos3.xyz - mvPosition.xyz;
-  lightPos4 = viewMatrix  * vec4( pointLightPosition4, 1.0 );
-  lightDir4 = lightPos4.xyz - mvPosition.xyz;
+    if(pointLightPosition3!=null){
+        lightDir2 = lightPos1.xyz - mvPosition.xyz;
+        vec4 lightPos3 = viewMatrix  * vec4( pointLightPosition3, 1.0 );
+        lightDir3 = lightPos3.xyz - mvPosition.xyz;
+
+        vec4 lightPos4 = viewMatrix  * vec4( pointLightPosition4, 1.0 );
+        lightDir4 = lightPos4.xyz - mvPosition.xyz;
     }
 
+  
 
   // calcolo posizione vertici in coordinate vista
   gl_Position = mvpPosition;

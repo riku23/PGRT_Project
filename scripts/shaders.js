@@ -55,8 +55,6 @@ function cook_torrance(room, lights, num_l) {
 
     };
     } else {
-            alert("4luci");
-
         uniforms_CT = {
         Kd: {type: "f", value: Kd},
         F0: {type: "f", value: F0},
