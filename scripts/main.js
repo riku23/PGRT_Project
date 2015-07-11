@@ -620,9 +620,6 @@ function init()
                         intersected.position.z = 100;
                         var realIndex = inventarioPos+1;
                         document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
-                        oggetti = oggetti + 1;
-                        $('#oggetti').html(oggetti);
-                        console.log(inventario.length);
                         console.log("preso oggetto inventario libero");
                     }else{
                         if(intersected==oggettoFaro){
@@ -655,8 +652,6 @@ function init()
                             light_cone.material.uniforms.lightColor.value.set(oggettoFaro.material.color);
                             document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
                             checkFaro();
-                            oggetti = oggetti - 1;
-                            $('#oggetti').html(oggetti);
                             console.log("posizionato oggetto su faro");
                         }
 
@@ -788,7 +783,14 @@ function setupHUD(livello){
 
     }
 }
+function svuotaInventario(){
+     for(i=0;i<filtri;i++){
+            var realIndex = i+1;
+            document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
+            inventario[i]=null;
+        }
 
+}
 
 function combine() {
     if(livello==1){
@@ -802,20 +804,11 @@ function combine() {
 
         }
         addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
-        for(i=0;i<filtri;i++){
-            var realIndex = i+1;
-            document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
-            console.log(inventario[0].name+inventario[1].name);
-            document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + inventario[0].name + inventario[1].name + ".jpg";
-            
-            
-        }
-         for(i=0;i<filtri;i++){
-            inventario[i]=null;
-         }
+        var nome =inventario[0].name + inventario[1].name;
+        svuotaInventario();
+        console.log(nome);
+        document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
         inventario[0] = filtroRisultato;
-        console.log(filtroRisultato.material.color.getHSL().h);    
-
     }
 }
 
