@@ -30,6 +30,8 @@ uniform float Kd; // fraction of diffuse reflection (specular reflection = 1 - k
 // parametri di forza e potenza del rumore
 uniform float frequency;
 uniform float power;
+uniform vec3 diffuseColor; 
+
 
 //uniform che indica la texture in memoria
 uniform sampler2D tex;
@@ -45,11 +47,7 @@ varying vec3 vNormal;
 varying vec3 vViewPosition;
 varying vec3 lightDir1;
 varying vec3 lightDir2;
-varying vec3 lightDir3;
-varying vec3 lightDir4;
 
-//numero di luci
-uniform highp int num_lights;
 
 // devo copiare e incollare il codice all'interno del codice del mio shader
 // non è possibile includere o linkare un file esterno
@@ -235,34 +233,20 @@ void main()
     vec3 L1 = normalize(lightDir1.xyz);
     vec3 L2 = normalize(lightDir2.xyz);
 
-    //Definisco le variabili in caso mi si richieda di considerare 4 luci
-    vec3 L3;
-    vec3 L4;
-    
-    
 
     float NdotL1 = 0.0;
     float NdotL2 = 0.0;
-    float NdotL3 = 0.0;
-    float NdotL4 = 0.0;
+
 
     float specular = 0.0;
     
     specular = sum_specular(N,L1, NdotL1, specular);
-    specular = sum_specular(N,L2, NdotL2, specular);
-    vec4 finalValue;
-    
-    if(num_lights == 4){
-        L3 = normalize(lightDir3.xyz);
-        L4 = normalize(lightDir4.xyz);
-        //specular = sum_specular(N,L3, NdotL3, specular);
-        //specular = sum_specular(N,L4, NdotL4, specular);
-        finalValue = surfaceColor * (NdotL1+NdotL2+NdotL3+NdotL4) * (Kd + specular * (1.0 - Kd));
-    } else {
-        finalValue = surfaceColor * (NdotL1+NdotL2) * (Kd + specular * (1.0 - Kd));
-        }
+    specular = sum_specular(N,L2, NdotL2, specular);       
+
+
+    vec4 finalValue = surfaceColor * (NdotL1+NdotL2) * vec4(diffuseColor, 1.0) * (Kd + specular * (1.0 - Kd));
+ 
     
     // calcolo colore finale con anche la componente diffusiva
-    //finalValue = surfaceColor * (NdotL1+NdotL2) * (Kd + specular * (1.0 - Kd));
     gl_FragColor = finalValue;
 }
