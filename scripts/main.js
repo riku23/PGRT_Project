@@ -44,6 +44,7 @@ var PortaN, PortaS, PortaO, PortaE;
 var faro;
 var filtroVerde, filtroRosso;
 var tavoloSE, tavoloNO, tavoloNE, tavoloSO;
+var torciaSO;
 var mesh;
 var Porta_Chiusa;
 var light_cone;
@@ -82,6 +83,7 @@ function setDefaultVariables(livello,filtri) {
     oggetti = 0;
     inventarioPos= 0;
 }
+
 
 
 
@@ -241,7 +243,6 @@ function init()
     });
 
     //TAVOLO Sud-Ovest
-    //TAVOLO Nord-Est
     tavoloSO = new THREE.Mesh();
     tavoloSO.position.set(14, 1, 14);
     loader.load("models/tavolo2.js", function (geometry, materials) {
@@ -260,6 +261,26 @@ function init()
         mura.push(tavoloSO);
         scene.add(tavoloSO);
     });
+
+    //torcia SO
+    torciaSO = new THREE.Mesh();
+    torciaSO.position.set(14, 3, 14);
+    loader.load("models/torcia.js", function (geometry, materials) {
+        // applico i materiali definiti all'interno del modello
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+        torciaSO.geometry = geometry;
+        torciaSO.material = materials;
+
+        // ruoto il modello di 180° sull'asse Y
+        torciaSO.rotation.y = -Math.PI/2;
+
+        // lo posiziono sopra il piano
+        
+        // lo scalo per metterlo in scala con la scena
+        torciaSO.scale.set(0.01, 0.01, 0.01);
+        mura.push(torciaSO);
+        scene.add(torciaSO);
+    });
     
     computeShadow(tavoloSO);
     computeShadow(tavoloSE);
@@ -277,11 +298,14 @@ function init()
     torchLight();
     //carico shader per mura
     cook_torrance();
-
+    engine = new ParticleEngine();
+    engine.setValues( Examples.clouds );
+    engine.initialize();
 
 
 
 }
+
 
     // FUNZIONE DI PICKING
     $(document).click(function (e) {
@@ -589,7 +613,7 @@ function animate()
 
     // chiamo la funzione di rendering
     render();
-    TWEEN.update()
+    TWEEN.update();
 }
 
 // funzione di rendering
@@ -598,6 +622,7 @@ function render()
     var delta = clock.getDelta(), speed = delta * MOVESPEED;
     controls.update(delta); // Move camera
     renderer.render(scene, camera);
+     engine.update( 0.01 * 0.5 );
 
 
     
