@@ -808,7 +808,9 @@ function combine() {
         svuotaInventario();
         console.log(nome);
         document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
+        filtroRisultato.name= nome;
         inventario[0] = filtroRisultato;
+
     }
 }
 
