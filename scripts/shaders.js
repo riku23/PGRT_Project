@@ -57,7 +57,7 @@ function cook_torrance(room, lights) {
 
 
     var diffuseColor = new THREE.Color();
-    diffuseColor.setRGB(1.0, 140/255, 0);
+    diffuseColor.setRGB(219/255, 219/255, 112/255);
 
     if (lights.length == 2) {
         //alert("2luci");
@@ -66,8 +66,8 @@ function cook_torrance(room, lights) {
             F0: {type: "f", value: F0},
             m: {type: "f", value: roughnessValue},
             tex: {type: "t", value: THREE.ImageUtils.loadTexture("textures/gradientmarble.png")},
-            frequency: {type: "f", value: 10},
-            power: {type: "f", value: 2},
+            frequency: {type: "f", value: 26},
+            power: {type: "f", value: 1.6},
             diffuseColor: {type: "c", value: diffuseColor},
             pointLightPosition1: {type: "v3", value: lights[0].position},
             pointLightPosition2: {type: "v3", value: lights[1].position},
@@ -83,8 +83,8 @@ function cook_torrance(room, lights) {
             F0: {type: "f", value: F0},
             m: {type: "f", value: roughnessValue},
             tex: {type: "t", value: THREE.ImageUtils.loadTexture("textures/gradientmarble.png")},
-            frequency: {type: "f", value: 10},
-            power: {type: "f", value: 2},
+            frequency: {type: "f", value: 26},
+            power: {type: "f", value: 1.6},
             diffuseColor: {type: "c", value: diffuseColor},
             pointLightPosition1: {type: "v3", value: lights[0].position},
             pointLightPosition2: {type: "v3", value: lights[1].position},

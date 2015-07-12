@@ -1,8 +1,8 @@
 
 
 /* global doorLight, Porta_Chiusa, light, Porta1, THREE, wall_material, faro, PortaO, PortaS, PortaN, PortaE, scene, tavoloNE, tavoloNO */
-var torch_y = 3.5;
-var torch_distance = 0.6;
+var torch_y = 3.68;
+var torch_distance = 0.7;
 var light_cone;
 
 
@@ -54,23 +54,15 @@ function spotLightGenerator(origin, target) {
 
     spotLight.position.set(origin.position.x, origin.position.y, origin.position.z);
     spotLight.castShadow = true;
-    spotLight.shadowCameraNear = 0.01;
-    /*
-     spotLight.shadowCameraFar = 10
-     spotLight.shadowCameraFov = 10
-     spotLight.shadowCameraLeft = -2
-     spotLight.shadowCameraRight = 2
-     spotLight.shadowCameraTop = 1
-     spotLight.shadowCameraBottom = -1
-     spotLight.shadowBias = 0.0
-     spotLight.shadowDarkness = 0.5
-     spotLight.shadowMapWidth = 1024
-     spotLight.shadowMapHeight = 1024*/
-
-    spotLight.shadowDarkness = 0.5;
-    spotLight.intensity = 2;
-
-    spotLight.distance = 10;
+    
+    spotLight.shadowMapWidth = 1024;
+    spotLight.shadowMapHeight = 1024;
+    
+    spotLight.shadowCameraNear = 0.1;
+    spotLight.shadowCameraFar = 4000;
+    spotLight.shadowCameraFov = 30;
+    
+    scene.add( spotLight );
     spotLight.shadowCameraVisible = true;
     spotLight.target = target;
     scene.add(spotLight);
@@ -205,7 +197,7 @@ function orientate_cone() {
 //posiziona sfera che evidenzi la sorgente della luce
 function lightSource(source) {
     // LIGHT SOURCE SPHERE //////////////////
-    var sphereGeometry = new THREE.SphereGeometry(0.15, 20, 20);
+    var sphereGeometry = new THREE.SphereGeometry(0.025, 20, 20);
     var darkMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
 
     var wireframeMaterial = new THREE.MeshBasicMaterial(

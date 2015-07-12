@@ -4,10 +4,9 @@ function set_ambient() {
 
     // PIANO - MESH
     // dimensioni del piano
-    var side_plane = 15;
-    //var height_plane = 2;
+    var side_plane = 25;
 
-    var texture, material;
+    var texture, plane_material;
 
     texture = THREE.ImageUtils.loadTexture("textures/stone.jpg");
 
@@ -19,23 +18,22 @@ function set_ambient() {
 //   which is probably why your example wasn't working
     texture.repeat.set(4, 4);
 
-    material = new THREE.MeshLambertMaterial({map: texture, color: 0xffffff});
-    plane = new THREE.Mesh(new THREE.PlaneGeometry(side_plane, side_plane), material);
-    plane.material.side = THREE.DoubleSide;
-    plane.rotation.x = Math.PI / 2;
+    plane_material = new THREE.MeshLambertMaterial({map: texture, color: 0xffffff});
+
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(side_plane, side_plane), plane_material);
+    plane.rotation.x = -Math.PI / 2;
     plane.position.x = 7.5;
     plane.position.z = 7.5;
     plane.position.y = 1;
     
     plane.receiveShadow = true;
-    plane.castShadow = true;
 
    
     scene.add(plane);
 
     var SoffittoMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
     var soffitto = new THREE.Mesh(new THREE.PlaneGeometry(side_plane, side_plane), SoffittoMaterial);
-    soffitto.material.side = THREE.DoubleSide;
+    //soffitto.material.side = THREE.DoubleSide;
     soffitto.rotation.x = Math.PI / 2;
     soffitto.position.x = 7.5;
     soffitto.position.z = 7.5;
@@ -243,7 +241,7 @@ function set_ambient() {
     mura.push(Porta_Chiusa);
     
 
-    computeShadow(plane);
+    //computeShadow(plane);
     
     
 }

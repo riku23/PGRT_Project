@@ -9,8 +9,6 @@ var container;
 // variabili globali per la scena, il renderer ecc
 var scene, renderer;
 
-// variabili per il "prato"
-var planeGeometry, plane, planeMaterial;
 
 var raycaster = new THREE.Raycaster();
 // variabili per la camera
@@ -62,7 +60,7 @@ var PortaS = new THREE.Vector3(10.8,3.5,7.5);
 var PortaE = new THREE.Vector3(7.5,3.5,0.8);
 var PortaO = new THREE.Vector3(7.5,3.5,10.8);
 
-
+var sphere_test;
 
 
 // creo una istanza della classe Clock, per la gestione del tempo di esecuzione ecc
@@ -230,6 +228,8 @@ function init()
         scene.add(tavoloNO);
 
     });
+    
+   
 
     //TAVOLO Nord-Est
     tavoloNE = new THREE.Mesh();
@@ -554,7 +554,7 @@ function init()
     computeShadow(tavoloSE);
     computeShadow(tavoloNO);
     computeShadow(tavoloNE);
-    computeShadow(torciaNO1);
+    /*computeShadow(torciaNO1);
     computeShadow(torciaNO2);
     computeShadow(torciaNO3);
     computeShadow(torciaNO4);
@@ -571,7 +571,7 @@ function init()
     computeShadow(SORum);
     computeShadow(SERum);
     computeShadow(NORum);
-    computeShadow(NERum);
+    computeShadow(NERum);*/
     computeShadow(faro);
 
 
@@ -988,9 +988,6 @@ function selectInventory(){
             document.getElementById("inventory"+realIndex.toString()).style.border= "1px solid black";
         }}}
 }
-
-
-
 
 // LOOP RENDERING
 // chiamo una funzione animate, che si occupa di richiedere un nuovo frame, di gestire gli update delle librerie e controlli, e poi di chiamare la funzione di rendering
