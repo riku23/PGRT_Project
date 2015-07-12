@@ -46,7 +46,7 @@ function initGui() {
 function cook_torrance(room, lights) {
     // COOK-TORRANCE
 
-    var shaders_CT, uniforms_CT;
+    //var shaders_CT, uniforms_CT;
 
     // Peso per la componente diffusiva
     var Kd = 0.26;
@@ -57,7 +57,7 @@ function cook_torrance(room, lights) {
 
 
     var diffuseColor = new THREE.Color();
-    diffuseColor.setRGB(1.0, 140/255, 0);
+    diffuseColor.setRGB(219/255, 219/255, 112/255);
 
     if (lights.length == 2) {
         //alert("2luci");
@@ -106,7 +106,7 @@ function cook_torrance(room, lights) {
     bunnyMesh_CT = new THREE.Object3D();
     scene.add(bunnyMesh_CT);
 
-    //initGui();
+    initGui();
 
     // Carico gli shader e creo il modello con il modello di Cook-Torrance
     loadShaders(shaders_CT,
