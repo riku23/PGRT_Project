@@ -676,6 +676,25 @@ function onDocumentMouseMove(e) {
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 }
 
+function parseName(name1,name2){
+    if((name1=="rosso" && name2=="giallo") || (name1=="giallo" && name2=="rosso") ){
+        return "arancione";
+    }
+    if((name1=="rosso" && name2=="blu") || (name1=="blu" && name2=="rosso") ){
+        return "viola";
+    }
+    if((name1=="giallo" && name2=="blu") || (name1=="blu" && name2=="giallo") ){
+        return "verde";
+    }
+}
+
+
+
+
+function satura(color1, color2, colorResult){
+    colorResult.setHSL(color1.getHSL().h,color1.getHSL().s,color2.getHSL().l);
+}
+
 function addColors(color1, color2, colorResult){
         a0 = color1.getHSL().h*360;
         a1 = color2.getHSL().h*360;
@@ -752,6 +771,7 @@ function nuovoLivello(){
     Porta_Chiusa.position.x = portaX;
     Porta_Chiusa.position.y = portaY;
     Porta_Chiusa.position.z = portaZ;
+    
     var doorColor = new THREE.Color().setHSL(0.385,1.0,0.5);
     Porta_Chiusa.material.color = doorColor;
     light_cone.material.uniforms.lightColor.value.set(0xffffff);
@@ -764,6 +784,7 @@ function nuovoLivello(){
     
     setupHUD(livello);
     setFiltri(livello);
+    svuotaInventario();
     console.log(livello);
 
 
@@ -807,23 +828,53 @@ function combine() {
     if(livello==1){
         alert("Al livello 1 non si combina");
     }else{
-        for(i=0;i<filtri;i++){
-            if(inventario[i]==null){
-                alert("Riempi l'inventario prima");
+        if((( inventario[0] && !inventario[1] ) || ( !inventario[0] && inventario[1] )) && inventario[2]){
+            if(inventario[inventarioPos]==null){
+                alert("seleziona un filtro");
                 return;
             }
+            satura(inventario[inventarioPos].material.color,inventario[2].material.color,filtroRisultato.material.color);
+            var nome =inventario[inventarioPos].name + "scuro";
+            svuotaInventario();
+            console.log(nome);
+            document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
+            filtroRisultato.name= nome;
+            inventario[0] = filtroRisultato;
 
+        }else{
+            if(inventario[0] && inventario[1] && !inventario[2]){
+                addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
+                var nome = parseName(inventario[0].name,inventario[1].name);
+                svuotaInventario();
+                console.log(nome);
+                document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
+                filtroRisultato.name= nome;
+                inventario[0] = filtroRisultato;
+
+}
+        else{
+            if(inventario[0] && inventario[1] && inventario[2]){
+                addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
+                var nome = parseName(inventario[0].name,inventario[1].name);
+                console.log(nome);
+                document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
+                filtroRisultato.name= nome;
+                inventario[0] = filtroRisultato;
+
+                satura(inventario[0].material.color,inventario[2].material.color,filtroRisultato.material.color);
+                var nome =inventario[0].name + "scuro";
+                svuotaInventario();
+                console.log(nome);
+                document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
+                filtroRisultato.name= nome;
+                inventario[0] = filtroRisultato;
+
+
+
+            }}}
         }
-        addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
-        var nome =inventario[0].name + inventario[1].name;
-        svuotaInventario();
-        console.log(nome);
-        document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
-        filtroRisultato.name= nome;
-        inventario[0] = filtroRisultato;
 
     }
-}
 
 function createFiltri(){
                 //filtro Risultato
@@ -874,7 +925,7 @@ function createFiltri(){
 
 
                 //  filtro Saturazione
-                var filterColor = new THREE.Color().setHSL(0,0.5,0);
+                var filterColor = new THREE.Color().setHSL(0,0,0.2);
                 filtroSaturazione = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
                 new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
@@ -955,7 +1006,7 @@ function animate()
         $('#intro').html('Darkness consumes you');
     
     }
-    if(INIBITELO && camera.position.x<portaX && camera.position.z>portaZ){
+    if(INIBITELO && (portaX+0.1>camera.position.x && camera.position.x>portaX-0.5) && (portaZ-0.9<camera.position.z && camera.position.z<portaZ+0.9)){
        nuovoLivello();
     }
     render();
