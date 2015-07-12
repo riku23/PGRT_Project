@@ -46,7 +46,7 @@ function initGui() {
 function cook_torrance(room, lights) {
     // COOK-TORRANCE
 
-    //var shaders_CT, uniforms_CT;
+    var shaders_CT, uniforms_CT;
 
     // Peso per la componente diffusiva
     var Kd = 0.26;
@@ -66,8 +66,8 @@ function cook_torrance(room, lights) {
             F0: {type: "f", value: F0},
             m: {type: "f", value: roughnessValue},
             tex: {type: "t", value: THREE.ImageUtils.loadTexture("textures/gradientmarble.png")},
-            frequency: {type: "f", value: 10},
-            power: {type: "f", value: 2},
+            frequency: {type: "f", value: 26},
+            power: {type: "f", value: 1.6},
             diffuseColor: {type: "c", value: diffuseColor},
             pointLightPosition1: {type: "v3", value: lights[0].position},
             pointLightPosition2: {type: "v3", value: lights[1].position},
@@ -83,8 +83,8 @@ function cook_torrance(room, lights) {
             F0: {type: "f", value: F0},
             m: {type: "f", value: roughnessValue},
             tex: {type: "t", value: THREE.ImageUtils.loadTexture("textures/gradientmarble.png")},
-            frequency: {type: "f", value: 10},
-            power: {type: "f", value: 2},
+            frequency: {type: "f", value: 26},
+            power: {type: "f", value: 1.6},
             diffuseColor: {type: "c", value: diffuseColor},
             pointLightPosition1: {type: "v3", value: lights[0].position},
             pointLightPosition2: {type: "v3", value: lights[1].position},
@@ -106,7 +106,7 @@ function cook_torrance(room, lights) {
     bunnyMesh_CT = new THREE.Object3D();
     scene.add(bunnyMesh_CT);
 
-    initGui();
+    //initGui();
 
     // Carico gli shader e creo il modello con il modello di Cook-Torrance
     loadShaders(shaders_CT,
