@@ -34,6 +34,49 @@ var tween;
 // variabile per la gestione del frustum culling
 var frustum;
 
+//COLORI
+var rosso,blu,giallo;
+var viola,arancione,verde;
+var rossoscuro, bluscuro,gialloscuro;
+var violascuro, arancionescuro, verdescuro;
+var grigio;
+
+    var grigio = new THREE.Color().setHSL(0,0,0.2);
+    
+    rosso = new THREE.Color().setHSL(0,1.0,0.5);
+    
+    blu = new THREE.Color().setHSL(0.67,1.0,0.5);
+    
+    giallo = new THREE.Color().setHSL(0.17,1.0,0.5);
+    
+    var rossoscuro = new THREE.Color();
+    satura(rosso,grigio,rossoscuro);
+
+    var bluscuro = new THREE.Color();
+    satura(blu,grigio,bluscuro);
+
+    var gialloscuro = new THREE.Color();
+    satura(giallo,grigio,gialloscuro);
+
+    arancione = new THREE.Color();
+    addColors(rosso,giallo,arancione);
+   
+    viola = new THREE.Color();
+    addColors(rosso,blu,viola);
+    
+    verde = new THREE.Color();
+    addColors(giallo,blu,verde);
+
+
+    arancionescuro = new THREE.Color();
+    satura(arancione,grigio,arancionescuro);
+   
+    violascuro = new THREE.Color();
+    satura(viola,grigio,violascuro);
+    
+    verdescuro = new THREE.Color();
+    satura(verde,grigio,verdescuro);
+
 
 
 //MESH
@@ -100,14 +143,33 @@ function setDefaultVariables(livello,filtri) {
 //Funzioni di inizializzazione della scena
 function init()
 {
+    console.log("rosso " + rosso.getHSL().h);
+    console.log("giallo " + giallo.getHSL().h);
+    console.log("blu " + blu.getHSL().h);
+    console.log("viola " + viola.getHSL().h);
+    console.log("arancione " + arancione.getHSL().h);
+    console.log("verde " + verde.getHSL().h);
     
+
+
+    //SOUNDS
+    var myAudio = new Audio('sounds/bg.wav'); 
+    myAudio.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+        }, false);
+    myAudio.play();
     
+
     // SCENE
     // creo una istanza della classe Scene (radice del grafo della scena che avrà come nodi i modelli, luce, ecc della scena)
     scene = new THREE.Scene();
     ////////////
     $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
     document.getElementById("combine").onclick = function() {combine()};
+        // Set up "hurt" flash
+    $('body').append('<div id="hurt"></div>');
+    $('#hurt').css({width: window.innerWidth, height: window.innerHeight,});
 
     // CAMERA
     // parametri: FOV, widht, height, near, far
@@ -686,6 +748,15 @@ function parseName(name1,name2){
     if((name1=="giallo" && name2=="blu") || (name1=="blu" && name2=="giallo") ){
         return "verde";
     }
+      if((name1=="gialloscuro" && name2=="blu") || (name1=="bluscuro" && name2=="giallo") ){
+        return "verdescuro";
+    }
+    if((name1=="rossoscuro" && name2=="blu") || (name1=="bluscuro" && name2=="rosso") ){
+        return "violascuro";
+    }
+    if((name1=="rossoscuro" && name2=="giallo") || (name1=="gialloscuro" && name2=="rosso") ){
+        return "arancionescuro";
+    }
 }
 
 
@@ -702,11 +773,11 @@ function addColors(color1, color2, colorResult){
         r1 = ((a0+a1+360)/2.)%360; 
         console.log(r0,r1);
         if(Math.min(Math.abs(a1-r0), Math.abs(a0-r0)) < Math.min(Math.abs(a0-r1), Math.abs(a1-r1))){
-        colorResult.setHSL(r0/360,1.0,0.5);
+        colorResult.setHSL(r0/360,1.0,Math.min(color1.getHSL().l,color2.getHSL().l));
         }
         else{
         
-        colorResult.setHSL(r1/360,1.0,0.5);
+        colorResult.setHSL(r1/360,1.0,Math.min(color1.getHSL().l,color2.getHSL().l));
         }
     }
 
@@ -740,7 +811,8 @@ function onWindowResize()
 
 function setDoorAnimation()
 {
-
+     var myAudio = new Audio('sounds/door.wav'); 
+    myAudio.play();
     //posizione iniziale
     var position = {z: Porta_Chiusa.position.z};
     //posizione finale
@@ -761,7 +833,29 @@ function setDoorAnimation()
     INIBITELO = true;
 }
 
+function colorePorta(livello){
+    switch(livello){
+        case 2:
+            var doorColor = new THREE.Color(verde);
+            Porta_Chiusa.material.color = doorColor;
+            break;
+
+        case 3:
+            var doorColor = new THREE.Color(viola);
+            Porta_Chiusa.material.color = doorColor;
+            break;
+
+        case 4:
+            var doorColor = new THREE.Color(arancionescuro);
+            Porta_Chiusa.material.color = doorColor;
+            break;
+
+    }
+}
+
 function nuovoLivello(){
+    var myAudio = new Audio('sounds/warp.wav'); 
+    myAudio.play();
     livello=livello+1;
     filtri=filtri+1;
     camera.rotation.y = Math.PI / 2;
@@ -771,9 +865,8 @@ function nuovoLivello(){
     Porta_Chiusa.position.x = portaX;
     Porta_Chiusa.position.y = portaY;
     Porta_Chiusa.position.z = portaZ;
-    
-    var doorColor = new THREE.Color().setHSL(0.385,1.0,0.5);
-    Porta_Chiusa.material.color = doorColor;
+    colorePorta(livello);
+
     light_cone.material.uniforms.lightColor.value.set(0xffffff);
     oggettoFaro.position.x=100;
     oggettoFaro.position.y=100;
@@ -810,13 +903,26 @@ function setupHUD(livello){
 
     $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+     $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    break;
+
+    case 4:
+
+    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     break;
 
     }
 }
 function svuotaInventario(){
-     for(i=0;i<filtri;i++){
+     var index;
+     if (livello<3){
+        index=livello;
+     }else{
+        index=3
+     }
+     for(i=0;i<index;i++){
             var realIndex = i+1;
             document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
             inventario[i]=null;
@@ -889,7 +995,7 @@ function createFiltri(){
                 scene.add(filtroRisultato);
 
                 //  filtro Rosso
-                var filterColor = new THREE.Color().setHSL(0,1.0,0.5);
+                var filterColor = new THREE.Color(rosso);
                 filtroRosso = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
                 new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
@@ -902,7 +1008,7 @@ function createFiltri(){
 
 
                 //  filtro Blu
-                var filterColor = new THREE.Color().setHSL(0.6,1.0,0.5);
+                var filterColor = new THREE.Color(blu);
                 filtroBlu = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
                 new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
@@ -912,8 +1018,19 @@ function createFiltri(){
                 mura.push(filtroBlu);
                 scene.add(filtroBlu); 
 
+                      //  filtro Blu 2
+                var filterColor = new THREE.Color(blu);
+                filtroBlu2 = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroBlu2.position.set(100,100,100);
+                filtroBlu2.name = "blu";
+                oggettiPrendibili.push(filtroBlu2);
+                mura.push(filtroBlu2);
+                scene.add(filtroBlu2); 
+
                 //  filtro Giallo
-                var filterColor = new THREE.Color().setHSL(0.17,1.0,0.5);
+                var filterColor = new THREE.Color(giallo);
                 filtroGiallo = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
                 new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
@@ -965,6 +1082,19 @@ function setFiltri(livello){
               
                 filtroBlu.position.set(1, 2.4, 14);
 
+                filtroBlu2.position.set(1,3.4,14);
+
+                filtroGiallo.position.set(14, 2.4, 14);
+
+                
+                break;
+
+         case 4:             
+              
+                filtroRosso.position.set(1, 2.4, 1);
+              
+                filtroBlu.position.set(1, 2.4, 14);
+
                 filtroGiallo.position.set(14, 2.4, 14);
 
                 filtroSaturazione.position.set(14,2.4,1);
@@ -977,10 +1107,16 @@ function setFiltri(livello){
 
 
 function selectInventory(){
-    
-    if(inventarioPos<filtri){
+    var index;
+     if (livello<3){
+        index=livello;
+     }else{
+        index=3
+     }
+
+    if(inventarioPos<index){
     console.log(inventarioPos);
-    for (i=0; i<filtri; i++) {
+    for (i=0; i<index; i++) {
         var realIndex = i+1;
         if(i==inventarioPos){
             document.getElementById("inventory"+realIndex.toString()).style.border= "2px solid yellow";
@@ -1004,6 +1140,8 @@ function animate()
     
     }
     if(INIBITELO && (portaX+0.1>camera.position.x && camera.position.x>portaX-0.5) && (portaZ-0.9<camera.position.z && camera.position.z<portaZ+0.9)){
+        $('#hurt').fadeIn(75);
+    $('#hurt').fadeOut(350);
        nuovoLivello();
     }
     render();
