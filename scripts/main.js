@@ -34,48 +34,99 @@ var tween;
 // variabile per la gestione del frustum culling
 var frustum;
 
-//COLORI
-var rosso,blu,giallo;
-var viola,arancione,verde;
-var rossoscuro, bluscuro,gialloscuro;
-var violascuro, arancionescuro, verdescuro;
+//GRIGIO
 var grigio;
+var grigio = new THREE.Color().setHSL(0,0,0.2);
 
-    var grigio = new THREE.Color().setHSL(0,0,0.2);
-    
-    rosso = new THREE.Color().setHSL(0,1.0,0.5);
-    
-    blu = new THREE.Color().setHSL(0.67,1.0,0.5);
-    
-    giallo = new THREE.Color().setHSL(0.17,1.0,0.5);
-    
-    var rossoscuro = new THREE.Color();
-    satura(rosso,grigio,rossoscuro);
+//COLORI PRIMARI
+var rosso,blu,giallo;
+var rossoscuro, bluscuro,gialloscuro;
 
-    var bluscuro = new THREE.Color();
-    satura(blu,grigio,bluscuro);
+rosso = new THREE.Color().setHSL(0,1.0,0.5);
+    
+blu = new THREE.Color().setHSL(0.67,1.0,0.5);
+    
+giallo = new THREE.Color().setHSL(0.17,1.0,0.5);
+    
+var rossoscuro = new THREE.Color();
+satura(rosso,grigio,rossoscuro);
 
-    var gialloscuro = new THREE.Color();
-    satura(giallo,grigio,gialloscuro);
+var bluscuro = new THREE.Color();
+satura(blu,grigio,bluscuro);
 
-    arancione = new THREE.Color();
-    addColors(rosso,giallo,arancione);
+var gialloscuro = new THREE.Color();
+satura(giallo,grigio,gialloscuro);
+
+
+//COLORI SECONDARI
+var viola,arancione,verde;
+var violascuro, arancionescuro, verdescuro;
+
+arancione = new THREE.Color();
+addColors(rosso,giallo,arancione);
    
-    viola = new THREE.Color();
-    addColors(rosso,blu,viola);
+viola = new THREE.Color();
+addColors(rosso,blu,viola);
     
-    verde = new THREE.Color();
-    addColors(giallo,blu,verde);
+verde = new THREE.Color();
+addColors(giallo,blu,verde);
 
 
-    arancionescuro = new THREE.Color();
-    satura(arancione,grigio,arancionescuro);
+arancionescuro = new THREE.Color();
+satura(arancione,grigio,arancionescuro);
    
-    violascuro = new THREE.Color();
-    satura(viola,grigio,violascuro);
+violascuro = new THREE.Color();
+satura(viola,grigio,violascuro);
     
-    verdescuro = new THREE.Color();
-    satura(verde,grigio,verdescuro);
+verdescuro = new THREE.Color();
+satura(verde,grigio,verdescuro);
+
+
+//COLORI TERZIARI
+var violablu, violarosso;
+var arancionerosso, arancionegiallo;
+var verdeblu, verdegiallo;
+var violabluscuro, violarossoscuro;
+var arancionerossoscuro, arancionegialloscuro;
+var verdebluscuro, verdegialloscuro;
+
+
+violablu = new THREE.Color();
+addColors(viola,blu,violablu);
+
+violarosso = new THREE.Color();
+addColors(viola,rosso,violarosso);
+
+arancionerosso = new THREE.Color();
+addColors(arancione,rosso,arancionerosso);
+
+arancionegiallo = new THREE.Color();
+addColors(arancione,giallo,arancionegiallo);
+
+verdeblu = new THREE.Color();
+addColors(verde,blu,verdeblu);
+
+verdegiallo = new THREE.Color();
+addColors(verde,giallo,verdegiallo);
+
+violabluscuro = new THREE.Color();
+satura(violablu,grigio,violabluscuro);
+
+violarossoscuro = new THREE.Color();
+satura(violarosso,grigio,violarossoscuro);
+
+arancionerossoscuro = new THREE.Color();
+satura(arancionerosso,grigio,arancionerossoscuro);
+
+arancionegialloscuro = new THREE.Color();
+satura(arancionegiallo,grigio,arancionegialloscuro);
+
+verdegialloscuro = new THREE.Color();
+satura(verdegiallo,grigio,verdegialloscuro);
+
+verdebluscuro = new THREE.Color();
+satura(verdeblu,grigio,verdebluscuro);
+
 
 
 
@@ -85,7 +136,7 @@ var plane;
 var MuraEsterne, MuraInterne;
 var PortaN, PortaS, PortaO, PortaE;
 var faro;
-var filtroRisultato, filtroRosso, fitroGiallo, filtroBlu, filtroSaturazione;
+var filtroRisultato, filtroRosso, filtroRosso2, fitroGiallo, filtroGiallo2, filtroBlu, filtroBlu2, filtroSaturazione;
 var tavoloSE, tavoloNO, tavoloNE, tavoloSO;
 var torciaNE1,torciaNE2,torciaNE3,torciaNE4;
 var torciaNO1,torciaNO2,torciaNO3,torciaNO4;
@@ -104,6 +155,11 @@ var PortaE = new THREE.Vector3(7.5,3.5,0.8);
 var PortaO = new THREE.Vector3(7.5,3.5,10.8);
 
 var sphere_test;
+
+
+
+//SOUNDS
+var bgAudio, itemAudio, doorAudio, portalAudio, solveAudio,stepsAudio;
 
 
 // creo una istanza della classe Clock, per la gestione del tempo di esecuzione ecc
@@ -153,16 +209,20 @@ function init()
 
 
     //SOUNDS
-    var myAudio = new Audio('sounds/bg.wav'); 
-    myAudio.addEventListener('ended', function() {
+    bgAudio = new Audio('sounds/bg.wav'); 
+    bgAudio.addEventListener('ended', function() {
         this.currentTime = 0;
         this.play();
         }, false);
-    myAudio.play();
+    bgAudio.play();
+    doorAudio = new Audio('sounds/door.wav'); 
+    itemAudio = new Audio('sounds/pick.wav');
+    portalAudio = new Audio('sounds/warp.wav'); 
+    solvelAudio = new Audio('sounds/triangle.wav'); 
     
 
     // SCENE
-    // creo una istanza della classe Scene (radice del grafo della scena che avrà come nodi i modelli, luce, ecc della scena)
+    // creo una istanza della classe Scene (radice del grafo della scena che avrÃ  come nodi i modelli, luce, ecc della scena)
     scene = new THREE.Scene();
     ////////////
     $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
@@ -218,7 +278,7 @@ function init()
 
     //FARO
 
-    //creo la mesh prima per averne gi� la posizione da usare in spotLightPlacing()
+    //creo la mesh prima per averne già la posizione da usare in spotLightPlacing()
     faro = new THREE.Mesh();
     faro.position.set(14.45, 1.6, 9);
 
@@ -232,7 +292,7 @@ function init()
         faro.geometry = geometry;
         faro.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         faro.rotation.x = Math.PI / 2;
         faro.rotation.z = Math.PI / 2.5;
 
@@ -258,7 +318,7 @@ function init()
         tavoloSE.material = materials;
 
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         tavoloSE.rotation.x = -Math.PI/2;
         // lo posiziono sopra il piano
         
@@ -279,7 +339,7 @@ function init()
         tavoloNO.geometry = geometry;
         tavoloNO.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         tavoloNO.rotation.x = -Math.PI/2;
 
         // lo posiziono sopra il piano
@@ -302,7 +362,7 @@ function init()
         tavoloNE.geometry = geometry;
         tavoloNE.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         tavoloNE.rotation.x = -Math.PI/2;
         // lo posiziono sopra il piano
         
@@ -322,7 +382,7 @@ function init()
         tavoloSO.geometry = geometry;
         tavoloSO.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         tavoloSO.rotation.x = -Math.PI/2;
 
         // lo posiziono sopra il piano
@@ -342,7 +402,7 @@ function init()
         torciaNO1.geometry = geometry;
         torciaNO1.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaNO1.rotation.y = -Math.PI/2;
 
         // lo posiziono sopra il piano
@@ -362,7 +422,7 @@ function init()
         torciaNO2.geometry = geometry;
         torciaNO2.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaNO2.rotation.y = -Math.PI/2;
 
         // lo posiziono sopra il piano
@@ -419,7 +479,7 @@ function init()
         torciaNE1.geometry = geometry;
         torciaNE1.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaNE1.rotation.y = Math.PI;
 
         // lo posiziono sopra il piano
@@ -439,7 +499,7 @@ function init()
         torciaNE2.geometry = geometry;
         torciaNE2.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaNE2.rotation.y = Math.PI;
 
         // lo posiziono sopra il piano
@@ -459,7 +519,7 @@ function init()
         torciaNE3.geometry = geometry;
         torciaNE3.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaNE3.rotation.y = -Math.PI/2;
 
         // lo posiziono sopra il piano
@@ -479,7 +539,7 @@ function init()
         torciaNE4.geometry = geometry;
         torciaNE4.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaNE4.rotation.y = -Math.PI/2;
 
         // lo posiziono sopra il piano
@@ -499,7 +559,7 @@ function init()
         torciaSE1.geometry = geometry;
         torciaSE1.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaSE1.rotation.y = Math.PI/2;
 
         // lo posiziono sopra il piano
@@ -519,7 +579,7 @@ function init()
         torciaSE2.geometry = geometry;
         torciaSE2.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaSE2.rotation.y = Math.PI/2;
 
         // lo posiziono sopra il piano
@@ -539,7 +599,7 @@ function init()
         torciaSE3.geometry = geometry;
         torciaSE3.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaSE3.rotation.y = Math.PI;
 
         // lo posiziono sopra il piano
@@ -559,7 +619,7 @@ function init()
         torciaSE4.geometry = geometry;
         torciaSE4.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaSE4.rotation.y = Math.PI;
 
         // lo posiziono sopra il piano
@@ -580,7 +640,7 @@ function init()
         torciaSO3.geometry = geometry;
         torciaSO3.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaSO3.rotation.y = Math.PI/2;
 
         // lo posiziono sopra il piano
@@ -599,7 +659,7 @@ function init()
         torciaSO4.geometry = geometry;
         torciaSO4.material = materials;
 
-        // ruoto il modello di 180° sull'asse Y
+        // ruoto il modello di 180Â° sull'asse Y
         torciaSO4.rotation.y = Math.PI/2;
 
         // lo posiziono sopra il piano
@@ -674,6 +734,7 @@ function init()
                     intersected.position.y = 100;
                     intersected.position.z = 100;
                     document.getElementById("inventory3").style.backgroundImage = "url(textures/inventario/saturazione.jpg)"
+                    itemAudio.play();
                 }else{
                 if (intersected && intersected != faro && distance < 3 && inventarioPos!=2) {
                     //prendo l'oggetto
@@ -688,7 +749,9 @@ function init()
                         intersected.position.z = 100;
                         var realIndex = inventarioPos+1;
                         document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
-                        console.log("preso oggetto inventario libero");
+                        console.log("preso oggetto inventario libero"); 
+                        itemAudio.play();
+
                     }else{
                         if(intersected==oggettoFaro &&  inventarioPos!=2){
                             light_cone.material.uniforms.lightColor.value.set(inventario[inventarioPos].material.color);
@@ -705,6 +768,7 @@ function init()
                         var realIndex = inventarioPos+1;
                         document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
                         console.log("scambio oggetti");
+                        itemAudio.play();
 
                         }
                     }else{
@@ -720,7 +784,8 @@ function init()
                             light_cone.material.uniforms.lightColor.value.set(oggettoFaro.material.color);
                             document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
                             checkFaro();
-                            console.log("posizionato oggetto su faro");
+                            console.log("posizionato oggetto su faro"); 
+                            itemAudio.play();
                         }
 
                     }
@@ -739,6 +804,19 @@ function onDocumentMouseMove(e) {
 }
 
 function parseName(name1,name2){
+    
+    //NOMI COLORI PRIMARI
+    if((name1=="rosso" && name2=="rosso")){
+        return "rosso";
+    }
+      if((name1=="giallo" && name2=="giallo")){
+        return "giallo";
+    }
+      if((name1=="blu" && name2=="blu")){
+        return "blu";
+    }
+
+    //NOMI COLORI SECONDARI + SCURI
     if((name1=="rosso" && name2=="giallo") || (name1=="giallo" && name2=="rosso") ){
         return "arancione";
     }
@@ -757,6 +835,28 @@ function parseName(name1,name2){
     if((name1=="rossoscuro" && name2=="giallo") || (name1=="gialloscuro" && name2=="rosso") ){
         return "arancionescuro";
     }
+
+    //NOMI COLORI TERZIARI
+    if((name1=="arancione" && name2=="giallo") || (name1=="giallo" && name2=="arancione") ){
+        return "arancionegiallo";
+    }
+     if((name1=="arancione" && name2=="rosso") || (name1=="rosso" && name2=="arancione") ){
+        return "arancionerosso";
+    }
+
+    if((name1=="verde" && name2=="blu") || (name1=="blu" && name2=="verde") ){
+        return "verdeblu";
+    }
+    if((name1=="verde" && name2=="giallo") || (name1=="giallo" && name2=="verde") ){
+        return "verdegiallo";
+    }
+      if((name1=="viola" && name2=="blu") || (name1=="blu" && name2=="viola") ){
+        return "violablu";
+    }
+       if((name1=="viola" && name2=="rosso") || (name1=="rosso" && name2=="viola") ){
+        return "violarosso";
+    }
+
 }
 
 
@@ -784,6 +884,7 @@ function addColors(color1, color2, colorResult){
 function checkFaro() {
     if (oggettoFaro.material.color.getHex() == Porta_Chiusa.material.color.getHex()) {
         console.log("RISOLTO!")
+        solvelAudio.play();
         setDoorAnimation();
     } else {
         console.log("ERRORE!");
@@ -811,8 +912,8 @@ function onWindowResize()
 
 function setDoorAnimation()
 {
-     var myAudio = new Audio('sounds/door.wav'); 
-    myAudio.play();
+    
+    doorAudio.play();
     //posizione iniziale
     var position = {z: Porta_Chiusa.position.z};
     //posizione finale
@@ -835,29 +936,48 @@ function setDoorAnimation()
 
 function colorePorta(livello){
     switch(livello){
+        case 1:
+            var doorColor = new THREE.Color(rosso);
+            Porta_Chiusa.material.color = doorColor;
+            break;
+
+
         case 2:
             var doorColor = new THREE.Color(verde);
             Porta_Chiusa.material.color = doorColor;
             break;
 
         case 3:
-            var doorColor = new THREE.Color(viola);
+            var doorColor = new THREE.Color(arancionescuro);
             Porta_Chiusa.material.color = doorColor;
             break;
 
         case 4:
-            var doorColor = new THREE.Color(arancionescuro);
+            var doorColor = new THREE.Color(violablu);
+            Porta_Chiusa.material.color = doorColor;
+            break;
+
+        case 5:
+            var doorColor = new THREE.Color(verdegialloscuro);
             Porta_Chiusa.material.color = doorColor;
             break;
 
     }
 }
 
-function nuovoLivello(){
-    var myAudio = new Audio('sounds/warp.wav'); 
-    myAudio.play();
-    livello=livello+1;
+function nuovoLivello(livello){
+    
+    this.livello=livello;
     filtri=filtri+1;
+    if(livello>5){
+        $(renderer.domElement).fadeOut();
+        $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine').fadeOut();
+        $('#intro').fadeIn();
+        $('#intro').html('FINE');
+        bgAudio.pause();
+        return;
+        }
+    portalAudio.play();
     camera.rotation.y = Math.PI / 2;
     camera.position.x = spawnX;
     camera.position.y = spawnY;
@@ -868,9 +988,11 @@ function nuovoLivello(){
     colorePorta(livello);
 
     light_cone.material.uniforms.lightColor.value.set(0xffffff);
+    if(oggettoFaro){
     oggettoFaro.position.x=100;
     oggettoFaro.position.y=100;
     oggettoFaro.position.z=100;
+    }
     oggettoFaro=null;
     console.log(livello);
     setDefaultVariables(livello,filtri); //Dovrei fare livello+1 e filtri+1
@@ -903,7 +1025,7 @@ function setupHUD(livello){
 
     $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-     $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     break;
 
     case 4:
@@ -912,6 +1034,14 @@ function setupHUD(livello){
     $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
     break;
+
+    case 5:
+
+    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+    break;
+
 
     }
 }
@@ -1006,6 +1136,18 @@ function createFiltri(){
                 mura.push(filtroRosso);
                 scene.add(filtroRosso);
 
+                //  filtro Rosso 2
+                var filterColor = new THREE.Color(rosso);
+                filtroRosso2 = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroRosso2.position.set(100,100, 100);
+                filtroRosso2.name = "rosso";
+                filtroRosso2.color = filterColor;
+                oggettiPrendibili.push(filtroRosso2);
+                mura.push(filtroRosso2);
+                scene.add(filtroRosso2);
+
 
                 //  filtro Blu
                 var filterColor = new THREE.Color(blu);
@@ -1039,6 +1181,17 @@ function createFiltri(){
                 oggettiPrendibili.push(filtroGiallo);
                 mura.push(filtroGiallo);
                 scene.add(filtroGiallo); 
+
+                 //  filtro Giallo
+                var filterColor = new THREE.Color(giallo);
+                filtroGiallo2 = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/filtro.jpg'), color: filterColor}));
+                filtroGiallo2.position.set(100,100,100);
+                filtroGiallo2.name = "giallo";
+                oggettiPrendibili.push(filtroGiallo2);
+                mura.push(filtroGiallo2);
+                scene.add(filtroGiallo2); 
 
 
                 //  filtro Saturazione
@@ -1074,28 +1227,67 @@ function setFiltri(livello){
 
                 filtroGiallo.position.set(14, 2.4, 14);
 
+                 filtroRosso2.position.set(1, 3.4, 1);
+              
+                filtroBlu2.position.set(1, 3.4, 14);
+
+                filtroGiallo2.position.set(14, 3.4, 14);
+
                 break;
 
         case 3:             
               
+            
                 filtroRosso.position.set(1, 2.4, 1);
               
                 filtroBlu.position.set(1, 2.4, 14);
 
-                filtroBlu2.position.set(1,3.4,14);
-
                 filtroGiallo.position.set(14, 2.4, 14);
+
+                 filtroRosso2.position.set(1, 3.4, 1);
+              
+                filtroBlu2.position.set(1, 3.4, 14);
+
+                filtroGiallo2.position.set(14, 3.4, 14);
+
+                filtroSaturazione.position.set(14,2.4,1);
 
                 
                 break;
 
          case 4:             
               
+                
                 filtroRosso.position.set(1, 2.4, 1);
               
                 filtroBlu.position.set(1, 2.4, 14);
 
                 filtroGiallo.position.set(14, 2.4, 14);
+
+                 filtroRosso2.position.set(1, 3.4, 1);
+              
+                filtroBlu2.position.set(1, 3.4, 14);
+
+                filtroGiallo2.position.set(14, 3.4, 14);
+
+                filtroSaturazione.position.set(14,2.4,1);
+                
+                break;
+
+        case 5:             
+              
+                
+                filtroRosso.position.set(1, 2.4, 1);
+              
+                filtroBlu.position.set(1, 2.4, 14);
+
+                filtroGiallo.position.set(14, 2.4, 14);
+
+                 filtroRosso2.position.set(1, 3.4, 1);
+              
+                filtroBlu2.position.set(1, 3.4, 14);
+
+                filtroGiallo2.position.set(14, 3.4, 14);
 
                 filtroSaturazione.position.set(14,2.4,1);
                 
@@ -1140,9 +1332,11 @@ function animate()
     
     }
     if(INIBITELO && (portaX+0.1>camera.position.x && camera.position.x>portaX-0.5) && (portaZ-0.9<camera.position.z && camera.position.z<portaZ+0.9)){
+        
         $('#hurt').fadeIn(75);
-    $('#hurt').fadeOut(350);
-       nuovoLivello();
+        $('#hurt').fadeOut(350);
+        this.livello = this.livello+1
+       nuovoLivello(this.livello);
     }
     render();
     TWEEN.update();
