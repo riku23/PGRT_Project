@@ -580,18 +580,13 @@ function init()
 
 
 
-    //Ho bisogno della posizione del faro per posizionare la spotlight, quindi richiamo la funzione dopo
-    //piazzo la luce dal faretto
-    spotLightDoor();
-
-    //carico shader per mura
-
-
-
-
-
     
+    //piazzo la luce dal faretto
+    spotLightDoor()
 
+    //PARTICLE SYSTEM
+    //Inizializzo un particle group al quale legare poi i diversi emitter
+    
     // Create a particle group to add the emitter to.
     this.particleGroup = new SPE.Group({
         // Give the particles in this group a texture
@@ -599,18 +594,16 @@ function init()
         // How long should the particles live for? Measured in seconds.
         maxAge: 0.4
     });
-
-    scene.add(particleGroup.mesh); // Where `scene` is an instance of `THREE.Scene`.
-
+    scene.add(particleGroup.mesh); 
+    
+    //piazza le pointlight per le torce
     torchLight();
-
+    
+    //carico shader per mura
     cook_torrance(SORum, [torchSO3, torchSO4]);
     cook_torrance(SERum, [torchSE1, torchSE2, torchSE3, torchSE4]);
     cook_torrance(NERum, [torchNE1, torchNE2, torchNE3, torchNE4]);
     cook_torrance(NORum, [torchNO1, torchNO2, torchNO3, torchNO4]);
-
-
-
 
 
 }
