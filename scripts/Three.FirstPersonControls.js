@@ -16,7 +16,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	this.target = new THREE.Vector3( 0, 0, 0 );
 	this.domElement = ( domElement !== undefined ) ? domElement : document;
 	this.movementSpeed = 1.0;
-	this.lookSpeed = 0.5;
+	this.lookSpeed = 0.8;
 	this.autoForward = false;
 	this.activeLook = true;
 	this.autoSpeedFactor = 0.0;
@@ -234,8 +234,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		this.theta = this.lon * Math.PI / 180;
 
-		var targetPosition = this.target,
-			position = this.object.position;
+		var targetPosition = this.target;
+		position = this.object.position;
 
 		targetPosition.x = position.x + 100 * Math.sin( this.phi ) * Math.cos( this.theta );
 		targetPosition.y = position.y + 100 * Math.cos( this.phi );

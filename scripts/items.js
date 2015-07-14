@@ -255,7 +255,7 @@ function set_ambient_items(){
 
 }
 
-    function createFiltri(){
+function createFiltri(){
                 var filterTexture = THREE.ImageUtils.loadTexture('textures/filtro.jpg');
                 //filtro Risultato
                 var filterColor = new THREE.Color().setHSL(0,1.0,0.5);
@@ -365,34 +365,45 @@ function setFiltri(livello){
 
         case 2:             
               
-                filtroRosso.position.set(1, 2.4, 1);
+                filtroRosso.position.set(1, 2.4, 0.5);
+                filtroRosso.rotation.y = -Math.PI/4;
               
-                filtroBlu.position.set(1, 2.4, 14);
+                filtroRosso2.position.set(1, 2.4, 1.5);
+                filtroRosso2.rotation.y = Math.PI/4;
+                
+                filtroBlu.position.set(1, 2.4, 13.5);
+                filtroBlu.rotation.y = -Math.PI/4;
 
-                filtroGiallo.position.set(14, 2.4, 14);
+                filtroBlu2.position.set(1, 2.4, 14.5);
+                filtroBlu2.rotation.y = Math.PI/4;
 
-                 filtroRosso2.position.set(1, 3.4, 1);
-              
-                filtroBlu2.position.set(1, 3.4, 14);
+                filtroGiallo.position.set(14, 2.4, 13.5);
+                filtroGiallo.rotation.y = Math.PI/4;
 
-                filtroGiallo2.position.set(14, 3.4, 14);
+                filtroGiallo2.position.set(14, 2.4, 14.5);
+                filtroGiallo2.rotation.y = -Math.PI/4;
 
                 break;
 
         case 3:             
               
-            
-                filtroRosso.position.set(1, 2.4, 1);
+                filtroRosso.position.set(1, 2.4, 0.5);
+                filtroRosso.rotation.y = -Math.PI/4;
               
-                filtroBlu.position.set(1, 2.4, 14);
+                filtroRosso2.position.set(1, 2.4, 1.5);
+                filtroRosso2.rotation.y = Math.PI/4;
+                
+                filtroBlu.position.set(1, 2.4, 13.5);
+                filtroBlu.rotation.y = -Math.PI/4;
 
-                filtroGiallo.position.set(14, 2.4, 14);
+                filtroBlu2.position.set(1, 2.4, 14.5);
+                filtroBlu2.rotation.y = Math.PI/4;
 
-                 filtroRosso2.position.set(1, 3.4, 1);
-              
-                filtroBlu2.position.set(1, 3.4, 14);
+                filtroGiallo.position.set(14, 2.4, 13.5);
+                filtroGiallo.rotation.y = Math.PI/4;
 
-                filtroGiallo2.position.set(14, 3.4, 14);
+                filtroGiallo2.position.set(14, 2.4, 14.5);
+                filtroGiallo2.rotation.y = -Math.PI/4;
 
                 filtroSaturazione.position.set(14,2.4,1);
 
@@ -402,17 +413,23 @@ function setFiltri(livello){
          case 4:             
               
                 
-                filtroRosso.position.set(1, 2.4, 1);
+                filtroRosso.position.set(1, 2.4, 0.5);
+                filtroRosso.rotation.y = -Math.PI/4;
               
-                filtroBlu.position.set(1, 2.4, 14);
+                filtroRosso2.position.set(1, 2.4, 1.5);
+                filtroRosso2.rotation.y = Math.PI/4;
+                
+                filtroBlu.position.set(1, 2.4, 13.5);
+                filtroBlu.rotation.y = -Math.PI/4;
 
-                filtroGiallo.position.set(14, 2.4, 14);
+                filtroBlu2.position.set(1, 2.4, 14.5);
+                filtroBlu2.rotation.y = Math.PI/4;
 
-                 filtroRosso2.position.set(1, 3.4, 1);
-              
-                filtroBlu2.position.set(1, 3.4, 14);
+                filtroGiallo.position.set(14, 2.4, 13.5);
+                filtroGiallo.rotation.y = Math.PI/4;
 
-                filtroGiallo2.position.set(14, 3.4, 14);
+                filtroGiallo2.position.set(14, 2.4, 14.5);
+                filtroGiallo2.rotation.y = -Math.PI/4;
 
                 filtroSaturazione.position.set(14,2.4,1);
                 
@@ -421,17 +438,23 @@ function setFiltri(livello){
         case 5:             
               
                 
-                filtroRosso.position.set(1, 2.4, 1);
+                filtroRosso.position.set(1, 2.4, 0.5);
+                filtroRosso.rotation.y = -Math.PI/4;
               
-                filtroBlu.position.set(1, 2.4, 14);
+                filtroRosso2.position.set(1, 2.4, 1.5);
+                filtroRosso2.rotation.y = Math.PI/4;
+                
+                filtroBlu.position.set(1, 2.4, 13.5);
+                filtroBlu.rotation.y = -Math.PI/4;
 
-                filtroGiallo.position.set(14, 2.4, 14);
+                filtroBlu2.position.set(1, 2.4, 14.5);
+                filtroBlu2.rotation.y = Math.PI/4;
 
-                 filtroRosso2.position.set(1, 3.4, 1);
-              
-                filtroBlu2.position.set(1, 3.4, 14);
+                filtroGiallo.position.set(14, 2.4, 13.5);
+                filtroGiallo.rotation.y = Math.PI/4;
 
-                filtroGiallo2.position.set(14, 3.4, 14);
+                filtroGiallo2.position.set(14, 2.4, 14.5);
+                filtroGiallo2.rotation.y = -Math.PI/4;
 
                 filtroSaturazione.position.set(14,2.4,1);
                 
