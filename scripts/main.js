@@ -137,7 +137,7 @@ function init()
     // CAMERA
     // parametri: FOV, widht, height, near, far
     // Imposto un valore di near molto + basso, in modo da evitare l'effetto del culling prima della collisione con il corpo rigido
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.2, 100000);
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.2, 100);
     camera.rotation.y = Math.PI / 2;
     camera.position.x = spawnX;
     camera.position.y = spawnY;
@@ -255,6 +255,7 @@ $(document).click(function (e) {
                         inventario[inventarioPos].position.x = intersected.position.x;
                         inventario[inventarioPos].position.y = intersected.position.y;
                         inventario[inventarioPos].position.z = intersected.position.z;
+                        inventario[inventarioPos].rotation.y = intersected.rotation.y;
                         intersected.position.x = 100;
                         intersected.position.y = 100;
                         intersected.position.z = 100;
@@ -271,6 +272,7 @@ $(document).click(function (e) {
                             inventario[inventarioPos].position.x = faro.position.x-0.3;
                             inventario[inventarioPos].position.y = faro.position.y + 1.24;
                             inventario[inventarioPos].position.z = faro.position.z+0.03;
+                            inventario[inventarioPos].rotation.y = 0;                            
                             oggettoFaro = inventario[inventarioPos];
                             console.log(oggettoFaro.material.color.getHex() +" - " + Porta_Chiusa.material.color.getHex());
                             inventario[inventarioPos]=null;
@@ -362,9 +364,7 @@ function nuovoLivello(livello){
     camera.position.x = spawnX;
     camera.position.y = spawnY;
     camera.position.z = spawnZ;
-    Porta_Chiusa.position.x = portaX;
-    Porta_Chiusa.position.y = portaY;
-    Porta_Chiusa.position.z = portaZ;
+    Porta_Chiusa.position.set(portaX,portaY,portaZ);
     colorePorta(livello);
 
     light_cone.material.uniforms.lightColor.value.set(0xffffff);

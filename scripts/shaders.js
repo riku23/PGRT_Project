@@ -57,7 +57,7 @@ function cook_torrance(room, lights) {
 
 
     var diffuseColor = new THREE.Color();
-    diffuseColor.setRGB(219/255, 219/255, 112/255);
+    diffuseColor.setRGB(255/255, 94/255, 0);
 
     if (lights.length == 2) {
         //alert("2luci");
