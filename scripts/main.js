@@ -66,7 +66,7 @@ var sphere_test;
 
 
 //SOUNDS
-var bgAudio, itemAudio, doorAudio, portalAudio, solveAudio,stepsAudio;
+var bgAudio, itemAudio, doorAudio, portalAudio, solveAudio, stepsAudio;
 
 
 // creo una istanza della classe Clock, per la gestione del tempo di esecuzione ecc
@@ -110,17 +110,17 @@ function init()
 
 
     //SOUNDS
-    bgAudio = new Audio('sounds/bg.wav'); 
-    bgAudio.addEventListener('ended', function() {
+    bgAudio = new Audio('sounds/bg.wav');
+    bgAudio.addEventListener('ended', function () {
         this.currentTime = 0;
         this.play();
-        }, false);
+    }, false);
     bgAudio.play();
-    doorAudio = new Audio('sounds/door.wav'); 
+    doorAudio = new Audio('sounds/door.wav');
     itemAudio = new Audio('sounds/pick.wav');
-    portalAudio = new Audio('sounds/warp.wav'); 
-    solvelAudio = new Audio('sounds/triangle.wav'); 
-    
+    portalAudio = new Audio('sounds/warp.wav');
+    solvelAudio = new Audio('sounds/triangle.wav');
+
 
 
     // SCENE
@@ -128,10 +128,12 @@ function init()
     scene = new THREE.Scene();
     ////////////
     $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
-    document.getElementById("combine").onclick = function() {combine()};
-        // Set up "hurt" flash
+    document.getElementById("combine").onclick = function () {
+        combine()
+    };
+    // Set up "hurt" flash
     $('body').append('<div id="hurt"></div>');
-    $('#hurt').css({width: window.innerWidth, height: window.innerHeight,});
+    $('#hurt').css({width: window.innerWidth, height: window.innerHeight, });
 
 
     // CAMERA
@@ -183,7 +185,7 @@ function init()
 
     //PARTICLE SYSTEM
     //Inizializzo un particle group al quale legare poi i diversi emitter
-    
+
     // Create a particle group to add the emitter to.
     this.particleGroupFlame = new SPE.Group({
         // Give the particles in this group a texture
@@ -192,19 +194,27 @@ function init()
         maxAge: 0.4
     });
     scene.add(particleGroupFlame.mesh);
-    
+
+    this.particleGroupFog = new SPE.Group({
+        texture: THREE.ImageUtils.loadTexture('images/cloudSml.png'),
+        maxAge: 10
+    });
+
+    scene.add(particleGroupFog.mesh);
+
+
     fogGenerator();
-    
+
     //piazza le pointlight per le torce
     torchLight();
-    
+
     //carico shader per mura
     cook_torrance(SORum, [torchSO3, torchSO4]);
     cook_torrance(SERum, [torchSE1, torchSE2, torchSE3, torchSE4]);
     cook_torrance(NERum, [torchNE1, torchNE2, torchNE3, torchNE4]);
     cook_torrance(NORum, [torchNO1, torchNO2, torchNO3, torchNO4]);
 
-
+    
 }
 
 
@@ -215,21 +225,21 @@ $(document).click(function (e) {
     raycaster.setFromCamera(mouse, camera);
     intersections = raycaster.intersectObjects(oggettiPrendibili);
 
-        if (e.which == 1 && RISOLTO == false) {
+    if (e.which == 1 && RISOLTO == false) {
 
-             if (intersections.length > 0) {
-                //inventario libero
-                intersected = intersections[ 0 ].object;
-                var distance = intersections[0].distance;
-                if(intersected.name=="saturazione"){
-                    inventario[2]=filtroSaturazione;
-                    intersected.position.x = 100;
-                    intersected.position.y = 100;
-                    intersected.position.z = 100;
-                    document.getElementById("inventory3").style.backgroundImage = "url(textures/inventario/saturazione.jpg)"
-                    itemAudio.play();
-                }else{
-                if (intersected && intersected != faro && distance < 3 && inventarioPos!=2) {
+        if (intersections.length > 0) {
+            //inventario libero
+            intersected = intersections[ 0 ].object;
+            var distance = intersections[0].distance;
+            if (intersected.name == "saturazione") {
+                inventario[2] = filtroSaturazione;
+                intersected.position.x = 100;
+                intersected.position.y = 100;
+                intersected.position.z = 100;
+                document.getElementById("inventory3").style.backgroundImage = "url(textures/inventario/saturazione.jpg)"
+                itemAudio.play();
+            } else {
+                if (intersected && intersected != faro && distance < 3 && inventarioPos != 2) {
 
                     //prendo l'oggetto
                     if (inventario[inventarioPos] == null) {
@@ -242,13 +252,13 @@ $(document).click(function (e) {
                         intersected.position.y = 100;
                         intersected.position.z = 100;
 
-                        var realIndex = inventarioPos+1;
-                        document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
-                        console.log("preso oggetto inventario libero"); 
+                        var realIndex = inventarioPos + 1;
+                        document.getElementById("inventory" + realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
+                        console.log("preso oggetto inventario libero");
                         itemAudio.play();
 
-                    }else{
-                        if(intersected==oggettoFaro &&  inventarioPos!=2){
+                    } else {
+                        if (intersected == oggettoFaro && inventarioPos != 2) {
 
                             light_cone.material.uniforms.lightColor.value.set(inventario[inventarioPos].material.color);
                             oggettoFaro = inventario[inventarioPos];
@@ -267,24 +277,24 @@ $(document).click(function (e) {
                         console.log("scambio oggetti");
                         itemAudio.play();
 
-                        }
-                    }else{
-                        if (inventario[inventarioPos] != null &&intersected && intersected == faro && distance < 3 && oggettoFaro == null  &&  inventarioPos!=2) {
-                            //se interseco il faro posiziono l'oggetto in inventario su di esso
-                            inventario[inventarioPos].position.x = faro.position.x-0.3;
-                            inventario[inventarioPos].position.y = faro.position.y + 1.24;
-                            inventario[inventarioPos].position.z = faro.position.z+0.03;
-                            inventario[inventarioPos].rotation.y = 0;                            
-                            oggettoFaro = inventario[inventarioPos];
-                            console.log(oggettoFaro.material.color.getHex() +" - " + Porta_Chiusa.material.color.getHex());
-                            inventario[inventarioPos]=null;
-                            var realIndex = inventarioPos+1;
-                            light_cone.material.uniforms.lightColor.value.set(oggettoFaro.material.color);
-                            document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
-                            checkFaro();
-                            console.log("posizionato oggetto su faro"); 
-                            itemAudio.play();
-                        }
+                    }
+                } else {
+                    if (inventario[inventarioPos] != null && intersected && intersected == faro && distance < 3 && oggettoFaro == null && inventarioPos != 2) {
+                        //se interseco il faro posiziono l'oggetto in inventario su di esso
+                        inventario[inventarioPos].position.x = faro.position.x - 0.3;
+                        inventario[inventarioPos].position.y = faro.position.y + 1.24;
+                        inventario[inventarioPos].position.z = faro.position.z + 0.03;
+                        inventario[inventarioPos].rotation.y = 0;
+                        oggettoFaro = inventario[inventarioPos];
+                        console.log(oggettoFaro.material.color.getHex() + " - " + Porta_Chiusa.material.color.getHex());
+                        inventario[inventarioPos] = null;
+                        var realIndex = inventarioPos + 1;
+                        light_cone.material.uniforms.lightColor.value.set(oggettoFaro.material.color);
+                        document.getElementById("inventory" + realIndex.toString()).style.backgroundImage = "";
+                        checkFaro();
+                        console.log("posizionato oggetto su faro");
+                        itemAudio.play();
+                    }
 
                 }
             }
@@ -331,8 +341,8 @@ function onWindowResize()
 
 }
 
-function setDoorAnimation(){
-    
+function setDoorAnimation() {
+
     doorAudio.play();
     //posizione iniziale
     var position = {z: Porta_Chiusa.position.z};
@@ -354,22 +364,22 @@ function setDoorAnimation(){
     RISOLTO = true;
 }
 
-function nuovoLivello(livello){
-    
-    this.livello=livello;
+function nuovoLivello(livello) {
+
+    this.livello = livello;
     portalAudio.play();
     camera.rotation.y = Math.PI / 2;
-    camera.position.set(spawnX,spawnY,spawnZ);
-    Porta_Chiusa.position.set(portaX,portaY,portaZ);
+    camera.position.set(spawnX, spawnY, spawnZ);
+    Porta_Chiusa.position.set(portaX, portaY, portaZ);
     colorePorta(livello);
 
     light_cone.material.uniforms.lightColor.value.set(0xffffff);
-    if(oggettoFaro){
-    oggettoFaro.position.x=100;
-    oggettoFaro.position.y=100;
-    oggettoFaro.position.z=100;
+    if (oggettoFaro) {
+        oggettoFaro.position.x = 100;
+        oggettoFaro.position.y = 100;
+        oggettoFaro.position.z = 100;
     }
-    oggettoFaro=null;
+    oggettoFaro = null;
     console.log(livello);
     setDefaultVariables(livello, filtri); //Dovrei fare livello+1 e filtri+1
     setupHUD(livello);
@@ -403,60 +413,62 @@ function setupHUD(livello) {
             $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
             break;
 
-    case 4:
+        case 4:
 
-    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    break;
+            $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+            $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+            $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+            break;
 
-    case 5:
+        case 5:
 
-    $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
-    break;
+            $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+            $('body').append('<div id="inventory2" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+            $('body').append('<div id="inventory3" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+            break;
 
 
     }
 }
 
 
-function svuotaInventario(){
-     var index;
-     if (livello<3){
-        index=livello;
-     }else{
-        index=3
-     }
-     for(i=0;i<index;i++){
-            var realIndex = i+1;
-            document.getElementById("inventory"+realIndex.toString()).style.backgroundImage = "";
-            inventario[i]=null;
-        }
+function svuotaInventario() {
+    var index;
+    if (livello < 3) {
+        index = livello;
+    } else {
+        index = 3
+    }
+    for (i = 0; i < index; i++) {
+        var realIndex = i + 1;
+        document.getElementById("inventory" + realIndex.toString()).style.backgroundImage = "";
+        inventario[i] = null;
+    }
 
 }
 
 
 
 
-function selectInventory(){
+function selectInventory() {
     var index;
-     if (livello<3){
-        index=livello;
-     }else{
-        index=3
-     }
+    if (livello < 3) {
+        index = livello;
+    } else {
+        index = 3
+    }
 
-    if(inventarioPos<index){
-    console.log(inventarioPos);
-    for (i=0; i<index; i++) {
-        var realIndex = i+1;
-        if(i==inventarioPos){
-            document.getElementById("inventory"+realIndex.toString()).style.border= "2px solid yellow";
-        }else{
-            document.getElementById("inventory"+realIndex.toString()).style.border= "1px solid black";
-        }}}
+    if (inventarioPos < index) {
+        console.log(inventarioPos);
+        for (i = 0; i < index; i++) {
+            var realIndex = i + 1;
+            if (i == inventarioPos) {
+                document.getElementById("inventory" + realIndex.toString()).style.border = "2px solid yellow";
+            } else {
+                document.getElementById("inventory" + realIndex.toString()).style.border = "1px solid black";
+            }
+        }
+    }
 
 }
 
@@ -475,27 +487,28 @@ function animate()
 
     }
 
-    if(RISOLTO && (portaX+0.1>camera.position.x && camera.position.x>portaX-0.5) && (portaZ-0.9<camera.position.z && camera.position.z<portaZ+0.9)){
-        
-        this.livello = this.livello+1
-        filtri=filtri+1;
-        if(livello>5){
-        $(renderer.domElement).fadeOut();
-        $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine').fadeOut();
-        $('#intro').fadeIn();
-        $('#intro').html('FINE');
-        bgAudio.pause();
-        return;
+    if (RISOLTO && (portaX + 0.1 > camera.position.x && camera.position.x > portaX - 0.5) && (portaZ - 0.9 < camera.position.z && camera.position.z < portaZ + 0.9)) {
+
+        this.livello = this.livello + 1
+        filtri = filtri + 1;
+        if (livello > 5) {
+            $(renderer.domElement).fadeOut();
+            $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine').fadeOut();
+            $('#intro').fadeIn();
+            $('#intro').html('FINE');
+            bgAudio.pause();
+            return;
         }
         $('#hurt').fadeIn(75);
         $('#hurt').fadeOut(350);
 
-       nuovoLivello(this.livello);
+        nuovoLivello(this.livello);
     }
     render();
     TWEEN.update();
-    particleGroupFlame.tick(clock.getDelta());
-    particleGroupFog.tick(clock.getDelta());
+    var dt = clock.getDelta();
+    particleGroupFlame.tick(dt);
+    particleGroupFog.tick(dt);
 }
 
 // funzione di rendering
