@@ -361,9 +361,7 @@ function nuovoLivello(livello){
     this.livello=livello;
     portalAudio.play();
     camera.rotation.y = Math.PI / 2;
-    camera.position.x = spawnX;
-    camera.position.y = spawnY;
-    camera.position.z = spawnZ;
+    camera.position.set(spawnX,spawnY,spawnZ);
     Porta_Chiusa.position.set(portaX,portaY,portaZ);
     colorePorta(livello);
 

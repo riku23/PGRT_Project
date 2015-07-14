@@ -185,6 +185,11 @@ function combine() {
             }
             satura(inventario[inventarioPos].material.color,inventario[2].material.color,filtroRisultato.material.color);
             var nome =inventario[inventarioPos].name + "scuro";
+            if(nome==null){
+                alert("colore non valido");               
+                nuovoLivello(livello);
+                return;
+            }
             svuotaInventario();
             console.log(nome);
             document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
@@ -195,6 +200,12 @@ function combine() {
             if(inventario[0] && inventario[1] && !inventario[2]){
                 addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
                 var nome = parseName(inventario[0].name,inventario[1].name);
+                if(nome==null){
+                alert("colore non valido");
+                nuovoLivello(livello);
+
+                return;
+            }
                 svuotaInventario();
                 console.log(nome);
                 document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
@@ -206,6 +217,11 @@ function combine() {
             if(inventario[0] && inventario[1] && inventario[2]){
                 addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
                 var nome = parseName(inventario[0].name,inventario[1].name);
+                if(nome==null){
+                alert("colore non valido");
+                nuovoLivello(livello);
+                return;
+            }
                 console.log(nome);
                 document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
                 filtroRisultato.name= nome;
