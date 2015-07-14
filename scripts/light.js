@@ -36,7 +36,7 @@ function pointLightGenerator(x, z, target) {
     pointLight.intensity = 0.2;
     scene.add(pointLight);
 
-    lightSource(pointLight);
+    //lightSource(pointLight);
 
     flameGenerator(pointLight);
 
@@ -45,6 +45,7 @@ function pointLightGenerator(x, z, target) {
     return pointLight;
 
 }
+
 
 function flameGenerator(pointLight) {
 
@@ -65,8 +66,9 @@ function flameGenerator(pointLight) {
 
 
 // Add the emitter to the group.
-    particleGroup.addEmitter(particleEmitter);
+    particleGroupFlame.addEmitter(particleEmitter);
 }
+
 //crea una spotlight in origin e che punta a target
 //Piazza anche la source sphere
 function spotLightGenerator(origin, target) {
@@ -80,14 +82,14 @@ function spotLightGenerator(origin, target) {
     spotLight.shadowMapHeight = 1024;
 
     spotLight.shadowCameraNear = 0.1;
-    spotLight.shadowCameraFar = 4000;
+    spotLight.shadowCameraFar = 10;
     spotLight.shadowCameraFov = 30;
 
     scene.add(spotLight);
     //spotLight.shadowCameraVisible = true;
     spotLight.target = target;
     scene.add(spotLight);
-    lightSource(spotLight);
+    //lightSource(spotLight);
 }
 
 //crea la spotlight per il FARETTO
@@ -111,7 +113,7 @@ function spotLightDoor() {
     doorLight.shadowMapHeight = 1024
 
 
-    doorLight.shadowCameraVisible = true;
+    //doorLight.shadowCameraVisible = true;
     doorLight.distance = 10;
 
     doorLight.target = Porta_Chiusa;
@@ -143,10 +145,12 @@ function spotLightDoor() {
 
 }
 
+
 function computeShadow(object) {
     object.receiveShadow = true;
     object.castShadow = true;
 }
+
 
 function torchLight() {
 
@@ -177,6 +181,7 @@ function torchLight() {
     torchSE4 = pointLightGenerator(PortaS.x + 1.82 + 1.59, PortaS.z - torch_distance, tavoloSE);
 
 }
+
 
 //posiziona sfera che evidenzi la sorgente della luce
 function lightSource(source) {

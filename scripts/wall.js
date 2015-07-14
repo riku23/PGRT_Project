@@ -4,7 +4,7 @@ function set_ambient() {
 
     // PIANO - MESH
     // dimensioni del piano
-    var side_plane = 25;
+    var side_plane = 15;
 
     var texture, plane_material;
 

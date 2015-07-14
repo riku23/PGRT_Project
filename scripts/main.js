@@ -179,19 +179,21 @@ function init()
     createFiltri();
     set_ambient_items();
     setFiltri(livello);
-    spotLightDoor()
+    spotLightDoor();
 
     //PARTICLE SYSTEM
     //Inizializzo un particle group al quale legare poi i diversi emitter
     
     // Create a particle group to add the emitter to.
-    this.particleGroup = new SPE.Group({
+    this.particleGroupFlame = new SPE.Group({
         // Give the particles in this group a texture
         texture: THREE.ImageUtils.loadTexture('images/smokeparticle.png'),
         // How long should the particles live for? Measured in seconds.
         maxAge: 0.4
     });
-    scene.add(particleGroup.mesh); 
+    scene.add(particleGroupFlame.mesh);
+    
+    fogGenerator();
     
     //piazza le pointlight per le torce
     torchLight();
@@ -327,8 +329,7 @@ function onWindowResize()
 
 }
 
-function setDoorAnimation()
-{
+function setDoorAnimation(){
     
     doorAudio.play();
     //posizione iniziale
@@ -350,9 +351,6 @@ function setDoorAnimation()
     tween.start();
     RISOLTO = true;
 }
-
-
-
 
 function nuovoLivello(livello){
     
@@ -498,7 +496,8 @@ function animate()
     }
     render();
     TWEEN.update();
-    particleGroup.tick(clock.getDelta());
+    particleGroupFlame.tick(clock.getDelta());
+    particleGroupFog.tick(clock.getDelta());
 }
 
 // funzione di rendering
