@@ -14,7 +14,7 @@ var raycaster = new THREE.Raycaster();
 // variabili per la camera
 var camera, controls,
         MOVESPEED = 5,
-        LOOKSPEED = 0.05;
+        LOOKSPEED = 0.08;
 var spawnX = 14, spawnY = 3, spawnZ = 12;
 var RISOLTO;
 var oggettoFaro;
@@ -368,8 +368,15 @@ function nuovoLivello(livello) {
 
     this.livello = livello;
     portalAudio.play();
+
     camera.rotation.y = Math.PI / 2;
     camera.position.set(spawnX, spawnY, spawnZ);
+     //CONTROLLI
+    controls = new THREE.FirstPersonControls(camera, document);
+    controls.movementSpeed = MOVESPEED;
+    controls.lookSpeed = LOOKSPEED;
+    var delta = clock.getDelta(), speed = delta * MOVESPEED;
+    controls.update(delta); // Move camera
     Porta_Chiusa.position.set(portaX, portaY, portaZ);
     colorePorta(livello);
 
@@ -517,8 +524,8 @@ function render()
     var delta = clock.getDelta(), speed = delta * MOVESPEED;
     controls.update(delta); // Move camera
     renderer.render(scene, camera);
-    /*frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
      for (var i = 0; i < mura.length; i++) {
      mura[i].visible = frustum.intersectsObject(mura[i]);
-     }*/
+     }
 }
