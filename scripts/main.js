@@ -583,13 +583,10 @@ function init()
     //Ho bisogno della posizione del faro per posizionare la spotlight, quindi richiamo la funzione dopo
     //piazzo la luce dal faretto
     spotLightDoor();
-    torchLight();
+
     //carico shader per mura
 
-    cook_torrance(SORum, [torchSO3, torchSO4]);
-    cook_torrance(SERum, [torchSE1, torchSE2, torchSE3, torchSE4]);
-    cook_torrance(NERum, [torchNE1, torchNE2, torchNE3, torchNE4]);
-    cook_torrance(NORum, [torchNO1, torchNO2, torchNO3, torchNO4]);
+
 
 
     // Create a particle group to add the emitter to.
@@ -597,32 +594,21 @@ function init()
         // Give the particles in this group a texture
         texture: THREE.ImageUtils.loadTexture('images/smokeparticle.png'),
         // How long should the particles live for? Measured in seconds.
-        maxAge: 5
+        maxAge: 0.3
     });
-
-// Create a single emitter
-    var particleEmitter = new SPE.Emitter({
-        type: 'cube',
-        position: new THREE.Vector3(3, 2, 12),
-        acceleration: new THREE.Vector3(0, 10, 0),
-        velocity: new THREE.Vector3(0, 15, 0),
-        particlesPerSecond: 100,
-        sizeStart: 10,
-        sizeEnd: 0,
-        opacityStart: 1,
-        opacityEnd: 0,
-        colorStart: new THREE.Color('red'),
-        colorEnd: new THREE.Color('yellow')
-    });
-
-// Add the emitter to the group.
-    particleGroup.addEmitter(particleEmitter);
-
-// Add the particle group to the scene so it can be drawn.
+    torchLight();
+    // Add the particle group to the scene so it can be drawn.
     scene.add(particleGroup.mesh); // Where `scene` is an instance of `THREE.Scene`.
 
 
-    
+    cook_torrance(SORum, [torchSO3, torchSO4]);
+    cook_torrance(SERum, [torchSE1, torchSE2, torchSE3, torchSE4]);
+    cook_torrance(NERum, [torchNE1, torchNE2, torchNE3, torchNE4]);
+    cook_torrance(NORum, [torchNO1, torchNO2, torchNO3, torchNO4]);
+
+
+
+
 
 }
 
@@ -1055,8 +1041,8 @@ function render()
     var delta = clock.getDelta(), speed = delta * MOVESPEED;
     controls.update(delta); // Move camera
     renderer.render(scene, camera);
-    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
-    for (var i = 0; i < mura.length; i++) {
-        mura[i].visible = frustum.intersectsObject(mura[i]);
-    }
+    /*frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+     for (var i = 0; i < mura.length; i++) {
+     mura[i].visible = frustum.intersectsObject(mura[i]);
+     }*/
 }

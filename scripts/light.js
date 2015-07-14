@@ -38,14 +38,36 @@ function pointLightGenerator(x, z, target) {
 
     lightSource(pointLight);
 
+    flameGenerator(pointLight);
 
-
-    spotLightGenerator(pointLight,target);
+    spotLightGenerator(pointLight, target);
 
     return pointLight;
 
 }
+function flameGenerator(pointLight) {
+  
+    // Create a single emitter
+    var particleEmitter = new SPE.Emitter({
+        type: 'cube',
+        position: new THREE.Vector3(pointLight.position.x,pointLight.position.y,pointLight.position.z),
+        acceleration: new THREE.Vector3(0, 2, 0),
+        velocity: new THREE.Vector3(0, 2, 0),
+        particlesPerSecond: 2000,
+        sizeStart: 0.5,
+        sizeEnd: 0,
+        opacityStart: 1,
+        opacityEnd: 0,
+        colorStart: new THREE.Color('red'),
+        colorEnd: new THREE.Color('yellow')
+    });
 
+
+// Add the emitter to the group.
+    particleGroup.addEmitter(particleEmitter);
+
+
+}
 //crea una spotlight in origin e che punta a target
 //Piazza anche la source sphere
 function spotLightGenerator(origin, target) {
@@ -54,21 +76,20 @@ function spotLightGenerator(origin, target) {
 
     spotLight.position.set(origin.position.x, origin.position.y, origin.position.z);
     spotLight.castShadow = true;
-    
+
     spotLight.shadowMapWidth = 1024;
     spotLight.shadowMapHeight = 1024;
-    
+
     spotLight.shadowCameraNear = 0.1;
     spotLight.shadowCameraFar = 4000;
     spotLight.shadowCameraFov = 30;
-    
-    scene.add( spotLight );
+
+    scene.add(spotLight);
     spotLight.shadowCameraVisible = true;
     spotLight.target = target;
     scene.add(spotLight);
     lightSource(spotLight);
 }
-
 
 //crea la spotlight per il FARETTO
 function spotLightDoor() {
@@ -108,7 +129,7 @@ function spotLightDoor() {
 
     var material = new THREEx.VolumetricSpotLightMaterial();
     light_cone = new THREE.Mesh(geometry, material);
-    light_cone.position.set(doorLight.position.x - (geometry.parameters.height / 2)-0.26, doorLight.position.y-0.08, doorLight.position.z-0.125);
+    light_cone.position.set(doorLight.position.x - (geometry.parameters.height / 2) - 0.26, doorLight.position.y - 0.08, doorLight.position.z - 0.125);
 
     light_cone.lookAt(new THREE.Vector3(doorLight.target.position.x, 100, doorLight.target.position.z));
     material.uniforms.lightColor.value.set(0xffffff);
@@ -121,10 +142,6 @@ function spotLightDoor() {
 
     lightSource(doorLight);
 
-
-
-
-   
 }
 
 function computeShadow(object) {
@@ -132,9 +149,7 @@ function computeShadow(object) {
     object.castShadow = true;
 }
 
-
-
-function torchLight(){
+function torchLight() {
 
 
     // PIAZZAMENTO LUCI TORCE PORTA NORD
@@ -161,36 +176,6 @@ function torchLight(){
 
     torchSE3 = pointLightGenerator(PortaS.x, PortaS.z - torch_distance, tavoloSE);
     torchSE4 = pointLightGenerator(PortaS.x + 1.82 + 1.59, PortaS.z - torch_distance, tavoloSE);
-
-}
-
-function orientate_cone() {
-    //calcolo dell'orientamento del cilindro
-    //cateto dell'altezza 
-    var c = Math.abs(doorLight.target.position.y - light_cone.position.y);
-    //alert(c);
-    //teorema di pitagora per calcolare l'altro cateto
-    var b = Math.sqrt(
-            Math.pow(Math.abs(((doorLight.position.x) - (doorLight.target.position.x))), 2) +
-            Math.pow(Math.abs((doorLight.position.z - doorLight.target.position.z)), 2));
-    //alert(b);
-    //calcolo rotazione lungo asse xs
-    var alfa = Math.atan((c / b));
-    //alert(alfa);
-    light_cone.rotation.z = +alfa - Math.PI / 2;
-    //light_cone.rotation.x = 120;
-    //light_cone.rotation.z = -Math.PI/2;
-
-    //Devo spostare il cono in avanti e in alto/basso per farlo corrispondere al fascio di luce
-    light_cone.position.x = light_cone.position.x - (cylinder.parameters.height / 2);
-
-    //calcolo la differenza sulle y e sulle x tra la luce e il target
-    var a = Math.abs(light_cone.position.y - doorLight.target.position.y);
-    var b = Math.abs(light_cone.position.x - doorLight.target.position.x);
-    //con una proporzione determino l'altezza del cono
-    var new_y = (a * (cylinder.parameters.height / 2)) / b;
-
-    light_cone.position.y = doorLight.position.y - new_y;
 
 }
 
