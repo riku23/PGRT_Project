@@ -228,7 +228,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			}
 	
 		}
-		if(mouse.x <= -0.8 || mouse.x>= 0.8){
+		if(mouse.x <= -0.9 || mouse.x>= 0.9){
 		this.lon += this.mouseX * actualLookSpeed;
 		this.phi = ( 90 - this.lat ) * Math.PI / 180;
 
