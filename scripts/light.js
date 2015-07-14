@@ -1,7 +1,7 @@
 
 
 /* global doorLight, Porta_Chiusa, light, Porta1, THREE, wall_material, faro, PortaO, PortaS, PortaN, PortaE, scene, tavoloNE, tavoloNO */
-var torch_y = 3.68;
+var torch_y = 3.72;
 var torch_distance = 0.7;
 var light_cone;
 
@@ -46,16 +46,16 @@ function pointLightGenerator(x, z, target) {
 
 }
 function flameGenerator(pointLight) {
-  
+
     // Create a single emitter
     var particleEmitter = new SPE.Emitter({
         type: 'cube',
-        position: new THREE.Vector3(pointLight.position.x,pointLight.position.y,pointLight.position.z),
-        acceleration: new THREE.Vector3(0, 2, 0),
-        velocity: new THREE.Vector3(0, 2, 0),
-        particlesPerSecond: 2000,
+        position: new THREE.Vector3(pointLight.position.x, pointLight.position.y, pointLight.position.z),
+        acceleration: new THREE.Vector3(0, 1, 0),
+        velocity: new THREE.Vector3(0, 1, 0),
+        particlesPerSecond: 100,
         sizeStart: 0.5,
-        sizeEnd: 0,
+        sizeEnd: 0.25,
         opacityStart: 1,
         opacityEnd: 0,
         colorStart: new THREE.Color('red'),
@@ -65,8 +65,6 @@ function flameGenerator(pointLight) {
 
 // Add the emitter to the group.
     particleGroup.addEmitter(particleEmitter);
-
-
 }
 //crea una spotlight in origin e che punta a target
 //Piazza anche la source sphere
@@ -85,7 +83,7 @@ function spotLightGenerator(origin, target) {
     spotLight.shadowCameraFov = 30;
 
     scene.add(spotLight);
-    spotLight.shadowCameraVisible = true;
+    //spotLight.shadowCameraVisible = true;
     spotLight.target = target;
     scene.add(spotLight);
     lightSource(spotLight);

@@ -589,17 +589,20 @@ function init()
 
 
 
+
+    
+
     // Create a particle group to add the emitter to.
     this.particleGroup = new SPE.Group({
         // Give the particles in this group a texture
         texture: THREE.ImageUtils.loadTexture('images/smokeparticle.png'),
         // How long should the particles live for? Measured in seconds.
-        maxAge: 0.3
+        maxAge: 0.4
     });
-    torchLight();
-    // Add the particle group to the scene so it can be drawn.
+
     scene.add(particleGroup.mesh); // Where `scene` is an instance of `THREE.Scene`.
 
+    torchLight();
 
     cook_torrance(SORum, [torchSO3, torchSO4]);
     cook_torrance(SERum, [torchSE1, torchSE2, torchSE3, torchSE4]);
