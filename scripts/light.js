@@ -45,6 +45,7 @@ function pointLightGenerator(x, z, target) {
     return pointLight;
 
 }
+
 function flameGenerator(pointLight) {
 
     // Create a single emitter
