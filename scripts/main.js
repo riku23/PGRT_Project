@@ -1,5 +1,5 @@
 
-/* global torchNO1, torchNO2, SORum, torchSO1, torchSO2, NORum, SERum, NERum, torchNO3, torchNO4 */
+/* global torchNO1, torchNO2, SORum, torchSO1, torchSO2, NORum, SERum, NERum, torchNO3, torchNO4, THREE, flame */
 
 // controlla il supporto a WebGL (se la scheda grafica non lo supporta viene mostato un messaggio d'errore)
 //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -8,7 +8,7 @@ var container;
 
 // variabili globali per la scena, il renderer ecc
 var scene, renderer;
-var istruzioni ="Movimento: Tasti W/A/S/D\nVisuale: Movimento mouse\nRaccogli e posiziona oggetti: Tasto destro mouse\nRipristina livello: Tasto R\nIstruzioni: Tasto I\n";
+var istruzioni = "Movimento: Tasti W/A/S/D\nVisuale: Movimento mouse\nRaccogli e posiziona oggetti: Tasto destro mouse\nRipristina livello: Tasto R\nIstruzioni: Tasto I\n";
 
 var raycaster = new THREE.Raycaster();
 // variabili per la camera
@@ -29,7 +29,7 @@ var oggetti;
 var mura = [];
 var tentativi;
 var tween;
-var abilitaMovimento=false;
+var abilitaMovimento = false;
 
 // variabile per la gestione del frustum culling
 var frustum;
@@ -212,14 +212,11 @@ function init()
     //piazza le pointlight per le torce
     torchLight();
 
-    //carico shader per mura
-    cook_torrance(SORum, [torchSO3, torchSO4]);
-    cook_torrance(SERum, [torchSE1, torchSE2, torchSE3, torchSE4]);
-    cook_torrance(NERum, [torchNE1, torchNE2, torchNE3, torchNE4]);
-    cook_torrance(NORum, [torchNO1, torchNO2, torchNO3, torchNO4]);
-    alert(istruzioni);
 
-    
+    //carico shader per mura
+
+    applyCookTorrance(26, 1.6, diffuseColor.setRGB(255 / 255, 94 / 255, 0));
+
 }
 
 
@@ -237,14 +234,14 @@ $(document).click(function (e) {
             intersected = intersections[ 0 ].object;
             var distance = intersections[0].distance;
             if (intersected.name == "saturazione") {
-                if(inventario[2]!=null){
+                if (inventario[2] != null) {
                     return;
                 }
                 inventario[2] = filtroSaturazione;
                 intersected.position.x = 100;
                 intersected.position.y = 100;
                 intersected.position.z = 100;
-                document.getElementById("inventory3").style.backgroundColor = "#"+intersected.material.color.getHexString();
+                document.getElementById("inventory3").style.backgroundColor = "#" + intersected.material.color.getHexString();
                 itemAudio.play();
             } else {
                 if (intersected && intersected != faro && distance < 3 && inventarioPos != 2) {
@@ -261,8 +258,8 @@ $(document).click(function (e) {
                         intersected.position.z = 100;
 
                         var realIndex = inventarioPos + 1;
-                        console.log("#"+intersected.material.color.getHexString());
-                        document.getElementById("inventory" + realIndex.toString()).style.backgroundColor = "#"+intersected.material.color.getHexString();
+                        console.log("#" + intersected.material.color.getHexString());
+                        document.getElementById("inventory" + realIndex.toString()).style.backgroundColor = "#" + intersected.material.color.getHexString();
                         //document.getElementById("inventory" + realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
                         itemAudio.play();
 
@@ -282,7 +279,7 @@ $(document).click(function (e) {
                         intersected.position.z = 100;
                         inventario[inventarioPos] = intersected;
                         var realIndex = inventarioPos + 1;
-                        document.getElementById("inventory" + realIndex.toString()).style.backgroundColor = "#"+intersected.material.color.getHexString();
+                        document.getElementById("inventory" + realIndex.toString()).style.backgroundColor = "#" + intersected.material.color.getHexString();
                         itemAudio.play();
 
                     }
@@ -290,7 +287,7 @@ $(document).click(function (e) {
                     if (inventario[inventarioPos] != null && intersected && intersected == faro && distance < 3 && oggettoFaro == null && inventarioPos != 2) {
                         //se interseco il faro posiziono l'oggetto in inventario su di esso
                         var color = inventario[inventarioPos].material.color;
-                        var texture =inventario[inventarioPos].material.map;
+                        var texture = inventario[inventarioPos].material.map;
                         inventario[inventarioPos].material = new THREE.MeshBasicMaterial({map: texture, color: color});
                         inventario[inventarioPos].position.x = faro.position.x - 0.3;
                         inventario[inventarioPos].position.y = faro.position.y + 1.24;
@@ -369,6 +366,18 @@ function setDoorAnimation() {
     tween.start();
     RISOLTO = true;
 }
+var diffuseColor = new THREE.Color();
+diffuseColor.setRGB(255 / 255, 94 / 255, 0);
+var wallParamLevel = [
+    //secondo livello -- viola
+    {freq: 26, power: 2, color: new THREE.Color().setRGB(163 / 255, 0, 128 / 255)},
+    //terzo -- verde
+    {freq: 10, power: 1.6, color: new THREE.Color().setRGB(3 / 255, 102 / 255, 0)},
+    //quarto -- bianco
+    {freq: 30, power: 1.6, color: new THREE.Color().setRGB(255 / 255, 255 / 255, 255 / 255)},
+    //quinto -- blue
+    {freq: 20, power: 1.6, color: new THREE.Color().setRGB(44 / 255, 29 / 255, 180 / 255)}
+]
 
 function nuovoLivello(livello) {
 
@@ -377,7 +386,7 @@ function nuovoLivello(livello) {
 
     camera.rotation.y = Math.PI / 2;
     camera.position.set(spawnX, spawnY, spawnZ);
-     //CONTROLLI
+    //CONTROLLI
     controls = new THREE.FirstPersonControls(camera, document);
     controls.movementSpeed = MOVESPEED;
     controls.lookSpeed = LOOKSPEED;
@@ -399,6 +408,13 @@ function nuovoLivello(livello) {
     svuotaInventario();
 
 
+    var new_l = livello - 2;
+    applyCookTorrance(wallParamLevel[new_l].freq, wallParamLevel[new_l ].power, wallParamLevel[new_l ].color);
+
+
+    flames.forEach(function (flame) {
+        flame.colorStart = new THREE.Color(wallParamLevel[new_l ].color);
+    });
 }
 
 function setupHUD(livello) {
@@ -528,7 +544,9 @@ function render()
     controls.update(delta); // Move camera
     renderer.render(scene, camera);
     frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
-     for (var i = 0; i < mura.length; i++) {
-     mura[i].visible = frustum.intersectsObject(mura[i]);
-     }
+
+    for (var i = 0; i < mura.length; i++) {
+        mura[i].visible = frustum.intersectsObject(mura[i]);
+    }
+
 }

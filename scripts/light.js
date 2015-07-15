@@ -46,6 +46,7 @@ function pointLightGenerator(x, z, target) {
 
 }
 
+var flames=[];
 
 function flameGenerator(pointLight) {
 
@@ -61,9 +62,10 @@ function flameGenerator(pointLight) {
         opacityStart: 1,
         opacityEnd: 0,
         colorStart: new THREE.Color('red'),
-        colorEnd: new THREE.Color('yellow')
+        colorEnd: new THREE.Color('white')
     });
 
+    flames.push(particleEmitter);
 
 // Add the emitter to the group.
     particleGroupFlame.addEmitter(particleEmitter);
