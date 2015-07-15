@@ -509,7 +509,7 @@ function animate()
         }
         $('#hurt').fadeIn(75);
         $('#hurt').fadeOut(450);
-
+        console.log(this.livello);
         nuovoLivello(this.livello);
     }
     render();
