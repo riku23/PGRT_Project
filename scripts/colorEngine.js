@@ -4,7 +4,7 @@ var grigio = new THREE.Color().setHSL(0,0,0.1);
 
 //COLORI PRIMARI
 var rosso,blu,giallo;
-var rossoscuro, bluscuro,gialloscuro;
+
 
 rosso = new THREE.Color().setHSL(0,1.0,0.5);
     
@@ -12,89 +12,6 @@ blu = new THREE.Color().setHSL(0.67,1.0,0.5);
     
 giallo = new THREE.Color().setHSL(0.17,1.0,0.5);
     
- rossoscuro = new THREE.Color();
-satura(rosso,grigio,rossoscuro);
-
- bluscuro = new THREE.Color();
-satura(blu,grigio,bluscuro);
-
- gialloscuro = new THREE.Color();
-satura(giallo,grigio,gialloscuro);
-
-
-//COLORI SECONDARI
-var viola,arancione,verde;
-var violascuro, arancionescuro, verdescuro;
-
-arancione = new THREE.Color();
-addColors(rosso,giallo,arancione);
-   
-viola = new THREE.Color();
-addColors(rosso,blu,viola);
-    
-verde = new THREE.Color();
-addColors(giallo,blu,verde);
-
-
-arancionescuro = new THREE.Color();
-satura(arancione,grigio,arancionescuro);
-   
-violascuro = new THREE.Color();
-satura(viola,grigio,violascuro);
-    
-verdescuro = new THREE.Color();
-satura(verde,grigio,verdescuro);
-
-
-//COLORI TERZIARI
-var violablu, violarosso;
-var arancionerosso, arancionegiallo;
-var verdeblu, verdegiallo;
-var violabluscuro, violarossoscuro;
-var arancionerossoscuro, arancionegialloscuro;
-var verdebluscuro, verdegialloscuro;
-
-
-violablu = new THREE.Color();
-addColors(viola,blu,violablu);
-
-violarosso = new THREE.Color();
-addColors(viola,rosso,violarosso);
-
-arancionerosso = new THREE.Color();
-addColors(arancione,rosso,arancionerosso);
-
-arancionegiallo = new THREE.Color();
-addColors(arancione,giallo,arancionegiallo);
-
-verdeblu = new THREE.Color();
-addColors(verde,blu,verdeblu);
-
-verdegiallo = new THREE.Color();
-addColors(verde,giallo,verdegiallo);
-
-violabluscuro = new THREE.Color();
-satura(violablu,grigio,violabluscuro);
-
-violarossoscuro = new THREE.Color();
-satura(violarosso,grigio,violarossoscuro);
-
-arancionerossoscuro = new THREE.Color();
-satura(arancionerosso,grigio,arancionerossoscuro);
-
-arancionegialloscuro = new THREE.Color();
-satura(arancionegiallo,grigio,arancionegialloscuro);
-
-verdegialloscuro = new THREE.Color();
-satura(verdegiallo,grigio,verdegialloscuro);
-
-verdebluscuro = new THREE.Color();
-satura(verdeblu,grigio,verdebluscuro);
-
-
-var filtroRisultato, filtroRosso, filtroRosso2, fitroGiallo, filtroGiallo2, filtroBlu, filtroBlu2, filtroSaturazione;
-
-
 function satura(color1, color2, colorResult){
     colorResult.setHSL(color1.getHSL().h,color1.getHSL().s,(color1.getHSL().l-color2.getHSL().l));
 }
@@ -168,22 +85,31 @@ function colorePorta(livello){
 
 
         case 2:
-            var doorColor = new THREE.Color(verde);
+            var doorColor = new THREE.Color();
+            addColors(giallo,blu,doorColor);
             Porta_Chiusa.material.color = doorColor;
             break;
 
         case 3:
-            var doorColor = new THREE.Color(arancionescuro);
+            var doorColor = new THREE.Color();
+            addColors(rosso,giallo,doorColor);
+            satura(doorColor,grigio,doorColor)
             Porta_Chiusa.material.color = doorColor;
             break;
 
         case 4:
-            var doorColor = new THREE.Color(violablu);
+            var doorColor = new THREE.Color();
+            addColors(rosso,blu,doorColor);
+            addColors(doorColor,blu,doorColor);
             Porta_Chiusa.material.color = doorColor;
             break;
 
         case 5:
-            var doorColor = new THREE.Color(verdegialloscuro);
+            var doorColor = new THREE.Color();
+            addColors(giallo,blu,doorColor);
+            addColors(doorColor,giallo,doorColor);
+            satura(doorColor,grigio,doorColor);
+            satura(doorColor,grigio,doorColor);
             Porta_Chiusa.material.color = doorColor;
             break;
 

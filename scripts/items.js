@@ -329,7 +329,7 @@ function createFiltri(){
 
 
                 //  filtro Saturazione
-                var filterColor = new THREE.Color().setHSL(0,0,0.1);
+                var filterColor = new THREE.Color(grigio)
                 filtroSaturazione = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
                 new THREE.MeshLambertMaterial({map: filterTexture, color: filterColor}));
@@ -340,7 +340,7 @@ function createFiltri(){
                 scene.add(filtroSaturazione); 
 
                  //  filtro Saturazione 2
-                var filterColor = new THREE.Color().setHSL(0,0,0.1);
+                var filterColor = new THREE.Color(grigio)
                 filtroSaturazione2 = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
                 new THREE.MeshLambertMaterial({map: filterTexture, color: filterColor}));
