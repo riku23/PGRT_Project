@@ -96,10 +96,11 @@ function spotLightGenerator(origin, target) {
 
 //crea la spotlight per il FARETTO
 function spotLightDoor() {
-
+    var door_light_pos = new THREE.Vector3(faro.position.x, faro.position.y + 1.25, faro.position.z + 0.05);
+    var door_light_target_pos = new THREE.Vector3(9.88, 2.5, 8.8);
     // LUCI
     var pointColor = "#ffffff";
-    doorLight = new THREE.SpotLight(pointColor);
+   /* doorLight = new THREE.SpotLight(pointColor);
     doorLight.position.set(faro.position.x, faro.position.y + 1.25, faro.position.z + 0.05);
     doorLight.castShadow = true
     doorLight.shadowCameraNear = 0.01
@@ -118,7 +119,7 @@ function spotLightDoor() {
     //doorLight.shadowCameraVisible = true;
     doorLight.distance = 10;
 
-    doorLight.target = Porta_Chiusa;
+    doorLight.target = Porta_Chiusa;*/
     //scene.add(doorLight);
     ////////////
 
@@ -132,10 +133,10 @@ function spotLightDoor() {
 
     var material = new THREEx.VolumetricSpotLightMaterial();
     light_cone = new THREE.Mesh(geometry, material);
-    light_cone.position.set(doorLight.position.x - (geometry.parameters.height / 2) - 0.26, doorLight.position.y - 0.08, doorLight.position.z - 0.125);
+    light_cone.position.set(door_light_pos.x - (geometry.parameters.height / 2) - 0.26, door_light_pos.y - 0.08, door_light_pos.z - 0.125);
 
-    light_cone.lookAt(new THREE.Vector3(doorLight.target.position.x, 100, doorLight.target.position.z));
-    material.uniforms.lightColor.value.set(0xffffff);
+    light_cone.lookAt(new THREE.Vector3(door_light_target_pos.x, 100, door_light_target_pos.z));
+    material.uniforms.lightColor.value.set(pointColor);
     material.uniforms.spotPosition.value = light_cone.position;
     material.uniforms['anglePower'].value = 0.9;
     material.uniforms['attenuation'].value = 2.5;
@@ -143,7 +144,7 @@ function spotLightDoor() {
     scene.add(light_cone);
 
 
-    lightSource(doorLight);
+    //lightSource(doorLight);
 
 }
 
