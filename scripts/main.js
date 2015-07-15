@@ -29,7 +29,7 @@ var oggetti;
 var mura = [];
 var tentativi;
 var tween;
-
+var abilitaMovimento=false;
 
 // variabile per la gestione del frustum culling
 var frustum;
@@ -66,7 +66,7 @@ var sphere_test;
 
 
 //SOUNDS
-var bgAudio, itemAudio, doorAudio, portalAudio, solveAudio, stepsAudio;
+var bgAudio, itemAudio, doorAudio, portalAudio, stepsAudio;
 
 
 // creo una istanza della classe Clock, per la gestione del tempo di esecuzione ecc
@@ -119,7 +119,11 @@ function init()
     doorAudio = new Audio('sounds/door.wav');
     itemAudio = new Audio('sounds/pick.wav');
     portalAudio = new Audio('sounds/warp.wav');
-    solvelAudio = new Audio('sounds/triangle.wav');
+    stepsAudio = new Audio('sounds/steps2.wav');
+    stepsAudio.addEventListener('ended', function () {
+        this.currentTime = 0;
+        this.play();
+    }, false);
 
 
 
@@ -232,11 +236,14 @@ $(document).click(function (e) {
             intersected = intersections[ 0 ].object;
             var distance = intersections[0].distance;
             if (intersected.name == "saturazione") {
+                if(inventario[2]!=null){
+                    return;
+                }
                 inventario[2] = filtroSaturazione;
                 intersected.position.x = 100;
                 intersected.position.y = 100;
                 intersected.position.z = 100;
-                document.getElementById("inventory3").style.backgroundImage = "url(textures/inventario/saturazione.jpg)"
+                document.getElementById("inventory3").style.backgroundColor = "#"+intersected.material.color.getHexString();
                 itemAudio.play();
             } else {
                 if (intersected && intersected != faro && distance < 3 && inventarioPos != 2) {
@@ -253,8 +260,9 @@ $(document).click(function (e) {
                         intersected.position.z = 100;
 
                         var realIndex = inventarioPos + 1;
-                        document.getElementById("inventory" + realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
-                        console.log("preso oggetto inventario libero");
+                        console.log("#"+intersected.material.color.getHexString());
+                        document.getElementById("inventory" + realIndex.toString()).style.backgroundColor = "#"+intersected.material.color.getHexString();
+                        //document.getElementById("inventory" + realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
                         itemAudio.play();
 
                     } else {
@@ -273,8 +281,7 @@ $(document).click(function (e) {
                         intersected.position.z = 100;
                         inventario[inventarioPos] = intersected;
                         var realIndex = inventarioPos + 1;
-                        document.getElementById("inventory" + realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
-                        console.log("scambio oggetti");
+                        document.getElementById("inventory" + realIndex.toString()).style.backgroundColor = "#"+intersected.material.color.getHexString();
                         itemAudio.play();
 
                     }
@@ -286,13 +293,12 @@ $(document).click(function (e) {
                         inventario[inventarioPos].position.z = faro.position.z + 0.03;
                         inventario[inventarioPos].rotation.y = 0;
                         oggettoFaro = inventario[inventarioPos];
-                        console.log(oggettoFaro.material.color.getHex() + " - " + Porta_Chiusa.material.color.getHex());
+
                         inventario[inventarioPos] = null;
                         var realIndex = inventarioPos + 1;
                         light_cone.material.uniforms.lightColor.value.set(oggettoFaro.material.color);
-                        document.getElementById("inventory" + realIndex.toString()).style.backgroundImage = "";
+                        document.getElementById("inventory" + realIndex.toString()).style.backgroundColor = "";
                         checkFaro();
-                        console.log("posizionato oggetto su faro");
                         itemAudio.play();
                     }
 
@@ -314,11 +320,8 @@ function onDocumentMouseMove(e) {
 
 function checkFaro() {
     if (oggettoFaro.material.color.getHex() == Porta_Chiusa.material.color.getHex()) {
-        console.log("RISOLTO!")
-        solvelAudio.play();
         setDoorAnimation();
     } else {
-        console.log("ERRORE!");
         //tentativi = tentativi - 1;
 
     }
@@ -387,12 +390,10 @@ function nuovoLivello(livello) {
         oggettoFaro.position.z = 100;
     }
     oggettoFaro = null;
-    console.log(livello);
     setDefaultVariables(livello, filtri); //Dovrei fare livello+1 e filtri+1
     setupHUD(livello);
     setFiltri(livello);
     svuotaInventario();
-    console.log(livello);
 
 
 }
@@ -404,7 +405,7 @@ function setupHUD(livello) {
 
         case 1:
 
-            $('body').append('<div id="inventory1" style="background-image:; width: 100px; height: 100px; background-size: 100%;"></div>');
+            $('body').append('<div id="inventory1" style="background-color:; width: 100px; height: 100px; background-size: 100%;"></div>');
             break;
 
         case 2:
@@ -448,7 +449,7 @@ function svuotaInventario() {
     }
     for (i = 0; i < index; i++) {
         var realIndex = i + 1;
-        document.getElementById("inventory" + realIndex.toString()).style.backgroundImage = "";
+        document.getElementById("inventory" + realIndex.toString()).style.backgroundColor = "";
         inventario[i] = null;
     }
 
@@ -466,7 +467,6 @@ function selectInventory() {
     }
 
     if (inventarioPos < index) {
-        console.log(inventarioPos);
         for (i = 0; i < index; i++) {
             var realIndex = i + 1;
             if (i == inventarioPos) {
@@ -507,7 +507,7 @@ function animate()
             return;
         }
         $('#hurt').fadeIn(75);
-        $('#hurt').fadeOut(350);
+        $('#hurt').fadeOut(450);
 
         nuovoLivello(this.livello);
     }

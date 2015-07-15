@@ -1,6 +1,6 @@
 //GRIGIO
 var grigio;
-var grigio = new THREE.Color().setHSL(0,0,0.2);
+var grigio = new THREE.Color().setHSL(0,0,0.1);
 
 //COLORI PRIMARI
 var rosso,blu,giallo;
@@ -95,67 +95,8 @@ satura(verdeblu,grigio,verdebluscuro);
 var filtroRisultato, filtroRosso, filtroRosso2, fitroGiallo, filtroGiallo2, filtroBlu, filtroBlu2, filtroSaturazione;
 
 
-function parseName(name1,name2){
-    
-    //NOMI COLORI PRIMARI
-    if((name1=="rosso" && name2=="rosso")){
-        return "rosso";
-    }
-      if((name1=="giallo" && name2=="giallo")){
-        return "giallo";
-    }
-      if((name1=="blu" && name2=="blu")){
-        return "blu";
-    }
-
-    //NOMI COLORI SECONDARI + SCURI
-    if((name1=="rosso" && name2=="giallo") || (name1=="giallo" && name2=="rosso") ){
-        return "arancione";
-    }
-    if((name1=="rosso" && name2=="blu") || (name1=="blu" && name2=="rosso") ){
-        return "viola";
-    }
-    if((name1=="giallo" && name2=="blu") || (name1=="blu" && name2=="giallo") ){
-        return "verde";
-    }
-      if((name1=="gialloscuro" && name2=="blu") || (name1=="bluscuro" && name2=="giallo") ){
-        return "verdescuro";
-    }
-    if((name1=="rossoscuro" && name2=="blu") || (name1=="bluscuro" && name2=="rosso") ){
-        return "violascuro";
-    }
-    if((name1=="rossoscuro" && name2=="giallo") || (name1=="gialloscuro" && name2=="rosso") ){
-        return "arancionescuro";
-    }
-
-    //NOMI COLORI TERZIARI
-    if((name1=="arancione" && name2=="giallo") || (name1=="giallo" && name2=="arancione") ){
-        return "arancionegiallo";
-    }
-     if((name1=="arancione" && name2=="rosso") || (name1=="rosso" && name2=="arancione") ){
-        return "arancionerosso";
-    }
-
-    if((name1=="verde" && name2=="blu") || (name1=="blu" && name2=="verde") ){
-        return "verdeblu";
-    }
-    if((name1=="verde" && name2=="giallo") || (name1=="giallo" && name2=="verde") ){
-        return "verdegiallo";
-    }
-      if((name1=="viola" && name2=="blu") || (name1=="blu" && name2=="viola") ){
-        return "violablu";
-    }
-       if((name1=="viola" && name2=="rosso") || (name1=="rosso" && name2=="viola") ){
-        return "violarosso";
-    }
-
-}
-
-
-
-
 function satura(color1, color2, colorResult){
-    colorResult.setHSL(color1.getHSL().h,color1.getHSL().s,color2.getHSL().l);
+    colorResult.setHSL(color1.getHSL().h,color1.getHSL().s,(color1.getHSL().l-color2.getHSL().l));
 }
 
 function addColors(color1, color2, colorResult){
@@ -163,7 +104,6 @@ function addColors(color1, color2, colorResult){
         a1 = color2.getHSL().h*360;
         r0 = (a0+a1)/2.; 
         r1 = ((a0+a1+360)/2.)%360; 
-        console.log(r0,r1);
         if(Math.min(Math.abs(a1-r0), Math.abs(a0-r0)) < Math.min(Math.abs(a0-r1), Math.abs(a1-r1))){
         colorResult.setHSL(r0/360,1.0,Math.min(color1.getHSL().l,color2.getHSL().l));
         }
@@ -184,56 +124,28 @@ function combine() {
                 return;
             }
             satura(inventario[inventarioPos].material.color,inventario[2].material.color,filtroRisultato.material.color);
-            var nome =inventario[inventarioPos].name + "scuro";
-            if(nome==null){
-                alert("colore non valido");               
-                nuovoLivello(livello);
-                return;
-            }
             svuotaInventario();
-            console.log(nome);
-            document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
-            filtroRisultato.name= nome;
             inventario[0] = filtroRisultato;
+            document.getElementById("inventory1").style.backgroundColor = "#"+filtroRisultato.material.color.getHexString();
 
         }else{
             if(inventario[0] && inventario[1] && !inventario[2]){
                 addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
-                var nome = parseName(inventario[0].name,inventario[1].name);
-                if(nome==null){
-                alert("colore non valido");
-                nuovoLivello(livello);
-
-                return;
-            }
                 svuotaInventario();
-                console.log(nome);
-                document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
-                filtroRisultato.name= nome;
                 inventario[0] = filtroRisultato;
+                document.getElementById("inventory1").style.backgroundColor = "#"+filtroRisultato.material.color.getHexString();
 
 }
         else{
             if(inventario[0] && inventario[1] && inventario[2]){
                 addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
-                var nome = parseName(inventario[0].name,inventario[1].name);
-                if(nome==null){
-                alert("colore non valido");
-                nuovoLivello(livello);
-                return;
-            }
-                console.log(nome);
-                document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
-                filtroRisultato.name= nome;
                 inventario[0] = filtroRisultato;
+                document.getElementById("inventory1").style.backgroundColor = "#"+filtroRisultato.material.color.getHexString();
 
                 satura(inventario[0].material.color,inventario[2].material.color,filtroRisultato.material.color);
-                var nome =inventario[0].name + "scuro";
                 svuotaInventario();
-                console.log(nome);
-                document.getElementById("inventory1").style.backgroundImage = "url(textures/inventario/" + nome + ".jpg)";
-                filtroRisultato.name= nome;
                 inventario[0] = filtroRisultato;
+                document.getElementById("inventory1").style.backgroundColor = "#"+filtroRisultato.material.color.getHexString();
 
 
 

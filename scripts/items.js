@@ -77,6 +77,8 @@ function set_ambient_items(){
         mura.push(tavoloNE);
         scene.add(tavoloNE);
 
+
+        abilitaMovimento=true;
     });
 
 	
@@ -263,18 +265,28 @@ function createFiltri(){
                 new THREE.BoxGeometry(.001, .4, .4),
                 new THREE.MeshBasicMaterial({map: filterTexture , color: filterColor}));
                 filtroRisultato.position.set(100,100, 100);
-                filtroRisultato.name = "risultato";
                 oggettiPrendibili.push(filtroRisultato);
                 mura.push(filtroRisultato);
                 scene.add(filtroRisultato);
+
+
+                 //filtro Faro
+                var filterColor = new THREE.Color().setHSL(0,1.0,0.5);
+                filtroFaro = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshPhongMaterial({map: filterTexture , color: filterColor}));
+                filtroFaro.position.set(100,100, 100);
+                oggettiPrendibili.push(filtroFaro);
+                mura.push(filtroFaro);
+                scene.add(filtroFaro);
+
 
                 //  filtro Rosso
                 var filterColor = new THREE.Color(rosso);
                 filtroRosso = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
-                new THREE.MeshBasicMaterial({map: filterTexture, color: filterColor}));
+                new THREE.MeshPhongMaterial({map: filterTexture, color: filterColor}));
                 filtroRosso.position.set(100,100, 100);
-                filtroRosso.name = "rosso";
                 filtroRosso.color = filterColor;
                 oggettiPrendibili.push(filtroRosso);
                 mura.push(filtroRosso);
@@ -284,9 +296,8 @@ function createFiltri(){
                 var filterColor = new THREE.Color(rosso);
                 filtroRosso2 = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
-                new THREE.MeshBasicMaterial({map: filterTexture, color: filterColor}));
+                new THREE.MeshPhongMaterial({map: filterTexture, color: filterColor}));
                 filtroRosso2.position.set(100,100, 100);
-                filtroRosso2.name = "rosso";
                 filtroRosso2.color = filterColor;
                 oggettiPrendibili.push(filtroRosso2);
                 mura.push(filtroRosso2);
@@ -297,9 +308,8 @@ function createFiltri(){
                 var filterColor = new THREE.Color(blu);
                 filtroBlu = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
-                new THREE.MeshBasicMaterial({map: filterTexture, color: filterColor}));
+                new THREE.MeshPhongMaterial({map: filterTexture, color: filterColor}));
                 filtroBlu.position.set(100,100,100);
-                filtroBlu.name = "blu";
                 oggettiPrendibili.push(filtroBlu);
                 mura.push(filtroBlu);
                 scene.add(filtroBlu); 
@@ -308,9 +318,8 @@ function createFiltri(){
                 var filterColor = new THREE.Color(blu);
                 filtroBlu2 = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
-                new THREE.MeshBasicMaterial({map: filterTexture, color: filterColor}));
+                new THREE.MeshPhongMaterial({map: filterTexture, color: filterColor}));
                 filtroBlu2.position.set(100,100,100);
-                filtroBlu2.name = "blu";
                 oggettiPrendibili.push(filtroBlu2);
                 mura.push(filtroBlu2);
                 scene.add(filtroBlu2); 
@@ -319,35 +328,54 @@ function createFiltri(){
                 var filterColor = new THREE.Color(giallo);
                 filtroGiallo = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
-                new THREE.MeshBasicMaterial({map: filterTexture, color: filterColor}));
+                new THREE.MeshPhongMaterial({map: filterTexture, color: filterColor}));
                 filtroGiallo.position.set(100,100,100);
-                filtroGiallo.name = "giallo";
                 oggettiPrendibili.push(filtroGiallo);
                 mura.push(filtroGiallo);
                 scene.add(filtroGiallo); 
 
-                 //  filtro Giallo
+                 //  filtro Giallo 2
                 var filterColor = new THREE.Color(giallo);
                 filtroGiallo2 = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
-                new THREE.MeshBasicMaterial({map: filterTexture, color: filterColor}));
+                new THREE.MeshPhongMaterial({map: filterTexture, color: filterColor}));
                 filtroGiallo2.position.set(100,100,100);
-                filtroGiallo2.name = "giallo";
                 oggettiPrendibili.push(filtroGiallo2);
                 mura.push(filtroGiallo2);
                 scene.add(filtroGiallo2); 
 
 
                 //  filtro Saturazione
-                var filterColor = new THREE.Color().setHSL(0,0,0.2);
+                var filterColor = new THREE.Color().setHSL(0,0,0.1);
                 filtroSaturazione = new THREE.Mesh(
                 new THREE.BoxGeometry(.001, .4, .4),
-                new THREE.MeshBasicMaterial({map: filterTexture, color: filterColor}));
+                new THREE.MeshPhongMaterial({map: filterTexture, color: filterColor}));
                 filtroSaturazione.position.set(100,100,100);
-                filtroSaturazione.name = "saturazione";
+                filtroSaturazione.name="saturazione";
                 oggettiPrendibili.push(filtroSaturazione);
                 mura.push(filtroSaturazione);
                 scene.add(filtroSaturazione); 
+
+                 //  filtro Saturazione 2
+                var filterColor = new THREE.Color().setHSL(0,0,0.1);
+                filtroSaturazione2 = new THREE.Mesh(
+                new THREE.BoxGeometry(.001, .4, .4),
+                new THREE.MeshPhongMaterial({map: filterTexture, color: filterColor}));
+                filtroSaturazione2.position.set(100,100,100);
+                filtroSaturazione2.name="saturazione";
+                oggettiPrendibili.push(filtroSaturazione2);
+                mura.push(filtroSaturazione2);
+                scene.add(filtroSaturazione2); 
+
+
+                computeShadow(filtroRosso);
+                computeShadow(filtroRosso2);
+                computeShadow(filtroBlu);
+                computeShadow(filtroBlu2);
+                computeShadow(filtroGiallo);
+                computeShadow(filtroGiallo2);
+                computeShadow(filtroSaturazione);
+                computeShadow(filtroSaturazione2);
 
 }
 
@@ -359,7 +387,7 @@ function setFiltri(livello){
                 
                 filtroBlu.position.set(1, 2.4, 14);
 
-                filtroGiallo.position.set(14, 2.4, 14);
+                filtroGiallo.position.set(14, 2.4, 1);
                 
                 break;
 
@@ -377,10 +405,10 @@ function setFiltri(livello){
                 filtroBlu2.position.set(1, 2.4, 14.5);
                 filtroBlu2.rotation.y = Math.PI/4;
 
-                filtroGiallo.position.set(14, 2.4, 13.5);
+                filtroGiallo.position.set(14, 2.4, 0.5);
                 filtroGiallo.rotation.y = Math.PI/4;
 
-                filtroGiallo2.position.set(14, 2.4, 14.5);
+                filtroGiallo2.position.set(14, 2.4, 1.5);
                 filtroGiallo2.rotation.y = -Math.PI/4;
 
                 break;
@@ -399,14 +427,17 @@ function setFiltri(livello){
                 filtroBlu2.position.set(1, 2.4, 14.5);
                 filtroBlu2.rotation.y = Math.PI/4;
 
-                filtroGiallo.position.set(14, 2.4, 13.5);
+                filtroGiallo.position.set(14, 2.4, 0.5);
                 filtroGiallo.rotation.y = Math.PI/4;
 
-                filtroGiallo2.position.set(14, 2.4, 14.5);
+                filtroGiallo2.position.set(14, 2.4, 1.5);
                 filtroGiallo2.rotation.y = -Math.PI/4;
 
-                filtroSaturazione.position.set(14,2.4,1);
+                filtroSaturazione.position.set(14,2.4,13.5);
+                filtroSaturazione.rotation.y = Math.PI/4;
 
+                filtroSaturazione2.position.set(14,2.4,14.5);
+                filtroSaturazione2.rotation.y = -Math.PI/4;
                 
                 break;
 
@@ -425,13 +456,18 @@ function setFiltri(livello){
                 filtroBlu2.position.set(1, 2.4, 14.5);
                 filtroBlu2.rotation.y = Math.PI/4;
 
-                filtroGiallo.position.set(14, 2.4, 13.5);
+                filtroGiallo.position.set(14, 2.4, 0.5);
                 filtroGiallo.rotation.y = Math.PI/4;
 
-                filtroGiallo2.position.set(14, 2.4, 14.5);
+                filtroGiallo2.position.set(14, 2.4, 1.5);
                 filtroGiallo2.rotation.y = -Math.PI/4;
 
-                filtroSaturazione.position.set(14,2.4,1);
+                
+                filtroSaturazione.position.set(14,2.4,13.5);
+                filtroSaturazione.rotation.y = Math.PI/4;
+
+                filtroSaturazione2.position.set(14,2.4,14.5);
+                filtroSaturazione2.rotation.y = -Math.PI/4;
                 
                 break;
 
@@ -450,13 +486,17 @@ function setFiltri(livello){
                 filtroBlu2.position.set(1, 2.4, 14.5);
                 filtroBlu2.rotation.y = Math.PI/4;
 
-                filtroGiallo.position.set(14, 2.4, 13.5);
+                filtroGiallo.position.set(14, 2.4, 0.5);
                 filtroGiallo.rotation.y = Math.PI/4;
 
-                filtroGiallo2.position.set(14, 2.4, 14.5);
+                filtroGiallo2.position.set(14, 2.4, 1.5);
                 filtroGiallo2.rotation.y = -Math.PI/4;
 
-                filtroSaturazione.position.set(14,2.4,1);
+                filtroSaturazione.position.set(14,2.4,13.5);
+                filtroSaturazione.rotation.y = Math.PI/4;
+
+                filtroSaturazione2.position.set(14,2.4,14.5);
+                filtroSaturazione2.rotation.y = -Math.PI/4;
                 
                 break;
 

@@ -117,7 +117,7 @@ function spotLightDoor() {
     doorLight.distance = 10;
 
     doorLight.target = Porta_Chiusa;
-    scene.add(doorLight);
+    //scene.add(doorLight);
     ////////////
 
 
