@@ -15,6 +15,7 @@ var keyA =false;
 var keyS =false;
 var keyD =false;
 var musicPlay = false;
+var istruzioni ="Movimento: Tasti W/A/S/D\nVisuale: Movimento mouse\nRaccogli e posiziona oggetti: Tasto destro mouse\nRipristina livello: Tasto R\nIstruzioni: Tasto I\n";
 
 function stopSound(){
 	
@@ -105,7 +106,9 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			case 39: /*right*/
 			case 68: /*D*/ this.moveRight = true;keyD=true; playSound(); break;
 
-			case 73: /*I*/ nuovoLivello(livello); break;
+			case 73: /*I*/ alert(istruzioni); break;
+
+			case 82: /*R*/ nuovoLivello(livello); break;
 
 			case 81: /*Q*/ this.freeze = !this.freeze; break;
 

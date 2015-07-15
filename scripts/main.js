@@ -8,7 +8,7 @@ var container;
 
 // variabili globali per la scena, il renderer ecc
 var scene, renderer;
-
+var istruzioni ="Movimento: Tasti W/A/S/D\nVisuale: Movimento mouse\nRaccogli e posiziona oggetti: Tasto destro mouse\nRipristina livello: Tasto R\nIstruzioni: Tasto I\n";
 
 var raycaster = new THREE.Raycaster();
 // variabili per la camera
@@ -217,6 +217,7 @@ function init()
     cook_torrance(SERum, [torchSE1, torchSE2, torchSE3, torchSE4]);
     cook_torrance(NERum, [torchNE1, torchNE2, torchNE3, torchNE4]);
     cook_torrance(NORum, [torchNO1, torchNO2, torchNO3, torchNO4]);
+    alert(istruzioni);
 
     
 }
