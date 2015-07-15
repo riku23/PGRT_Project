@@ -123,29 +123,33 @@ function combine() {
                 alert("seleziona un filtro");
                 return;
             }
-            satura(inventario[inventarioPos].material.color,inventario[2].material.color,filtroRisultato.material.color);
-            svuotaInventario();
-            inventario[0] = filtroRisultato;
-            document.getElementById("inventory1").style.backgroundColor = "#"+filtroRisultato.material.color.getHexString();
+            satura(inventario[inventarioPos].material.color,inventario[2].material.color,inventario[inventarioPos].material.color);
+            //svuotaInventario();
+            inventario[0] = inventario[inventarioPos];
+            inventario[1] = null;
+            inventario[2] = null;
+            document.getElementById("inventory1").style.backgroundColor = "#"+inventario[0].material.color.getHexString();
+            document.getElementById("inventory2").style.backgroundColor = "";
+            document.getElementById("inventory3").style.backgroundColor = "";
 
         }else{
             if(inventario[0] && inventario[1] && !inventario[2]){
-                addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
-                svuotaInventario();
-                inventario[0] = filtroRisultato;
-                document.getElementById("inventory1").style.backgroundColor = "#"+filtroRisultato.material.color.getHexString();
+                addColors(inventario[0].material.color,inventario[1].material.color,inventario[0].material.color);
+                //inventario[0] = filtroRisultato;
+                inventario[1] = null;
+                document.getElementById("inventory1").style.backgroundColor = "#"+inventario[0].material.color.getHexString();
+                document.getElementById("inventory2").style.backgroundColor = "";
 
 }
         else{
             if(inventario[0] && inventario[1] && inventario[2]){
-                addColors(inventario[0].material.color,inventario[1].material.color,filtroRisultato.material.color);
-                inventario[0] = filtroRisultato;
-                document.getElementById("inventory1").style.backgroundColor = "#"+filtroRisultato.material.color.getHexString();
-
-                satura(inventario[0].material.color,inventario[2].material.color,filtroRisultato.material.color);
-                svuotaInventario();
-                inventario[0] = filtroRisultato;
-                document.getElementById("inventory1").style.backgroundColor = "#"+filtroRisultato.material.color.getHexString();
+                addColors(inventario[0].material.color,inventario[1].material.color,inventario[0].material.color);
+                satura(inventario[0].material.color,inventario[2].material.color,inventario[0].material.color);
+                inventario[1] = null;
+                inventario[2] = null;
+                document.getElementById("inventory1").style.backgroundColor = "#"+inventario[0].material.color.getHexString();
+                document.getElementById("inventory2").style.backgroundColor = "";
+                document.getElementById("inventory3").style.backgroundColor = "";
 
 
 

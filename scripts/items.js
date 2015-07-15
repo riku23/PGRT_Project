@@ -265,20 +265,12 @@ function createFiltri(){
                 new THREE.BoxGeometry(.001, .4, .4),
                 new THREE.MeshBasicMaterial({map: filterTexture , color: filterColor}));
                 filtroRisultato.position.set(100,100, 100);
+                filtroRisultato.name="res";
                 oggettiPrendibili.push(filtroRisultato);
                 mura.push(filtroRisultato);
                 scene.add(filtroRisultato);
 
 
-                 //filtro Faro
-                var filterColor = new THREE.Color().setHSL(0,1.0,0.5);
-                filtroFaro = new THREE.Mesh(
-                new THREE.BoxGeometry(.001, .4, .4),
-                new THREE.MeshPhongMaterial({map: filterTexture , color: filterColor}));
-                filtroFaro.position.set(100,100, 100);
-                oggettiPrendibili.push(filtroFaro);
-                mura.push(filtroFaro);
-                scene.add(filtroFaro);
 
 
                 //  filtro Rosso
@@ -395,21 +387,27 @@ function setFiltri(livello){
               
                 filtroRosso.position.set(1, 2.4, 0.5);
                 filtroRosso.rotation.y = -Math.PI/4;
+                filtroRosso.material.color.setHSL(0,1.0,0.5);
               
                 filtroRosso2.position.set(1, 2.4, 1.5);
                 filtroRosso2.rotation.y = Math.PI/4;
+                filtroRosso2.material.color.setHSL(0,1.0,0.5);
                 
                 filtroBlu.position.set(1, 2.4, 13.5);
                 filtroBlu.rotation.y = -Math.PI/4;
+                filtroBlu.material.color.setHSL(0.67,1.0,0.5);
 
                 filtroBlu2.position.set(1, 2.4, 14.5);
                 filtroBlu2.rotation.y = Math.PI/4;
+                filtroBlu2.material.color.setHSL(0.67,1.0,0.5);
 
                 filtroGiallo.position.set(14, 2.4, 0.5);
                 filtroGiallo.rotation.y = Math.PI/4;
+                filtroGiallo.material.color.setHSL(0.17,1.0,0.5);
 
                 filtroGiallo2.position.set(14, 2.4, 1.5);
                 filtroGiallo2.rotation.y = -Math.PI/4;
+                filtroGiallo2.material.color.setHSL(0.17,1.0,0.5);
 
                 break;
 
@@ -417,86 +415,109 @@ function setFiltri(livello){
               
                 filtroRosso.position.set(1, 2.4, 0.5);
                 filtroRosso.rotation.y = -Math.PI/4;
+                filtroRosso.material.color.setHSL(0,1.0,0.5);
               
                 filtroRosso2.position.set(1, 2.4, 1.5);
                 filtroRosso2.rotation.y = Math.PI/4;
+                filtroRosso2.material.color.setHSL(0,1.0,0.5);
                 
                 filtroBlu.position.set(1, 2.4, 13.5);
                 filtroBlu.rotation.y = -Math.PI/4;
+                filtroBlu.material.color.setHSL(0.67,1.0,0.5);
 
                 filtroBlu2.position.set(1, 2.4, 14.5);
                 filtroBlu2.rotation.y = Math.PI/4;
+                filtroBlu2.material.color.setHSL(0.67,1.0,0.5);
 
                 filtroGiallo.position.set(14, 2.4, 0.5);
                 filtroGiallo.rotation.y = Math.PI/4;
+                filtroGiallo.material.color.setHSL(0.17,1.0,0.5);
 
                 filtroGiallo2.position.set(14, 2.4, 1.5);
                 filtroGiallo2.rotation.y = -Math.PI/4;
+                filtroGiallo2.material.color.setHSL(0.17,1.0,0.5);
 
                 filtroSaturazione.position.set(14,2.4,13.5);
                 filtroSaturazione.rotation.y = Math.PI/4;
+                filtroSaturazione.material.color.setHSL(0,0,0.1);
 
                 filtroSaturazione2.position.set(14,2.4,14.5);
                 filtroSaturazione2.rotation.y = -Math.PI/4;
+                filtroSaturazione2.material.color.setHSL(0,0,0.1);
                 
                 break;
 
          case 4:             
               
-                
                 filtroRosso.position.set(1, 2.4, 0.5);
                 filtroRosso.rotation.y = -Math.PI/4;
+                filtroRosso.material.color.setHSL(0,1.0,0.5);
               
                 filtroRosso2.position.set(1, 2.4, 1.5);
                 filtroRosso2.rotation.y = Math.PI/4;
+                filtroRosso2.material.color.setHSL(0,1.0,0.5);
                 
                 filtroBlu.position.set(1, 2.4, 13.5);
                 filtroBlu.rotation.y = -Math.PI/4;
+                filtroBlu.material.color.setHSL(0.67,1.0,0.5);
 
                 filtroBlu2.position.set(1, 2.4, 14.5);
                 filtroBlu2.rotation.y = Math.PI/4;
+                filtroBlu2.material.color.setHSL(0.67,1.0,0.5);
 
                 filtroGiallo.position.set(14, 2.4, 0.5);
                 filtroGiallo.rotation.y = Math.PI/4;
+                filtroGiallo.material.color.setHSL(0.17,1.0,0.5);
 
                 filtroGiallo2.position.set(14, 2.4, 1.5);
                 filtroGiallo2.rotation.y = -Math.PI/4;
+                filtroGiallo2.material.color.setHSL(0.17,1.0,0.5);
 
-                
                 filtroSaturazione.position.set(14,2.4,13.5);
                 filtroSaturazione.rotation.y = Math.PI/4;
+                filtroSaturazione.material.color.setHSL(0,0,0.1);
 
                 filtroSaturazione2.position.set(14,2.4,14.5);
                 filtroSaturazione2.rotation.y = -Math.PI/4;
+                filtroSaturazione2.material.color.setHSL(0,0,0.1);
+                
                 
                 break;
 
         case 5:             
               
-                
-                filtroRosso.position.set(1, 2.4, 0.5);
+             filtroRosso.position.set(1, 2.4, 0.5);
                 filtroRosso.rotation.y = -Math.PI/4;
+                filtroRosso.material.color.setHSL(0,1.0,0.5);
               
                 filtroRosso2.position.set(1, 2.4, 1.5);
                 filtroRosso2.rotation.y = Math.PI/4;
+                filtroRosso2.material.color.setHSL(0,1.0,0.5);
                 
                 filtroBlu.position.set(1, 2.4, 13.5);
                 filtroBlu.rotation.y = -Math.PI/4;
+                filtroBlu.material.color.setHSL(0.67,1.0,0.5);
 
                 filtroBlu2.position.set(1, 2.4, 14.5);
                 filtroBlu2.rotation.y = Math.PI/4;
+                filtroBlu2.material.color.setHSL(0.67,1.0,0.5);
 
                 filtroGiallo.position.set(14, 2.4, 0.5);
                 filtroGiallo.rotation.y = Math.PI/4;
+                filtroGiallo.material.color.setHSL(0.17,1.0,0.5);
 
                 filtroGiallo2.position.set(14, 2.4, 1.5);
                 filtroGiallo2.rotation.y = -Math.PI/4;
+                filtroGiallo2.material.color.setHSL(0.17,1.0,0.5);
 
                 filtroSaturazione.position.set(14,2.4,13.5);
                 filtroSaturazione.rotation.y = Math.PI/4;
+                filtroSaturazione.material.color.setHSL(0,0,0.1);
 
                 filtroSaturazione2.position.set(14,2.4,14.5);
                 filtroSaturazione2.rotation.y = -Math.PI/4;
+                filtroSaturazione2.material.color.setHSL(0,0,0.1);
+                
                 
                 break;
 
