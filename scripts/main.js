@@ -288,12 +288,14 @@ $(document).click(function (e) {
                 } else {
                     if (inventario[inventarioPos] != null && intersected && intersected == faro && distance < 3 && oggettoFaro == null && inventarioPos != 2) {
                         //se interseco il faro posiziono l'oggetto in inventario su di esso
+                        var color = inventario[inventarioPos].material.color;
+                        var texture =inventario[inventarioPos].material.map;
+                        inventario[inventarioPos].material = new THREE.MeshBasicMaterial({map: texture, color: color});
                         inventario[inventarioPos].position.x = faro.position.x - 0.3;
                         inventario[inventarioPos].position.y = faro.position.y + 1.24;
                         inventario[inventarioPos].position.z = faro.position.z + 0.03;
                         inventario[inventarioPos].rotation.y = 0;
                         oggettoFaro = inventario[inventarioPos];
-
                         inventario[inventarioPos] = null;
                         var realIndex = inventarioPos + 1;
                         light_cone.material.uniforms.lightColor.value.set(oggettoFaro.material.color);
