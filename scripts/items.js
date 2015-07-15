@@ -367,47 +367,50 @@ function setFiltri(livello){
         case 1:
     
                 filtroRosso.position.set(1, 2.4, 1);
+                filtroRosso.rotation.y = -Math.PI/4;
                 
                 filtroBlu.position.set(1, 2.4, 14);
+                filtroBlu.rotation.y = Math.PI/4;
 
                 filtroGiallo.position.set(14, 2.4, 1);
+                filtroGiallo.rotation.y = Math.PI/4;
                 
                 break;
 
         case 2:             
               
-                filtroRosso.position.set(1, 2.4, 0.5);
-                filtroRosso.rotation.y = -Math.PI/4;
+                filtroRosso.position.set(1, 2.4, 0.6);
+                filtroRosso.rotation.y = -Math.PI/2;
                 filtroRosso.material.color.setHSL(0,1.0,0.5);
                 var colorProv = filtroRosso.material.color;
                 filtroRosso.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
               
-                filtroRosso2.position.set(1, 2.4, 1.5);
-                filtroRosso2.rotation.y = Math.PI/4;
+                filtroRosso2.position.set(0.6, 2.4, 1);
+                filtroRosso2.rotation.y = 0;
                 filtroRosso2.material.color.setHSL(0,1.0,0.5);
                 var colorProv = filtroRosso2.material.color;
                 filtroRosso2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
                 
-                filtroBlu.position.set(1, 2.4, 13.5);
-                filtroBlu.rotation.y = -Math.PI/4;
+                filtroBlu.position.set(0.6, 2.4, 14);
                 filtroBlu.material.color.setHSL(0.67,1.0,0.5);
+                filtroBlu.rotation.y = 0;
                 var colorProv = filtroBlu.material.color;
                 filtroBlu.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroBlu2.position.set(1, 2.4, 14.5);
-                filtroBlu2.rotation.y = Math.PI/4;
+                filtroBlu2.position.set(1, 2.4, 14.4);
+                filtroBlu2.rotation.y = Math.PI/2;
                 filtroBlu2.material.color.setHSL(0.67,1.0,0.5);
                  var colorProv = filtroBlu2.material.color;
                 filtroBlu2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroGiallo.position.set(14, 2.4, 0.5);
-                filtroGiallo.rotation.y = Math.PI/4;
+                filtroGiallo.position.set(14, 2.4, 0.6);
+                filtroGiallo.rotation.y = Math.PI/2;
                 filtroGiallo.material.color.setHSL(0.17,1.0,0.5);
                 var colorProv = filtroGiallo.material.color;
                 filtroGiallo.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroGiallo2.position.set(14, 2.4, 1.5);
-                filtroGiallo2.rotation.y = -Math.PI/4;
+                filtroGiallo2.position.set(14.4, 2.4, 1);
+                filtroGiallo2.rotation.y = 0;
                 filtroGiallo2.material.color.setHSL(0.17,1.0,0.5);
                 var colorProv = filtroGiallo2.material.color;
                 filtroGiallo2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
@@ -416,50 +419,51 @@ function setFiltri(livello){
 
         case 3:             
               
-                filtroRosso.position.set(1, 2.4, 0.5);
-                filtroRosso.rotation.y = -Math.PI/4;
+               filtroRosso.position.set(1, 2.4, 0.6);
+                filtroRosso.rotation.y = -Math.PI/2;
                 filtroRosso.material.color.setHSL(0,1.0,0.5);
                 var colorProv = filtroRosso.material.color;
                 filtroRosso.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
               
-                filtroRosso2.position.set(1, 2.4, 1.5);
-                filtroRosso2.rotation.y = Math.PI/4;
+                filtroRosso2.position.set(0.6, 2.4, 1);
+                filtroRosso2.rotation.y = 0;
                 filtroRosso2.material.color.setHSL(0,1.0,0.5);
                 var colorProv = filtroRosso2.material.color;
                 filtroRosso2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
                 
-                filtroBlu.position.set(1, 2.4, 13.5);
-                filtroBlu.rotation.y = -Math.PI/4;
+                filtroBlu.position.set(0.6, 2.4, 14);
                 filtroBlu.material.color.setHSL(0.67,1.0,0.5);
+                filtroBlu.rotation.y = 0;
                 var colorProv = filtroBlu.material.color;
                 filtroBlu.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroBlu2.position.set(1, 2.4, 14.5);
-                filtroBlu2.rotation.y = Math.PI/4;
+                filtroBlu2.position.set(1, 2.4, 14.4);
+                filtroBlu2.rotation.y = Math.PI/2;
                 filtroBlu2.material.color.setHSL(0.67,1.0,0.5);
                  var colorProv = filtroBlu2.material.color;
                 filtroBlu2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroGiallo.position.set(14, 2.4, 0.5);
-                filtroGiallo.rotation.y = Math.PI/4;
+                filtroGiallo.position.set(14, 2.4, 0.6);
+                filtroGiallo.rotation.y = Math.PI/2;
                 filtroGiallo.material.color.setHSL(0.17,1.0,0.5);
                 var colorProv = filtroGiallo.material.color;
                 filtroGiallo.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroGiallo2.position.set(14, 2.4, 1.5);
-                filtroGiallo2.rotation.y = -Math.PI/4;
+                filtroGiallo2.position.set(14.4, 2.4, 1);
+                filtroGiallo2.rotation.y = 0;
                 filtroGiallo2.material.color.setHSL(0.17,1.0,0.5);
                 var colorProv = filtroGiallo2.material.color;
                 filtroGiallo2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroSaturazione.position.set(14,2.4,13.5);
-                filtroSaturazione.rotation.y = Math.PI/4;
+
+                filtroSaturazione.position.set(14,2.4,14.4);
+                filtroSaturazione.rotation.y = Math.PI/2;
                 filtroSaturazione.material.color.setHSL(0,0,0.1);
                 var colorProv = filtroSaturazione.material.color;
                 filtroSaturazione.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroSaturazione2.position.set(14,2.4,14.5);
-                filtroSaturazione2.rotation.y = -Math.PI/4;
+                filtroSaturazione2.position.set(14.4,2.4,14);
+                filtroSaturazione2.rotation.y = 0;
                 filtroSaturazione2.material.color.setHSL(0,0,0.1);
                 var colorProv = filtroSaturazione2.material.color;
                 filtroSaturazione2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
@@ -468,103 +472,104 @@ function setFiltri(livello){
 
          case 4:             
               
-                  filtroRosso.position.set(1, 2.4, 0.5);
-                filtroRosso.rotation.y = -Math.PI/4;
+             filtroRosso.position.set(1, 2.4, 0.6);
+                filtroRosso.rotation.y = -Math.PI/2;
                 filtroRosso.material.color.setHSL(0,1.0,0.5);
                 var colorProv = filtroRosso.material.color;
                 filtroRosso.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
               
-                filtroRosso2.position.set(1, 2.4, 1.5);
-                filtroRosso2.rotation.y = Math.PI/4;
+                filtroRosso2.position.set(0.6, 2.4, 1);
+                filtroRosso2.rotation.y = 0;
                 filtroRosso2.material.color.setHSL(0,1.0,0.5);
                 var colorProv = filtroRosso2.material.color;
                 filtroRosso2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
                 
-                filtroBlu.position.set(1, 2.4, 13.5);
-                filtroBlu.rotation.y = -Math.PI/4;
+                filtroBlu.position.set(0.6, 2.4, 14);
                 filtroBlu.material.color.setHSL(0.67,1.0,0.5);
+                filtroBlu.rotation.y = 0;
                 var colorProv = filtroBlu.material.color;
                 filtroBlu.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroBlu2.position.set(1, 2.4, 14.5);
-                filtroBlu2.rotation.y = Math.PI/4;
+                filtroBlu2.position.set(1, 2.4, 14.4);
+                filtroBlu2.rotation.y = Math.PI/2;
                 filtroBlu2.material.color.setHSL(0.67,1.0,0.5);
                  var colorProv = filtroBlu2.material.color;
                 filtroBlu2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroGiallo.position.set(14, 2.4, 0.5);
-                filtroGiallo.rotation.y = Math.PI/4;
+                filtroGiallo.position.set(14, 2.4, 0.6);
+                filtroGiallo.rotation.y = Math.PI/2;
                 filtroGiallo.material.color.setHSL(0.17,1.0,0.5);
                 var colorProv = filtroGiallo.material.color;
                 filtroGiallo.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroGiallo2.position.set(14, 2.4, 1.5);
-                filtroGiallo2.rotation.y = -Math.PI/4;
+                filtroGiallo2.position.set(14.4, 2.4, 1);
+                filtroGiallo2.rotation.y = 0;
                 filtroGiallo2.material.color.setHSL(0.17,1.0,0.5);
                 var colorProv = filtroGiallo2.material.color;
                 filtroGiallo2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroSaturazione.position.set(14,2.4,13.5);
-                filtroSaturazione.rotation.y = Math.PI/4;
+
+                filtroSaturazione.position.set(14,2.4,14.4);
+                filtroSaturazione.rotation.y = Math.PI/2;
                 filtroSaturazione.material.color.setHSL(0,0,0.1);
                 var colorProv = filtroSaturazione.material.color;
                 filtroSaturazione.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroSaturazione2.position.set(14,2.4,14.5);
-                filtroSaturazione2.rotation.y = -Math.PI/4;
+                filtroSaturazione2.position.set(14.4,2.4,14);
+                filtroSaturazione2.rotation.y = 0;
                 filtroSaturazione2.material.color.setHSL(0,0,0.1);
                 var colorProv = filtroSaturazione2.material.color;
                 filtroSaturazione2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
-                
                 
                 break;
 
         case 5:             
               
-             filtroRosso.position.set(1, 2.4, 0.5);
-                filtroRosso.rotation.y = -Math.PI/4;
+               filtroRosso.position.set(1, 2.4, 0.6);
+                filtroRosso.rotation.y = -Math.PI/2;
                 filtroRosso.material.color.setHSL(0,1.0,0.5);
                 var colorProv = filtroRosso.material.color;
                 filtroRosso.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
               
-                filtroRosso2.position.set(1, 2.4, 1.5);
-                filtroRosso2.rotation.y = Math.PI/4;
+                filtroRosso2.position.set(0.6, 2.4, 1);
+                filtroRosso2.rotation.y = 0;
                 filtroRosso2.material.color.setHSL(0,1.0,0.5);
                 var colorProv = filtroRosso2.material.color;
                 filtroRosso2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
                 
-                filtroBlu.position.set(1, 2.4, 13.5);
-                filtroBlu.rotation.y = -Math.PI/4;
+                filtroBlu.position.set(0.6, 2.4, 14);
                 filtroBlu.material.color.setHSL(0.67,1.0,0.5);
+                filtroBlu.rotation.y = 0;
                 var colorProv = filtroBlu.material.color;
                 filtroBlu.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroBlu2.position.set(1, 2.4, 14.5);
-                filtroBlu2.rotation.y = Math.PI/4;
+                filtroBlu2.position.set(1, 2.4, 14.4);
+                filtroBlu2.rotation.y = Math.PI/2;
                 filtroBlu2.material.color.setHSL(0.67,1.0,0.5);
                  var colorProv = filtroBlu2.material.color;
                 filtroBlu2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroGiallo.position.set(14, 2.4, 0.5);
-                filtroGiallo.rotation.y = Math.PI/4;
+                filtroGiallo.position.set(14, 2.4, 0.6);
+                filtroGiallo.rotation.y = Math.PI/2;
                 filtroGiallo.material.color.setHSL(0.17,1.0,0.5);
                 var colorProv = filtroGiallo.material.color;
                 filtroGiallo.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroGiallo2.position.set(14, 2.4, 1.5);
-                filtroGiallo2.rotation.y = -Math.PI/4;
+                filtroGiallo2.position.set(14.4, 2.4, 1);
+                filtroGiallo2.rotation.y = 0;
                 filtroGiallo2.material.color.setHSL(0.17,1.0,0.5);
                 var colorProv = filtroGiallo2.material.color;
                 filtroGiallo2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroSaturazione.position.set(14,2.4,13.5);
-                filtroSaturazione.rotation.y = Math.PI/4;
+
+                filtroSaturazione.position.set(14,2.4,14.4);
+                filtroSaturazione.rotation.y = Math.PI/2;
                 filtroSaturazione.material.color.setHSL(0,0,0.1);
                 var colorProv = filtroSaturazione.material.color;
                 filtroSaturazione.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
 
-                filtroSaturazione2.position.set(14,2.4,14.5);
-                filtroSaturazione2.rotation.y = -Math.PI/4;
+                filtroSaturazione2.position.set(14.4,2.4,14);
+                filtroSaturazione2.rotation.y = 0;
                 filtroSaturazione2.material.color.setHSL(0,0,0.1);
                 var colorProv = filtroSaturazione2.material.color;
                 filtroSaturazione2.material = new THREE.MeshLambertMaterial({map: filterTexture, color: colorProv});
