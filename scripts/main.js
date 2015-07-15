@@ -1,5 +1,5 @@
 
-/* global torchNO1, torchNO2, SORum, torchSO1, torchSO2, NORum, SERum, NERum, torchNO3, torchNO4 */
+/* global torchNO1, torchNO2, SORum, torchSO1, torchSO2, NORum, SERum, NERum, torchNO3, torchNO4, THREE, flame */
 
 // controlla il supporto a WebGL (se la scheda grafica non lo supporta viene mostato un messaggio d'errore)
 //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -208,13 +208,11 @@ function init()
     //piazza le pointlight per le torce
     torchLight();
 
-    //carico shader per mura
-    cook_torrance(SORum, [torchSO3, torchSO4]);
-    cook_torrance(SERum, [torchSE1, torchSE2, torchSE3, torchSE4]);
-    cook_torrance(NERum, [torchNE1, torchNE2, torchNE3, torchNE4]);
-    cook_torrance(NORum, [torchNO1, torchNO2, torchNO3, torchNO4]);
 
-    
+    //carico shader per mura
+    applyCookTorrance(26, 1.6, diffuseColor.setRGB(255 / 255, 94 / 255, 0));
+
+
 }
 
 
@@ -363,6 +361,18 @@ function setDoorAnimation() {
     tween.start();
     RISOLTO = true;
 }
+var diffuseColor = new THREE.Color();
+diffuseColor.setRGB(255 / 255, 94 / 255, 0);
+var wallParamLevel = [
+    //secondo livello -- viola
+    {freq: 26, power: 2, color: new THREE.Color().setRGB(163 / 255, 0, 128 / 255)},
+    //terzo -- verde
+    {freq: 10, power: 1.6, color: new THREE.Color().setRGB(3 / 255, 102 / 255, 0)},
+    //quarto -- bianco
+    {freq: 30, power: 1.6, color: new THREE.Color().setRGB(255 / 255, 255 / 255, 255 / 255)},
+    //quinto -- blue
+    {freq: 20, power: 1.6, color: new THREE.Color().setRGB(44 / 255, 29 / 255, 180 / 255)}
+]
 
 function nuovoLivello(livello) {
 
@@ -386,8 +396,12 @@ function nuovoLivello(livello) {
     setFiltri(livello);
     svuotaInventario();
     console.log(livello);
+    var new_l = livello -2;
+    applyCookTorrance(wallParamLevel[new_l].freq, wallParamLevel[new_l ].power, wallParamLevel[new_l ].color);
 
-
+    flames.forEach(function (flame) {
+        flame.colorStart = new THREE.Color(wallParamLevel[new_l ].color);
+    });
 }
 
 function setupHUD(livello) {
@@ -517,8 +531,8 @@ function render()
     var delta = clock.getDelta(), speed = delta * MOVESPEED;
     controls.update(delta); // Move camera
     renderer.render(scene, camera);
-    /*frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
-     for (var i = 0; i < mura.length; i++) {
-     mura[i].visible = frustum.intersectsObject(mura[i]);
-     }*/
+    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+    for (var i = 0; i < mura.length; i++) {
+        mura[i].visible = frustum.intersectsObject(mura[i]);
+    }
 }

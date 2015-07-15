@@ -43,7 +43,7 @@ function initGui() {
 }
 
 
-function cook_torrance(room, lights) {
+function cook_torrance(room, lights, frequency, power, color) {
     // COOK-TORRANCE
 
     var shaders_CT, uniforms_CT;
@@ -56,8 +56,7 @@ function cook_torrance(room, lights) {
     var roughnessValue = 0.16;
 
 
-    var diffuseColor = new THREE.Color();
-    diffuseColor.setRGB(255/255, 94/255, 0);
+    
 
     if (lights.length == 2) {
         //alert("2luci");
@@ -66,9 +65,9 @@ function cook_torrance(room, lights) {
             F0: {type: "f", value: F0},
             m: {type: "f", value: roughnessValue},
             tex: {type: "t", value: THREE.ImageUtils.loadTexture("textures/gradientmarble.png")},
-            frequency: {type: "f", value: 26},
-            power: {type: "f", value: 1.6},
-            diffuseColor: {type: "c", value: diffuseColor},
+            frequency: {type: "f", value: frequency},
+            power: {type: "f", value: power},
+            diffuseColor: {type: "c", value: color},
             pointLightPosition1: {type: "v3", value: lights[0].position},
             pointLightPosition2: {type: "v3", value: lights[1].position},
         };
@@ -83,9 +82,9 @@ function cook_torrance(room, lights) {
             F0: {type: "f", value: F0},
             m: {type: "f", value: roughnessValue},
             tex: {type: "t", value: THREE.ImageUtils.loadTexture("textures/gradientmarble.png")},
-            frequency: {type: "f", value: 26},
-            power: {type: "f", value: 1.6},
-            diffuseColor: {type: "c", value: diffuseColor},
+            frequency: {type: "f", value: frequency},
+            power: {type: "f", value: power},
+            diffuseColor: {type: "c", value: color},
             pointLightPosition1: {type: "v3", value: lights[0].position},
             pointLightPosition2: {type: "v3", value: lights[1].position},
             pointLightPosition3: {type: "v3", value: lights[2].position},
@@ -101,10 +100,6 @@ function cook_torrance(room, lights) {
 
 
     var parameters_CT;
-
-    // creo un nodo padre
-    bunnyMesh_CT = new THREE.Object3D();
-    scene.add(bunnyMesh_CT);
 
     //initGui();
 
@@ -124,7 +119,6 @@ function cook_torrance(room, lights) {
                 var material = new THREE.RawShaderMaterial(parameters_CT);
                 // creo la mesh
                 loadMaterial(room, material);
-
             }
     );
 }
@@ -133,4 +127,11 @@ function loadMaterial(room, material)
 {
     room.material = material;
 
+}
+
+function applyCookTorrance(frequency, power, color){
+    cook_torrance(SORum, [torchSO3, torchSO4], frequency, power, color);
+    cook_torrance(SERum, [torchSE1, torchSE2, torchSE3, torchSE4], frequency, power, color);
+    cook_torrance(NERum, [torchNE1, torchNE2, torchNE3, torchNE4], frequency, power, color);
+    cook_torrance(NORum, [torchNO1, torchNO2, torchNO3, torchNO4], frequency, power, color);
 }
