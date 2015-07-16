@@ -424,8 +424,10 @@ function setupHUD(livello) {
 
         case 1:
 
-            $('body').append('<div id="backInventory" style="background-color: blue; width: 350px; height: 100px; background-size: 100%;"></div>');
-            $('body').append('<div id="inventory1" style="background-image:; width: 70px; height: 70px; background-size: 100%;"></div>');
+            $('body').append('<div id="backInventory" style="background-color: blue;  background-size: 100%;"></div>');
+            $('body').append('<div id="inventory1" style="background-image:;  background-size: 100%;"></div>');
+            $('body').append('<div id="inventory2" style="background-image:;  background-size: 100%;"></div>');
+            $('body').append('<div id="inventory3" style="background-image:;  background-size: 100%;"></div>');
             break;
 
         case 2:
