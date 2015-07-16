@@ -160,7 +160,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 				var axis = new THREE.Vector3( 0, 1, 0 );
 				var angle180 = Math.PI;
 				var angle90 = Math.PI/2;
-				var angle45 = Math.PI/4;
+				var angle45 = Math.PI/6;
 				var origin = new THREE.Vector3(controls.object.position.x,2.1,controls.object.position.z);
 				//RAYCASTER FRONT 1
 				var vector1 = controls.target.clone().sub( controls.object.position ).normalize();
