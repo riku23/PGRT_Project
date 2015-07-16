@@ -1,6 +1,6 @@
 
 
-/* global doorLight, Porta_Chiusa, light, Porta1, THREE, wall_material, faro, PortaO, PortaS, PortaN, PortaE, scene, tavoloNE, tavoloNO */
+/* global doorLight, Porta_Chiusa, light, Porta1, THREE, wall_material, faro, PortaO, PortaS, PortaN, PortaE, scene, tavoloNE, tavoloNO, particleGroupFlame */
 var torch_y = 3.72;
 var torch_distance = 0.7;
 var light_cone;
@@ -49,7 +49,6 @@ function pointLightGenerator(x, z, target) {
 var flames=[];
 
 function flameGenerator(pointLight) {
-
     // Create a single emitter
     var particleEmitter = new SPE.Emitter({
         type: 'cube',
@@ -100,35 +99,13 @@ function spotLightDoor() {
     var door_light_target_pos = new THREE.Vector3(9.88, 2.5, 8.8);
     // LUCI
     var pointColor = "#ffffff";
-   /* doorLight = new THREE.SpotLight(pointColor);
-    doorLight.position.set(faro.position.x, faro.position.y + 1.25, faro.position.z + 0.05);
-    doorLight.castShadow = true
-    doorLight.shadowCameraNear = 0.01
-    doorLight.shadowCameraFar = 6
-    doorLight.shadowCameraFov = 10
-    doorLight.shadowCameraLeft = -2
-    doorLight.shadowCameraRight = 2
-    doorLight.shadowCameraTop = 1
-    doorLight.shadowCameraBottom = -1
-    doorLight.shadowBias = 0.0
-    doorLight.shadowDarkness = 0.5
-    doorLight.shadowMapWidth = 1024
-    doorLight.shadowMapHeight = 1024
-
-
-    //doorLight.shadowCameraVisible = true;
-    doorLight.distance = 10;
-
-    doorLight.target = Porta_Chiusa;*/
-    //scene.add(doorLight);
-    ////////////
-
-
+   
+ 
     //////////////////////////////////////////////////////////////////////////////////
     //		add a volumetric spotligth					//
     //////////////////////////////////////////////////////////////////////////////////
 
-    // add spot light
+ 
     var geometry = new THREE.CylinderGeometry(0.16, 1, 4.5, 32 * 2, 20, true);
 
     var material = new THREEx.VolumetricSpotLightMaterial();

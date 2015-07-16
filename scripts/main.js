@@ -131,10 +131,7 @@ function init()
     // creo una istanza della classe Scene (radice del grafo della scena che avrÃ  come nodi i modelli, luce, ecc della scena)
     scene = new THREE.Scene();
     ////////////
-    $('body').append('<button id="combine" type="button" style="width: 100px; height: 20px;"> COMBINE </button>');
-    document.getElementById("combine").onclick = function () {
-        combine()
-    };
+
     // Set up "hurt" flash
     $('body').append('<div id="hurt"></div>');
     $('#hurt').css({width: window.innerWidth, height: window.innerHeight, });
@@ -424,10 +421,10 @@ function setupHUD(livello) {
 
         case 1:
 
-            $('body').append('<div id="backInventory" style="background-color: blue;  background-size: 100%;"></div>');
-            $('body').append('<div id="inventory1" style="background-image:;  background-size: 100%;"></div>');
-            $('body').append('<div id="inventory2" style="background-image:;  background-size: 100%;"></div>');
-            $('body').append('<div id="inventory3" style="background-image:;  background-size: 100%;"></div>');
+            $('body').append('<div id="backInventory"><div id="inventory1" style="background-image:;  background-size: 100%;"></div><div id="inventory2" style="background-image:;  background-size: 100%;"></div><button id="combine" type="button"></button><div id="inventory3" style="background-image:;  background-size: 100%;"></div></div>');
+            document.getElementById("combine").onclick = function () {
+                combine()
+            };
             break;
 
         case 2:
