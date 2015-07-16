@@ -496,7 +496,7 @@ function animate()
         filtri = filtri + 1;
         if (livello > 5) {
             $(renderer.domElement).fadeOut();
-            $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine#backInventory').fadeOut();
+            $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine,#backInventory').fadeOut();
             $('#intro').fadeIn();
             $('#intro').html('FINE');
             bgAudio.pause();
