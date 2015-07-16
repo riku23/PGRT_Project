@@ -20,7 +20,7 @@ function set_ambient() {
 
     plane_material = new THREE.MeshLambertMaterial({map: texture, color: 0xffffff});
 
-    plane = new THREE.Mesh(new THREE.PlaneGeometry(side_plane, side_plane), plane_material);
+    plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(side_plane, side_plane), plane_material);
     plane.rotation.x = -Math.PI / 2;
     plane.position.x = 7.5;
     plane.position.z = 7.5;
@@ -32,7 +32,7 @@ function set_ambient() {
     scene.add(plane);
 
     var SoffittoMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
-    var soffitto = new THREE.Mesh(new THREE.PlaneGeometry(side_plane, side_plane), SoffittoMaterial);
+    var soffitto = new THREE.Mesh(new THREE.PlaneBufferGeometry(side_plane, side_plane), SoffittoMaterial);
     //soffitto.material.side = THREE.DoubleSide;
     soffitto.rotation.x = Math.PI / 2;
     soffitto.position.x = 7.5;

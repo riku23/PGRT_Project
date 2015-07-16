@@ -137,6 +137,13 @@ function init()
     $('body').append('<div id="hurt"></div>');
     $('#hurt').css({width: window.innerWidth, height: window.innerHeight, });
 
+      //setto l'ambiente con mura esterne, interne, di passaggio, piano 
+    setDefaultVariables(1, 1);
+    set_ambient();
+    createFiltri();
+    set_ambient_items();
+    setFiltri(livello);
+    spotLightDoor();
 
     // CAMERA
     // parametri: FOV, widht, height, near, far
@@ -147,6 +154,14 @@ function init()
     camera.position.y = spawnY;
     camera.position.z = spawnZ;
 
+    //CONTROLLI
+    controls = new THREE.FirstPersonControls(camera, document);
+    controls.movementSpeed = MOVESPEED;
+    controls.lookSpeed = LOOKSPEED;
+
+    document.addEventListener('mousemove', onDocumentMouseMove, false);
+    window.addEventListener('resize', onWindowResize, false);
+
 
     // FRUSTUM
     // creo una istanza della classe Frustum
@@ -154,7 +169,8 @@ function init()
     ////////////
 
     //VARIABILI
-    setDefaultVariables(1, 1);
+
+    
 
     //HUD
     setupHUD();
@@ -170,20 +186,9 @@ function init()
     /////////////////////
 
 
-    //CONTROLLI
-    controls = new THREE.FirstPersonControls(camera, document);
-    controls.movementSpeed = MOVESPEED;
-    controls.lookSpeed = LOOKSPEED;
 
-    document.addEventListener('mousemove', onDocumentMouseMove, false);
-    window.addEventListener('resize', onWindowResize, false);
 
-    //setto l'ambiente con mura esterne, interne, di passaggio, piano 
-    set_ambient();
-    createFiltri();
-    set_ambient_items();
-    setFiltri(livello);
-    spotLightDoor();
+  
 
     //PARTICLE SYSTEM
     //Inizializzo un particle group al quale legare poi i diversi emitter
@@ -319,10 +324,7 @@ function onDocumentMouseMove(e) {
 function checkFaro() {
     if (oggettoFaro.material.color.getHex() == Porta_Chiusa.material.color.getHex()) {
         setDoorAnimation();
-    } else {
-        //tentativi = tentativi - 1;
-
-    }
+    } 
 }
 
 // EVENTO RESIZE
@@ -366,6 +368,7 @@ function setDoorAnimation() {
 }
 var diffuseColor = new THREE.Color();
 diffuseColor.setRGB(255 / 255, 94 / 255, 0);
+
 var wallParamLevel = [
     //secondo livello -- viola
     {freq: 26, power: 2,
@@ -400,8 +403,8 @@ function nuovoLivello(livello) {
     controls = new THREE.FirstPersonControls(camera, document);
     controls.movementSpeed = MOVESPEED;
     controls.lookSpeed = LOOKSPEED;
-    var delta = clock.getDelta(), speed = delta * MOVESPEED;
-    controls.update(delta); // Move camera
+    //var delta = clock.getDelta(), speed = delta * MOVESPEED;
+    //controls.update(delta); // Move camera
     Porta_Chiusa.position.set(portaX, portaY, portaZ);
     colorePorta(livello);
 

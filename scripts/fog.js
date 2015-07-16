@@ -4,7 +4,7 @@ function fogGenerator() {
 // texture.magFilter = THREE.LinearMipMapLinearFilter;
 // texture.minFilter = THREE.LinearMipMapLinearFilter;
 
-    var planeBlack = new THREE.Mesh(new THREE.PlaneGeometry(4, 4),new THREE.MeshBasicMaterial({color: 0x0d0d0d}));
+    var planeBlack = new THREE.Mesh(new THREE.PlaneBufferGeometry(4, 4),new THREE.MeshBasicMaterial({color: 0x0d0d0d}));
     planeBlack.position.set(Porta_Chiusa.position.x-0.6, Porta_Chiusa.position.y, Porta_Chiusa.position.z-0.9);
     planeBlack.rotation.y = Math.PI/2;
     planeBlack.rotation.x = Math.PI/2;
