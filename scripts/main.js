@@ -192,7 +192,7 @@ function init()
         // Give the particles in this group a texture
         texture: THREE.ImageUtils.loadTexture('images/smokeparticle.png'),
         // How long should the particles live for? Measured in seconds.
-        maxAge: 0.4
+        maxAge: 0.3
     });
     scene.add(particleGroupFlame.mesh);
 
@@ -367,13 +367,25 @@ var diffuseColor = new THREE.Color();
 diffuseColor.setRGB(255 / 255, 94 / 255, 0);
 var wallParamLevel = [
     //secondo livello -- viola
-    {freq: 26, power: 2, color: new THREE.Color().setRGB(163 / 255, 0, 128 / 255)},
+    {freq: 26, power: 2,
+        colorB: new THREE.Color().setRGB(163 / 255, 0, 128 / 255),
+        colorM: new THREE.Color().setRGB(250 / 255, 100 / 255, 196 / 255),
+        colorE: new THREE.Color().setRGB(255 / 255, 148 / 255, 255 / 255)},
     //terzo -- verde
-    {freq: 10, power: 1.6, color: new THREE.Color().setRGB(3 / 255, 102 / 255, 0)},
+    {freq: 10, power: 1.6,
+        colorB: new THREE.Color().setRGB(3 / 255, 102 / 255, 0),
+        colorM: new THREE.Color().setRGB(60 / 255, 240 / 255, 60 / 255),
+        colorE: new THREE.Color().setRGB(127 / 255, 255 / 255, 122 / 255)},
     //quarto -- bianco
-    {freq: 30, power: 1.6, color: new THREE.Color().setRGB(255 / 255, 255 / 255, 255 / 255)},
+    {freq: 30, power: 1.6,
+        colorB: new THREE.Color().setRGB(255 / 255, 255 / 255, 255 / 255),
+        colorM: new THREE.Color().setRGB(125 / 255, 125 / 255, 125 / 255),
+        colorE: new THREE.Color().setRGB(0, 0, 0)},
     //quinto -- blue
-    {freq: 20, power: 1.6, color: new THREE.Color().setRGB(44 / 255, 29 / 255, 180 / 255)}
+    {freq: 20, power: 1.6,
+        colorB: new THREE.Color().setRGB(44 / 255, 29 / 255, 180 / 255),
+        colorM: new THREE.Color().setRGB(70 / 255, 70 / 255, 231 / 255),
+        colorE: new THREE.Color().setRGB(255 / 255, 255 / 255, 255 / 255)}
 ]
 
 function nuovoLivello(livello) {
@@ -405,21 +417,23 @@ function nuovoLivello(livello) {
 
 
     var new_l = livello - 2;
-    applyCookTorrance(wallParamLevel[new_l].freq, wallParamLevel[new_l ].power, wallParamLevel[new_l ].color);
+    applyCookTorrance(wallParamLevel[new_l].freq, wallParamLevel[new_l ].power, wallParamLevel[new_l ].colorB);
 
 
     flames.forEach(function (flame) {
-        flame.colorStart = new THREE.Color(wallParamLevel[new_l ].color);
+        flame.colorStart = new THREE.Color(wallParamLevel[new_l ].colorB);
+        flame.colorMiddle = new THREE.Color(wallParamLevel[new_l ].colorM);
+        flame.colorEnd = new THREE.Color(wallParamLevel[new_l ].colorE);
     });
 }
 
 function setupHUD() {
 
 
-            $('body').append('<div id="backInventory"><div id="inventory1" style="background-image:;  background-size: 100%;"></div><div id="inventory2" style="background-image:;  background-size: 100%;"></div><button id="combine" type="button"></button><div id="inventory3" style="background-image:;  background-size: 100%;"></div></div>');
-            document.getElementById("combine").onclick = function () {
-                combine()
-            };
+    $('body').append('<div id="backInventory"><div id="inventory1" style="background-image:;  background-size: 100%;"></div><div id="inventory2" style="background-image:;  background-size: 100%;"></div><button id="combine" type="button"></button><div id="inventory3" style="background-image:;  background-size: 100%;"></div></div>');
+    document.getElementById("combine").onclick = function () {
+        combine()
+    };
 }
 
 
@@ -437,8 +451,6 @@ function svuotaInventario() {
     }
 
 }
-
-
 
 
 function selectInventory() {

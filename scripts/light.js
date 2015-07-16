@@ -59,9 +59,12 @@ function flameGenerator(pointLight) {
         sizeStart: 0.5,
         sizeEnd: 0.25,
         opacityStart: 1,
-        opacityEnd: 0,
+        opacityEnd: 0.1,
         colorStart: new THREE.Color('red'),
-        colorEnd: new THREE.Color('white')
+        colorMiddle: new THREE.Color( 'orange' ),
+        colorEnd: new THREE.Color('yellow'),    
+        accelerationSpread: new THREE.Vector3(0.5, 0.5, 0.5),
+        positionSpread: new THREE.Vector3(0.15, 0.15, 0.15),
     });
 
     flames.push(particleEmitter);
