@@ -66,7 +66,7 @@ var sphere_test;
 
 
 //SOUNDS
-var bgAudio, itemAudio, doorAudio, portalAudio, stepsAudio;
+var bgAudio, itemAudio, doorAudio, portalAudio, stepsAudio, combineAudio;
 
 
 // creo una istanza della classe Clock, per la gestione del tempo di esecuzione ecc
@@ -119,6 +119,7 @@ function init()
     doorAudio = new Audio('sounds/door.wav');
     itemAudio = new Audio('sounds/pick.wav');
     portalAudio = new Audio('sounds/warp.wav');
+    combineAudio = new Audio('sounds/combine.wav');
     stepsAudio = new Audio('sounds/steps2.wav');
     stepsAudio.addEventListener('ended', function () {
         this.currentTime = 0;
@@ -471,7 +472,7 @@ function animate()
     if (tentativi <= 0) {
 
         $(renderer.domElement).fadeOut();
-        $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine').fadeOut();
+        $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine,#backInventory').fadeOut();
         $('#intro').fadeIn();
         $('#intro').html('Darkness consumes you');
 
@@ -483,7 +484,7 @@ function animate()
         filtri = filtri + 1;
         if (livello > 5) {
             $(renderer.domElement).fadeOut();
-            $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine').fadeOut();
+            $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine#backInventory').fadeOut();
             $('#intro').fadeIn();
             $('#intro').html('FINE');
             bgAudio.pause();
