@@ -156,8 +156,8 @@ function init()
     setDefaultVariables(1, 1);
 
     //HUD
-    setupHUD(livello);
-    document.getElementById("inventory1").style.border = "2px solid yellow";
+    setupHUD();
+    document.getElementById("inventory1").style.border = "1px solid #E4AE6E";
 
     // RENDERER
     // setting per il rendering della finestra
@@ -400,7 +400,6 @@ function nuovoLivello(livello) {
     }
     oggettoFaro = null;
     setDefaultVariables(livello, filtri); //Dovrei fare livello+1 e filtri+1
-    setupHUD(livello);
     setFiltri(livello);
     svuotaInventario();
 
@@ -414,29 +413,13 @@ function nuovoLivello(livello) {
     });
 }
 
-function setupHUD(livello) {
+function setupHUD() {
 
-    // Display HUD
-    switch (livello) {
-
-        case 1:
 
             $('body').append('<div id="backInventory"><div id="inventory1" style="background-image:;  background-size: 100%;"></div><div id="inventory2" style="background-image:;  background-size: 100%;"></div><button id="combine" type="button"></button><div id="inventory3" style="background-image:;  background-size: 100%;"></div></div>');
             document.getElementById("combine").onclick = function () {
                 combine()
             };
-            break;
-
-        case 2:
-            $('body').append('<div id="inventory2" style="background-image:; width: 70px; height: 70px; background-size: 100%;"></div>');
-
-            break;
-
-        case 3:
-            $('body').append('<div id="inventory3" style="background-image:; width: 70px; height: 70px; background-size: 100%;"></div>');
-            break;
-
-    }
 }
 
 
@@ -470,7 +453,7 @@ function selectInventory() {
         for (i = 0; i < index; i++) {
             var realIndex = i + 1;
             if (i == inventarioPos) {
-                document.getElementById("inventory" + realIndex.toString()).style.border = "2px solid yellow";
+                document.getElementById("inventory" + realIndex.toString()).style.border = "1px solid #E4AE6E";
             } else {
                 document.getElementById("inventory" + realIndex.toString()).style.border = "1px solid black";
             }
