@@ -48,6 +48,7 @@ function combine() {
             document.getElementById("inventory1").style.backgroundColor = "#"+inventario[0].material.color.getHexString();
             document.getElementById("inventory2").style.backgroundColor = "";
             document.getElementById("inventory3").style.backgroundColor = "";
+            combineAudio.play();
 
         }else{
             if(inventario[0] && inventario[1] && !inventario[2]){
@@ -56,6 +57,7 @@ function combine() {
                 inventario[1] = null;
                 document.getElementById("inventory1").style.backgroundColor = "#"+inventario[0].material.color.getHexString();
                 document.getElementById("inventory2").style.backgroundColor = "";
+                combineAudio.play();
 
 }
         else{
@@ -67,11 +69,14 @@ function combine() {
                 document.getElementById("inventory1").style.backgroundColor = "#"+inventario[0].material.color.getHexString();
                 document.getElementById("inventory2").style.backgroundColor = "";
                 document.getElementById("inventory3").style.backgroundColor = "";
+                combineAudio.play();
 
 
 
             }}}
-        }}
+        }
+        c
+    }
 
     
 
