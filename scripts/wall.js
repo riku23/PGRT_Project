@@ -43,6 +43,51 @@ function set_ambient() {
     scene.add(soffitto);
 
 
+    //Battiscopa
+    var b = drawSkirtingBoard();
+    var ba = new THREE.Mesh(b, plane_material);
+    ba.position.x = 3.7;
+    ba.position.y = 1.75;
+    scene.add(ba);
+    /*BattiscopaN = new THREE.Mesh(new THREE.PlaneGeometry(14.99, 1.5), plane_material);
+    BattiscopaN.position.x = 7.5;
+    BattiscopaN.position.y = 1.75;
+    BattiscopaN.position.z = 0.01;
+    
+    BattiscopaN.receiveShadow = true;
+    scene.add(BattiscopaN);
+
+
+    BattiscopaE = new THREE.Mesh(new THREE.PlaneGeometry(14.99, 1.5), plane_material);
+    BattiscopaE.rotation.y = - Math.PI / 2;
+    BattiscopaE.position.x = 14.99;
+    BattiscopaE.position.y = 1.75;
+    BattiscopaE.position.z = 7.5;
+    
+    BattiscopaE.receiveShadow = true;
+    scene.add(BattiscopaE);
+
+
+    BattiscopaS = new THREE.Mesh(new THREE.PlaneGeometry(14.99, 1.5), plane_material);
+    BattiscopaS.rotation.y = Math.PI;
+    BattiscopaS.position.x = 7.5;
+    BattiscopaS.position.y = 1.75;
+    BattiscopaS.position.z = 14.99;
+    
+    BattiscopaS.receiveShadow = true;
+    scene.add(BattiscopaS);
+
+
+    BattiscopaO = new THREE.Mesh(new THREE.PlaneGeometry(14.99, 1.5), plane_material);
+    BattiscopaO.rotation.y = Math.PI / 2;
+    BattiscopaO.position.x = 0.01;
+    BattiscopaO.position.y = 1.75;
+    BattiscopaO.position.z = 7.5;
+    
+    BattiscopaO.receiveShadow = true;
+    scene.add(BattiscopaO);
+*/
+
     var RumGeometry = drawRum();
     NERum = new THREE.Mesh(RumGeometry, wall_material);
     scene.add(NERum);
@@ -179,3 +224,66 @@ function drawMuroConPortaED(sS, tr, sD, sp)
     muro.merge(stipiteDestro);
     return muro;
 }
+
+function drawSkirtingBoard()
+{
+    var transformMatrix = new THREE.Matrix4();
+
+    function draw()
+    {
+        var skirt = new THREE.PlaneGeometry(7.3, 1.5);
+        transformMatrix.makeTranslation(-0.04, 0, 0.01);
+        skirt.applyMatrix(transformMatrix);
+
+        var plane2 = new THREE.PlaneGeometry(7.3, 1.5);
+        transformMatrix.makeRotationY(Math.PI / 2);
+        plane2.applyMatrix(transformMatrix);
+        transformMatrix.makeTranslation(-3.69, 0, 3.65);
+        plane2.applyMatrix(transformMatrix);
+
+        var plane3 = new THREE.PlaneGeometry(1.59, 1.5);
+        transformMatrix.makeRotationY(-Math.PI / 2);
+        plane3.applyMatrix(transformMatrix);
+        transformMatrix.makeTranslation(3.595, 0, 0.80);
+        plane3.applyMatrix(transformMatrix);
+/*
+        var plane4 = new THREE.PlaneGeometry(0.40, 1.5);
+        transformMatrix.makeTranslation(3.80, 0, 1.6);
+        plane4.applyMatrix(transformMatrix);
+*/
+        var plane5 = new THREE.PlaneGeometry(1.59, 1.5);
+        transformMatrix.makeRotationY(Math.PI / 2);
+        plane5.applyMatrix(transformMatrix);
+        transformMatrix.makeTranslation(4.01, 0, 0.80);
+        plane5.applyMatrix(transformMatrix);
+
+        skirt.merge(plane2);
+        skirt.merge(plane3);
+        //skirt.merge(plane4);
+        skirt.merge(plane5);
+
+        return skirt;
+    }
+    
+    s1 = draw();
+    
+    s2 = draw();
+    transformMatrix.makeRotationY(- Math.PI / 2);
+    s2.applyMatrix(transformMatrix);
+    transformMatrix.makeTranslation(11.3, 0, 3.7);
+    s2.applyMatrix(transformMatrix);
+
+    s3 = draw();
+    transformMatrix.makeRotationY(- Math.PI );
+    s3.applyMatrix(transformMatrix);
+    transformMatrix.makeTranslation(7.6, 0, 15);
+    s3.applyMatrix(transformMatrix);
+
+
+    s1.merge(s2);
+    s1.merge(s3);
+
+    return s1;
+
+}
+
