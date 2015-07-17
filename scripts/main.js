@@ -34,7 +34,7 @@ var abilitaMovimento = false;
 // variabile per la gestione del frustum culling
 var frustum;
 
-
+var container, stats;
 
 
 //MESH
@@ -74,7 +74,7 @@ var clock = new THREE.Clock();
 // Initialize and run on document ready
 $(document).ready(function () {
     $('body').append('<div id="intro">FIND THE LIGHT</div>');
-    $('#intro').css({width: innerWidth, height: innerHeight}).one('click', function (e) {
+    $('#intro').css({width: 540, height: 130}).one('click', function (e) {
         e.preventDefault();
         $(this).fadeOut();
         init();
@@ -106,6 +106,17 @@ function setDefaultVariables(livello, filtri) {
 //Funzioni di inizializzazione della scena
 function init()
 {
+
+    container = document.createElement( 'div' );
+                document.body.appendChild( container );
+
+                // negli esempi precedenti l'area "info" era creata all'inizio del body. Visto che voglio cambiarne il contenuto dinamicamente (mostrando il numero aggiornato di vertici e facce), lo creo in questo modo.
+                info = document.createElement( 'div' );
+                info.style.position = 'absolute';
+                info.style.top = '0px';
+                info.style.width = '100%';
+                info.style.textAlign = 'center';
+                container.appendChild( info );
 
 
 
@@ -168,8 +179,12 @@ function init()
     frustum = new THREE.Frustum();
     ////////////
 
-    //VARIABILI
-
+    // STATS
+                stats = new Stats();
+                stats.domElement.style.position = 'absolute';
+                stats.domElement.style.top = '0px';
+                stats.domElement.style.zIndex = 100;
+                container.appendChild( stats.domElement );
     
 
     //HUD
@@ -324,6 +339,7 @@ function onDocumentMouseMove(e) {
 function checkFaro() {
     if (oggettoFaro.material.color.getHex() == Porta_Chiusa.material.color.getHex()) {
         setDoorAnimation();
+        livello=6;
     } 
 }
 
@@ -403,8 +419,6 @@ function nuovoLivello(livello) {
     controls = new THREE.FirstPersonControls(camera, document);
     controls.movementSpeed = MOVESPEED;
     controls.lookSpeed = LOOKSPEED;
-    //var delta = clock.getDelta(), speed = delta * MOVESPEED;
-    //controls.update(delta); // Move camera
     Porta_Chiusa.position.set(portaX, portaY, portaZ);
     colorePorta(livello);
 
@@ -500,14 +514,13 @@ function animate()
         if (livello > 5) {
             $(renderer.domElement).fadeOut();
             $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine,#backInventory').fadeOut();
-            $('#intro').fadeIn();
-            $('#intro').html('FINE');
-            bgAudio.pause();
+            document.documentElement.style.background = "url('images/loadscreen.jpg')";
+            
             return;
         }
         $('#hurt').fadeIn(75);
         $('#hurt').fadeOut(450);
-        console.log(this.livello);
+
         nuovoLivello(this.livello);
     }
     render();
@@ -515,6 +528,7 @@ function animate()
     var dt = clock.getDelta();
     particleGroupFlame.tick(dt);
     particleGroupFog.tick(dt);
+    stats.update();
 }
 
 // funzione di rendering

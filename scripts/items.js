@@ -53,8 +53,9 @@ function set_ambient_items(){
         tavoloNO.rotation.x = -Math.PI/2;
         tavoloNO.rotation.z= Math.PI;
         tavoloNO.scale.set(0.035, 0.04, 0.035);
-        mura.push(tavoloNO);
         scene.add(tavoloNO);
+        mura.push(tavoloNO);
+      
 
 
     	//TAVOLO SUD OVEST
@@ -62,17 +63,17 @@ function set_ambient_items(){
         tavoloSO.material = tavoloMaterial;
         tavoloSO.rotation.x = -Math.PI/2;
         tavoloSO.scale.set(0.035, 0.04, 0.035);
-        mura.push(tavoloSO);
         scene.add(tavoloSO);
-
+        mura.push(tavoloSO);
+        
 
         //TAVOLO SUD EST
         tavoloSE.geometry = geometry;
         tavoloSE.material = tavoloMaterial;
         tavoloSE.rotation.x = -Math.PI/2;
         tavoloSE.scale.set(0.035, 0.04, 0.035);
-        mura.push(tavoloSE);
         scene.add(tavoloSE);
+        mura.push(tavoloSE);
 
         
 
@@ -81,8 +82,9 @@ function set_ambient_items(){
         tavoloNE.material = tavoloMaterial;
         tavoloNE.rotation.x = -Math.PI/2;
         tavoloNE.scale.set(0.035, 0.04, 0.035);
-        mura.push(tavoloNE);
         scene.add(tavoloNE);
+        mura.push(tavoloNE);
+    
 
 
         abilitaMovimento=true;
