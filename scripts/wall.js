@@ -279,9 +279,16 @@ function drawSkirtingBoard()
     transformMatrix.makeTranslation(7.6, 0, 15);
     s3.applyMatrix(transformMatrix);
 
+    s4 = draw();
+    transformMatrix.makeRotationY(Math.PI / 2);
+    s4.applyMatrix(transformMatrix);
+    transformMatrix.makeTranslation(-3.7, 0, 11.3);
+    s4.applyMatrix(transformMatrix);
+
 
     s1.merge(s2);
     s1.merge(s3);
+    s1.merge(s4);
 
     return s1;
 
