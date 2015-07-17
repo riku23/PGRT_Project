@@ -339,7 +339,6 @@ function onDocumentMouseMove(e) {
 function checkFaro() {
     if (oggettoFaro.material.color.getHex() == Porta_Chiusa.material.color.getHex()) {
         setDoorAnimation();
-        livello=6;
     } 
 }
 
