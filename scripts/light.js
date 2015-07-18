@@ -27,7 +27,7 @@ var torchSO3, torchSO4;
 
 
 
-//piazza una pointLight alla posizione indicata e diverse spotlight nella stessa posizione che puntano ai target
+//piazza una pointLight alla posizione indicata e una spotlight che punta al target
 function pointLightGenerator(x, z, target) {
 
     var pointLight = new THREE.PointLight(0xffffff, 1, 100);

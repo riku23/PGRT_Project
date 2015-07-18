@@ -10,7 +10,7 @@ function set_ambient_items(){
     var loader = new THREE.JSONLoader();
     loader.load("models/faro2.js", function (geometry, materials) {
         // applico i materiali definiti all'interno del modello
-        var materials = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg')});
+        var materials = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg'), metal: true});
         faro.geometry = geometry;
         faro.material = materials;
 
