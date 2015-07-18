@@ -9,7 +9,7 @@ function set_ambient() {
     var texture, plane_material;
 
     texture = THREE.ImageUtils.loadTexture("textures/stone.jpg");
-    Stexture = THREE.ImageUtils.loadTexture("textures/skirt3.jpg");
+    Stexture = THREE.ImageUtils.loadTexture("textures/skirt1.jpg");
 
     Stexture.wrapS = THREE.RepeatWrapping;
     Stexture.wrapT = THREE.RepeatWrapping;
@@ -253,7 +253,7 @@ function drawSkirtingBoard()
         transformMatrix.makeRotationY(Math.PI / 2);
         //transformMatrix.makeRotationY(Math.PI);
         plane2.applyMatrix(transformMatrix);
-        transformMatrix.makeTranslation(/*-3.69*/0, 0, 3.65);
+        transformMatrix.makeTranslation(-3.69, 0, 3.65);
         plane2.applyMatrix(transformMatrix);
 
         var plane3 = new THREE.PlaneGeometry(1.59, 1.5);
