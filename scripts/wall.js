@@ -1,5 +1,6 @@
 var plane;
 var portaX=9.88, portaY=2.5, portaZ=8.8;
+var SkirtMaterial;
 function set_ambient() {
 
     // PIANO - MESH
@@ -9,12 +10,13 @@ function set_ambient() {
     var texture, plane_material;
 
     texture = THREE.ImageUtils.loadTexture("textures/stone.jpg");
-    Stexture = THREE.ImageUtils.loadTexture("textures/skirt1.jpg");
+    Stexture = THREE.ImageUtils.loadTexture("textures/skirt4.png");
 
     Stexture.wrapS = THREE.RepeatWrapping;
     Stexture.wrapT = THREE.RepeatWrapping;
     Stexture.repeat.set(1, 1);
-    SkirtMaterial = new THREE.MeshLambertMaterial({map: Stexture, color: 0xffffff});
+    //SkirtMaterial = new THREE.MeshLambertMaterial({map: Stexture, color: 0xffffff});
+    SkirtMaterial = new THREE.MeshBasicMaterial({map: Stexture, color: 0xffffff /*wallParamLevel[livello].colorB*/});
 
 // assuming you want the texture to repeat in both directions:
     texture.wrapS = THREE.RepeatWrapping;
@@ -134,9 +136,9 @@ function set_ambient() {
 
     //Porta Muro Esterno
     Porta_Chiusa_Muro = new THREE.Mesh(Porta_ChiusaGeometry, new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg'),color: doorColor}));
-    Porta_Chiusa_Muro.position.x = 14.9;
-    Porta_Chiusa_Muro.position.y = portaY;
-    Porta_Chiusa_Muro.position.z = 11.8;
+    Porta_Chiusa_Muro.position.x = -1;
+    Porta_Chiusa_Muro.position.y = 2.5;
+    Porta_Chiusa_Muro.position.z = -1;
     scene.add(Porta_Chiusa_Muro);
     mura.push(Porta_Chiusa_Muro);
     //computeShadow(plane);
