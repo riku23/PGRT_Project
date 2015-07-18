@@ -9,6 +9,12 @@ function set_ambient() {
     var texture, plane_material;
 
     texture = THREE.ImageUtils.loadTexture("textures/stone.jpg");
+    Stexture = THREE.ImageUtils.loadTexture("textures/skirt3.jpg");
+
+    Stexture.wrapS = THREE.RepeatWrapping;
+    Stexture.wrapT = THREE.RepeatWrapping;
+    Stexture.repeat.set(1, 1);
+    SkirtMaterial = new THREE.MeshLambertMaterial({map: Stexture, color: 0xffffff});
 
 // assuming you want the texture to repeat in both directions:
     texture.wrapS = THREE.RepeatWrapping;
@@ -45,9 +51,10 @@ function set_ambient() {
 
     //Battiscopa
     var b = drawSkirtingBoard();
-    var ba = new THREE.Mesh(b, plane_material);
+    var ba = new THREE.Mesh(b, SkirtMaterial);
     ba.position.x = 3.7;
     ba.position.y = 1.75;
+    ba.receiveShadow = true;
     scene.add(ba);
     /*BattiscopaN = new THREE.Mesh(new THREE.PlaneGeometry(14.99, 1.5), plane_material);
     BattiscopaN.position.x = 7.5;
@@ -125,6 +132,13 @@ function set_ambient() {
     mura.push(Porta_Chiusa);
     
 
+    //Porta Muro Esterno
+    Porta_Chiusa_Muro = new THREE.Mesh(Porta_ChiusaGeometry, new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture('textures/steel.jpg'),color: doorColor}));
+    Porta_Chiusa_Muro.position.x = 14.9;
+    Porta_Chiusa_Muro.position.y = portaY;
+    Porta_Chiusa_Muro.position.z = 11.8;
+    scene.add(Porta_Chiusa_Muro);
+    mura.push(Porta_Chiusa_Muro);
     //computeShadow(plane);
     
     
@@ -237,8 +251,9 @@ function drawSkirtingBoard()
 
         var plane2 = new THREE.PlaneGeometry(7.3, 1.5);
         transformMatrix.makeRotationY(Math.PI / 2);
+        //transformMatrix.makeRotationY(Math.PI);
         plane2.applyMatrix(transformMatrix);
-        transformMatrix.makeTranslation(-3.69, 0, 3.65);
+        transformMatrix.makeTranslation(/*-3.69*/0, 0, 3.65);
         plane2.applyMatrix(transformMatrix);
 
         var plane3 = new THREE.PlaneGeometry(1.59, 1.5);
