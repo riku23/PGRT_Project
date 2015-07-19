@@ -11,6 +11,8 @@ rosso = new THREE.Color().setHSL(0,1.0,0.5);
 blu = new THREE.Color().setHSL(0.67,1.0,0.5);
     
 giallo = new THREE.Color().setHSL(0.17,1.0,0.5);
+
+
     
 function satura(color1, color2, colorResult){
     colorResult.setHSL(color1.getHSL().h,color1.getHSL().s,(color1.getHSL().l-color2.getHSL().l));
@@ -93,6 +95,7 @@ function colorePorta(livello){
             var doorColor = new THREE.Color();
             addColors(giallo,blu,doorColor);
             Porta_Chiusa.material.color = doorColor;
+            Porta_Chiusa_Muro.material.color = new THREE.Color(rosso);
             break;
 
         case 3:
@@ -100,6 +103,9 @@ function colorePorta(livello){
             addColors(rosso,giallo,doorColor);
             satura(doorColor,grigio,doorColor)
             Porta_Chiusa.material.color = doorColor;
+            var old_door_color = new THREE.Color();
+            addColors(giallo,blu,old_door_color);
+            Porta_Chiusa_Muro.material.color = new THREE.Color(old_door_color);
             break;
 
         case 4:
@@ -107,6 +113,10 @@ function colorePorta(livello){
             addColors(rosso,blu,doorColor);
             addColors(doorColor,blu,doorColor);
             Porta_Chiusa.material.color = doorColor;
+            var old_door_color = new THREE.Color();
+            addColors(rosso,giallo,old_door_color);
+            satura(old_door_color,grigio,old_door_color)
+            Porta_Chiusa_Muro.material.color = new THREE.Color(old_door_color);
             break;
 
         case 5:
@@ -116,6 +126,10 @@ function colorePorta(livello){
             satura(doorColor,grigio,doorColor);
             satura(doorColor,grigio,doorColor);
             Porta_Chiusa.material.color = doorColor;
+            var old_door_color = new THREE.Color();
+            addColors(rosso,blu,old_door_color);
+            addColors(old_door_color,blu,old_door_color);
+            Porta_Chiusa_Muro.material.color = new THREE.Color(old_door_color);
             break;
 
     }

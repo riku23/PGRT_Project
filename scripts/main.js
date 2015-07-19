@@ -421,6 +421,8 @@ function nuovoLivello(livello) {
     Porta_Chiusa.position.set(portaX, portaY, portaZ);
     colorePorta(livello);
 
+    Porta_Chiusa_Muro.position.set(14.9, portaY, 11.8)
+
     light_cone.material.uniforms.lightColor.value.set(0xffffff);
     if (oggettoFaro) {
         oggettoFaro.position.x = 100;
