@@ -119,11 +119,11 @@ function drawRum(brick)
     transformMatrix.makeTranslation(3.75,3.5,0);
     muraEsterne.applyMatrix(transformMatrix);
     
-    var MuroConPortaGeometry1 = drawMuroConPortaED(1.59, 1.82, 1.59, 0.2);
+    var MuroConPortaGeometry1 = drawMuroConPorta(1.59, 1.82, 1.59, 0.2);
     transformMatrix.makeTranslation(0.8,3.5,7.4);
     MuroConPortaGeometry1.applyMatrix(transformMatrix);
     
-    var MuroConPortaGeometry2 = drawMuroConPortaED(1.59, 1.82, 1.59, 0.2);
+    var MuroConPortaGeometry2 = drawMuroConPorta(1.59, 1.82, 1.59, 0.2);
     transformMatrix.makeRotationY(Math.PI / 2);
     MuroConPortaGeometry2.applyMatrix(transformMatrix);
     transformMatrix.makeTranslation(7.4,3.5,4.2);
@@ -185,7 +185,7 @@ function drawMura(x1, y1)
     return muro;
 }
 
-function drawMuroConPortaED(sS, tr, sD, sp)
+function drawMuroConPorta(sS, tr, sD, sp)
 {
     var transformMatrix = new THREE.Matrix4();
     //con una Matrix4 posso applicare le trasformazioni direttamente alla geometria

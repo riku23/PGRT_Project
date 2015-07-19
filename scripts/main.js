@@ -8,7 +8,7 @@ var container;
 
 // variabili globali per la scena, il renderer ecc
 var scene, renderer;
-var istruzioni = "Movimento: Tasti W/A/S/D\nVisuale: Movimento mouse\nRaccogli e posiziona oggetti: Tasto destro mouse\nRipristina livello: Tasto R\nIstruzioni: Tasto I\n";
+var istruzioni = "Movimento: Tasti W/A/S/D\nVisuale: Movimento mouse\nRaccogli e posiziona oggetti: Tasto destro mouse\nTasto 1/2: seleziona slot 1/2 inventario\nRipristina livello: Tasto R\nIstruzioni: Tasto I\n";
 
 var raycaster = new THREE.Raycaster();
 // variabili per la camera
@@ -129,7 +129,7 @@ function init()
     bgAudio.play();
     doorAudio = new Audio('sounds/door.wav');
     itemAudio = new Audio('sounds/pick.wav');
-    portalAudio = new Audio('sounds/warp.wav');
+    portalAudio = new Audio('sounds/door_slam.wav');
     combineAudio = new Audio('sounds/combine.wav');
     stepsAudio = new Audio('sounds/steps2.wav');
     stepsAudio.addEventListener('ended', function () {
