@@ -10,7 +10,7 @@ function set_ambient() {
     var texture, plane_material;
 
     texture = THREE.ImageUtils.loadTexture("textures/stone.jpg");
-    Stexture = THREE.ImageUtils.loadTexture("textures/skirt4.png");
+    Stexture = THREE.ImageUtils.loadTexture("textures/skirt.png");
 
     Stexture.wrapS = THREE.RepeatWrapping;
     Stexture.wrapT = THREE.RepeatWrapping;
@@ -50,53 +50,7 @@ function set_ambient() {
 
     scene.add(soffitto);
 
-
-    //Battiscopa
-    var b = drawSkirtingBoard();
-    var ba = new THREE.Mesh(b, SkirtMaterial);
-    ba.position.x = 3.7;
-    ba.position.y = 1.75;
-    ba.receiveShadow = true;
-    scene.add(ba);
-    /*BattiscopaN = new THREE.Mesh(new THREE.PlaneGeometry(14.99, 1.5), plane_material);
-    BattiscopaN.position.x = 7.5;
-    BattiscopaN.position.y = 1.75;
-    BattiscopaN.position.z = 0.01;
-    
-    BattiscopaN.receiveShadow = true;
-    scene.add(BattiscopaN);
-
-
-    BattiscopaE = new THREE.Mesh(new THREE.PlaneGeometry(14.99, 1.5), plane_material);
-    BattiscopaE.rotation.y = - Math.PI / 2;
-    BattiscopaE.position.x = 14.99;
-    BattiscopaE.position.y = 1.75;
-    BattiscopaE.position.z = 7.5;
-    
-    BattiscopaE.receiveShadow = true;
-    scene.add(BattiscopaE);
-
-
-    BattiscopaS = new THREE.Mesh(new THREE.PlaneGeometry(14.99, 1.5), plane_material);
-    BattiscopaS.rotation.y = Math.PI;
-    BattiscopaS.position.x = 7.5;
-    BattiscopaS.position.y = 1.75;
-    BattiscopaS.position.z = 14.99;
-    
-    BattiscopaS.receiveShadow = true;
-    scene.add(BattiscopaS);
-
-
-    BattiscopaO = new THREE.Mesh(new THREE.PlaneGeometry(14.99, 1.5), plane_material);
-    BattiscopaO.rotation.y = Math.PI / 2;
-    BattiscopaO.position.x = 0.01;
-    BattiscopaO.position.y = 1.75;
-    BattiscopaO.position.z = 7.5;
-    
-    BattiscopaO.receiveShadow = true;
-    scene.add(BattiscopaO);
-*/
-
+    // Stanze
     var RumGeometry = drawRum();
     NERum = new THREE.Mesh(RumGeometry, wall_material);
     scene.add(NERum);
@@ -121,6 +75,13 @@ function set_ambient() {
     scene.add(SORum);
     mura.push(SORum);
 
+    //Battiscopa
+    var b = drawSkirtingBoard();
+    var ba = new THREE.Mesh(b, SkirtMaterial);
+    ba.position.x = 3.7;
+    ba.position.y = 1.75;
+    ba.receiveShadow = true;
+    scene.add(ba);
 
     //Porta
     var Porta_ChiusaGeometry = new THREE.BoxGeometry(0.2, 3, 1.8);
