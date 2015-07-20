@@ -13,11 +13,11 @@ blu = new THREE.Color().setHSL(0.67,1.0,0.5);
 giallo = new THREE.Color().setHSL(0.17,1.0,0.5);
 
 
-    
-function satura(color1, color2, colorResult){
+//funzione che scurisce un colore tramite l'applicazione di un filtro grigio    
+function scurisci(color1, color2, colorResult){
     colorResult.setHSL(color1.getHSL().h,color1.getHSL().s,(color1.getHSL().l-color2.getHSL().l));
 }
-
+//funzione che combina le tinte di due colori
 function addColors(color1, color2, colorResult){
         a0 = color1.getHSL().h*360;
         a1 = color2.getHSL().h*360;
@@ -32,7 +32,9 @@ function addColors(color1, color2, colorResult){
         }
     }
 
-
+//funzione che viene chiamata dalla pressione del bottone "combine" e in base allo stato dell'inventario chiama le funzioni scurisci() e addColors() o una sola delle due
+//per ottenere la combinazione dei filtri in inventario.
+//LA combinazione viene notificata nell' interfaccia
 function combine() {
     if(livello==1){
         alert("Al primo livello non è possibile combinare!");
@@ -42,7 +44,7 @@ function combine() {
                 alert("Seleziona un filtro");
                 return;
             }
-            satura(inventario[inventarioPos].material.color,inventario[2].material.color,inventario[inventarioPos].material.color);
+            scurisci(inventario[inventarioPos].material.color,inventario[2].material.color,inventario[inventarioPos].material.color);
             //svuotaInventario();
             inventario[0] = inventario[inventarioPos];
             inventario[1] = null;
@@ -65,7 +67,7 @@ function combine() {
         else{
             if(inventario[0] && inventario[1] && inventario[2]){
                 addColors(inventario[0].material.color,inventario[1].material.color,inventario[0].material.color);
-                satura(inventario[0].material.color,inventario[2].material.color,inventario[0].material.color);
+                scurisci(inventario[0].material.color,inventario[2].material.color,inventario[0].material.color);
                 inventario[1] = null;
                 inventario[2] = null;
                 document.getElementById("inventory1").style.backgroundColor = "#"+inventario[0].material.color.getHexString();
@@ -82,7 +84,8 @@ function combine() {
 
     
 
-
+//Funzione che determina il colore della porta per ogni livello creandoli con le stesse funzioni che saranno a disposizione del giocatore per combinare i filtri 
+//per poter garantire l'uguaglianza
 function colorePorta(livello){
     switch(livello){
         case 1:
@@ -101,7 +104,7 @@ function colorePorta(livello){
         case 3:
             var doorColor = new THREE.Color();
             addColors(rosso,giallo,doorColor);
-            satura(doorColor,grigio,doorColor)
+            scurisci(doorColor,grigio,doorColor)
             Porta_Chiusa.material.color = doorColor;
             var old_door_color = new THREE.Color();
             addColors(giallo,blu,old_door_color);
@@ -115,7 +118,7 @@ function colorePorta(livello){
             Porta_Chiusa.material.color = doorColor;
             var old_door_color = new THREE.Color();
             addColors(rosso,giallo,old_door_color);
-            satura(old_door_color,grigio,old_door_color)
+            scurisci(old_door_color,grigio,old_door_color)
             Porta_Chiusa_Muro.material.color = new THREE.Color(old_door_color);
             break;
 
@@ -123,8 +126,8 @@ function colorePorta(livello){
             var doorColor = new THREE.Color();
             addColors(giallo,blu,doorColor);
             addColors(doorColor,giallo,doorColor);
-            satura(doorColor,grigio,doorColor);
-            satura(doorColor,grigio,doorColor);
+            scurisci(doorColor,grigio,doorColor);
+            scurisci(doorColor,grigio,doorColor);
             Porta_Chiusa.material.color = doorColor;
             var old_door_color = new THREE.Color();
             addColors(rosso,blu,old_door_color);
