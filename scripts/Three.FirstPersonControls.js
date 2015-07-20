@@ -1,14 +1,4 @@
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author alteredq / http://alteredqualia.com/
- * @author paulirish / http://paulirish.com/
- *
- * Modified from default:
- * - Added this.clickMove, which differentiates between mouse-looking and
- *   click-to-move.
- * - Changed camera movement in this.update() to respect wall collisions
- * - Changed this.update() to use this.noFly to disallow going up/down with R/F
- */
+
 var pressedKey=0;
 var keyW =false;
 var keyA =false;
