@@ -38,7 +38,7 @@ function set_ambient() {
 
    
     scene.add(plane);
-
+    
     var SoffittoMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
     var soffitto = new THREE.Mesh(new THREE.PlaneBufferGeometry(side_plane, side_plane), SoffittoMaterial);
     //soffitto.material.side = THREE.DoubleSide;
