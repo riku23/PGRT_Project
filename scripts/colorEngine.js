@@ -35,11 +35,11 @@ function addColors(color1, color2, colorResult){
 
 function combine() {
     if(livello==1){
-        alert("Al livello 1 non si combina");
+        alert("Al primo livello non è possibile combinare!");
     }else{
         if((( inventario[0] && !inventario[1] ) || ( !inventario[0] && inventario[1] )) && inventario[2]){
             if(inventario[inventarioPos]==null){
-                alert("seleziona un filtro");
+                alert("Seleziona un filtro");
                 return;
             }
             satura(inventario[inventarioPos].material.color,inventario[2].material.color,inventario[inventarioPos].material.color);
