@@ -515,7 +515,7 @@ function animate()
         if (livello > 5) {
             $(renderer.domElement).fadeOut();
             $('#hud,#inventory1,#inventory2,#inventory3,#inventory4,#oggetti,#combine,#backInventory').fadeOut();
-            document.documentElement.style.background = "url('images/loadscreen.jpg')";
+            document.documentElement.style.background = "url('images/endingscreen.jpg')";
             
             return;
         }
