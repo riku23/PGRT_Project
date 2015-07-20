@@ -151,7 +151,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			return;
 			
 		} else {
-
+				//Creo i raycaster che utilizzo per gestire le collisioni
 				var axis = new THREE.Vector3( 0, 1, 0 );
 				var angle180 = Math.PI;
 				var angle90 = Math.PI/2;
@@ -208,7 +208,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 				
 				
 				
-						
+			//Il movimento viene inibito nel caso che uno dei raggi intersechi una delle geometrie inserite nella struttura "mura"	
 
 			actualMoveSpeed = delta * this.movementSpeed;
 
@@ -246,6 +246,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			}
 	
 		}
+
+		//Rotazione visuale abilitata solo nel caso in cui il mouse sia debitamente vicino ad uno dei bordi della scheramta
 		if(mouse.x <= -0.9 || mouse.x>= 0.9){
 		this.lon += this.mouseX * actualLookSpeed;
 		this.phi = ( 90 - this.lat ) * Math.PI / 180;

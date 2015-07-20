@@ -34,7 +34,6 @@ var abilitaMovimento = false;
 // variabile per la gestione del frustum culling
 var frustum;
 
-var container, stats;
 
 
 //MESH
@@ -107,16 +106,6 @@ function setDefaultVariables(livello, filtri) {
 function init()
 {
 
-    container = document.createElement( 'div' );
-                document.body.appendChild( container );
-
-                // negli esempi precedenti l'area "info" era creata all'inizio del body. Visto che voglio cambiarne il contenuto dinamicamente (mostrando il numero aggiornato di vertici e facce), lo creo in questo modo.
-                info = document.createElement( 'div' );
-                info.style.position = 'absolute';
-                info.style.top = '0px';
-                info.style.width = '100%';
-                info.style.textAlign = 'center';
-                container.appendChild( info );
 
 
 
@@ -179,14 +168,6 @@ function init()
     frustum = new THREE.Frustum();
     ////////////
 
-    // STATS
-                stats = new Stats();
-                stats.domElement.style.position = 'absolute';
-                stats.domElement.style.top = '0px';
-                stats.domElement.style.zIndex = 100;
-                container.appendChild( stats.domElement );
-    
-
     //HUD
     setupHUD();
     document.getElementById("inventory1").style.border = "1px solid #E4AE6E";
@@ -248,7 +229,7 @@ $(document).click(function (e) {
     if (e.which == 1 && RISOLTO == false) {
 
         if (intersections.length > 0) {
-            //inventario libero
+            //Caso slot inventario selezionato libero
             intersected = intersections[ 0 ].object;
             var distance = intersections[0].distance;
             if (intersected.name == "saturazione") {
@@ -264,7 +245,7 @@ $(document).click(function (e) {
             } else {
                 if (intersected && intersected != faro && distance < 3 && inventarioPos != 2) {
 
-                    //prendo l'oggetto
+                    //prendo l'oggetto dal faro
                     if (inventario[inventarioPos] == null) {
                         if (intersected == oggettoFaro) {
                             light_cone.material.uniforms.lightColor.value.set(0xffffff);
@@ -276,18 +257,18 @@ $(document).click(function (e) {
                         intersected.position.z = 100;
 
                         var realIndex = inventarioPos + 1;
-                        console.log("#" + intersected.material.color.getHexString());
                         document.getElementById("inventory" + realIndex.toString()).style.backgroundColor = "#" + intersected.material.color.getHexString();
-                        //document.getElementById("inventory" + realIndex.toString()).style.backgroundImage = "url(textures/inventario/" + intersected.name + ".jpg)"
                         itemAudio.play();
 
                     } else {
+                        //scambio l'oggetto presente sul faro
                         if (intersected == oggettoFaro && inventarioPos != 2) {
 
                             light_cone.material.uniforms.lightColor.value.set(inventario[inventarioPos].material.color);
                             oggettoFaro = inventario[inventarioPos];
                             checkFaro();
                         }
+                        //scambio oggetto in inventario con l'oggetto che voiglio prendere
                         inventario[inventarioPos].position.x = intersected.position.x;
                         inventario[inventarioPos].position.y = intersected.position.y;
                         inventario[inventarioPos].position.z = intersected.position.z;
@@ -335,7 +316,7 @@ function onDocumentMouseMove(e) {
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 }
 
-
+//Funzione che verifica se il filtro posizionato sul faro risolve l'enigma e in caso di risoluzione chiama l'apertura della portaa
 function checkFaro() {
     if (oggettoFaro.material.color.getHex() == Porta_Chiusa.material.color.getHex()) {
         setDoorAnimation();
@@ -367,11 +348,6 @@ function setDoorAnimation() {
     //posizione finale
     var target = {z: 7};
     //curva usata per l'animazione
-    //L'esempio mentiva, ma messe nella creazione direttamente del tween funzionano, queste cose fanno bestemmiare duro
-    //var easing = TWEEN.easing(TWEEN.Easing.Quadratic.In);
-    //
-    //var update = TWEEN.onUpdate(function(){ porta.position.z = position.z});
-
     tween = new TWEEN.Tween(position).to(target, 3000);
     tween.easing(TWEEN.Easing.Linear.None);
     tween.onUpdate(function () {
@@ -406,12 +382,10 @@ var wallParamLevel = [
         colorM: new THREE.Color().setRGB(70 / 255, 70 / 255, 231 / 255),
         colorE: new THREE.Color().setRGB(255 / 255, 255 / 255, 255 / 255)}
 ]
-
+//funzione che in base al valore della variabile livello setta i parametri ai valori di default
 function nuovoLivello(livello) {
-
     this.livello = livello;
     portalAudio.play();
-
     camera.rotation.y = Math.PI / 2;
     camera.position.set(spawnX, spawnY, spawnZ);
     //CONTROLLI
@@ -420,15 +394,8 @@ function nuovoLivello(livello) {
     controls.lookSpeed = LOOKSPEED;
     Porta_Chiusa.position.set(portaX, portaY, portaZ);
     colorePorta(livello);
-
     Porta_Chiusa_Muro.position.set(14.9, portaY, 11.8)
-
     light_cone.material.uniforms.lightColor.value.set(0xffffff);
-    if (oggettoFaro) {
-        oggettoFaro.position.x = 100;
-        oggettoFaro.position.y = 100;
-        oggettoFaro.position.z = 100;
-    }
     oggettoFaro = null;
     setDefaultVariables(livello, filtri); //Dovrei fare livello+1 e filtri+1
     setFiltri(livello);
@@ -446,16 +413,15 @@ function nuovoLivello(livello) {
     });
 }
 
+//Funzione che crea e visualizza l'interfaccia
 function setupHUD() {
-
-
     $('body').append('<div id="backInventory"><div id="inventory1" style="background-image:;  background-size: 100%;"></div><div id="inventory2" style="background-image:;  background-size: 100%;"></div><button id="combine" type="button"></button><div id="inventory3" style="background-image:;  background-size: 100%;"></div></div>');
     document.getElementById("combine").onclick = function () {
         combine()
     };
 }
 
-
+//Funzione che svuota l'inventario e lo notifica nell' interfaccia
 function svuotaInventario() {
     var index;
     if (livello < 3) {
@@ -471,7 +437,7 @@ function svuotaInventario() {
 
 }
 
-
+//Notifica nell'interfaccia la selezione di un oggetto
 function selectInventory() {
     var index;
     if (livello < 3) {
@@ -529,7 +495,6 @@ function animate()
     var dt = clock.getDelta();
     particleGroupFlame.tick(dt);
     particleGroupFog.tick(dt);
-    stats.update();
 }
 
 // funzione di rendering
