@@ -1,5 +1,5 @@
 var filterTexture = THREE.ImageUtils.loadTexture('textures/filtro.jpg');
-var tavoloMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
+var tavoloMaterial = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('textures/wood.jpg')});
 //Funzione per la creazione degli oggetti di scena (Tavoli, faro, torce e filtri)
 function set_ambient_items(){
 	//FARO
