@@ -112,7 +112,6 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 			case 81: /*Q*/ this.freeze = !this.freeze; break;
 
-			case 32: /*SPACEBAR*/ this.movementSpeed = 10; break;
 
 			case 49: /*1*/ if(1<=filtri){ inventarioPos = 0; selectInventory()}; break; 
 							
@@ -139,10 +138,6 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 			case 39: /*right*/
 			case 68: /*D*/ this.moveRight = false;keyD=false; stopSound(); break;
-
-			case 80: /*P*/ apriPorta(); break;
-
-			case 32: /*SPACEBAR*/ this.movementSpeed = 5; break;
 
 		}
 
