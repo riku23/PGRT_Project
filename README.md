@@ -1,3 +1,6 @@
+> **Note:**
+
+> - Please use Firefox to run this project or follow [this](http://www.chrome-allow-file-access-from-file.com/) guide to set allow-file-access-from-files flag option in Google Chrome.
 ![Main logo](https://i.imgur.com/lZsKfI4.jpg)
 ------
 <i class="icon-info"></i> :information_source: **Description**  
@@ -52,9 +55,7 @@ The game's aim is to reach the Heart of the Temple of the light. In order to do 
 <i class="icon-user"></i> :space_invader: **Play the game**
 ------
 
-> **Note:**
 
-> - If you download this project from Github please use Firefox to run it.
 
 
 Link to Temple of Light: 
