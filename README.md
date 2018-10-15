@@ -59,4 +59,48 @@ The game's aim is to reach the Heart of the Temple of the light. In order to do 
 
 
 
-Link to Temple of Light: 
+<table>
+  <tbody>
+    <tr>
+      <td align="center"><img src="https://raw.githubusercontent.com/BraveKids/CLANG/master/Documents/Resources/image3.png" width="150" height="150" /></td>
+      <td>
+      <dl>
+<dt><b>Andrea Ceccarelli</b></dt>
+<dd>University of Milan</dd>
+<dd>Master’s Degree in Computer Science</dd>
+<dd>Graphics Programmer</dd>
+<dd>https://www.linkedin.com/in/andrea-ceccarelli-2b142bba/</dd>
+</dl>
+      </td>
+    </tr>
+    <tr>      
+      <td>
+      <dl>
+<dt><b>Tommaso Celata</b></dt>
+<dd>University of Milan</dd>
+<dd>Master’s Degree in Computer Science</dd>
+<dd>Game Programmer</dd>
+<dd>https://www.linkedin.com/in/tommaso-celata-315388ba</dd>
+</dl>
+      </td>
+      <td align="center"><img src="https://raw.githubusercontent.com/BraveKids/CLANG/master/Documents/Resources/image6.png" width="150" height="150" /></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="https://raw.githubusercontent.com/BraveKids/CLANG/master/Documents/Resources/image5.png" width="150" height="150" /></td>
+      <td>
+      <dl>
+<dt><b>Rocco Dereviziis</b></dt>
+<dd>University of Milan</dd>
+<dd>Master’s Degree in Computer Science</dd>
+<dd>Game Designer</dd>
+<dd>https://www.linkedin.com/in/rocco-dereviziis-256610100/</dd>
+</dl>
+      </td>
+    </tr>
+    
+  </tbody>
+</table>
+
+
+
+
