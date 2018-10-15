@@ -21,7 +21,7 @@ The game's aim is to reach the Heart of the Temple of the light. In order to do 
 **I** - activate an alert that lists game controls  
 **Cursor movement** - move your head inside the game  
 **Left mouse click on a filter** - take the filter  
-**Left mouse click on the headlight** - put the filter in the headlight 
+**Left mouse click on the headlight** - put the filter in the headlight  
 **Left mouse click on the "combine" button** - combine colors in slots 1,2 and 3 (if there is a saturation filter)  
 
 ------
@@ -51,6 +51,7 @@ The game's aim is to reach the Heart of the Temple of the light. In order to do 
 ------
 <i class="icon-user"></i> :space_invader: **Play the game**
 ------
+
 > **Note:**
 
 > - If you download this project from Github please use Firefox to run it.
