@@ -53,7 +53,7 @@ The game's aim is to reach the Heart of the Temple of the light. In order to do 
 <img src="https://raw.githubusercontent.com/andrea29292/PGRT_Project/master/images/screenshots/cook-torrance.png" width="400">
 
 ------
-<i class="icon-user"></i> :space_invader: **Play the game**
+<i class="icon-user"></i> :busts_in_silhouette: **Contributors**
 ------
 
 
