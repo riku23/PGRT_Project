@@ -50,7 +50,7 @@ The game's aim is to reach the Heart of the Temple of the light. In order to do 
 
 **Cook-Torrance**: looking for a marble effect on the wall we use this material combined with a *procedural texture*
 
-<img src="https://raw.githubusercontent.com/andrea29292/PGRT_Project/master/images/screenshots/cook-torrance.png" width="400">
+<img src="https://raw.githubusercontent.com/andrea29292/PGRT_Project/master/images/screenshots/cook-torrance.png" width="600">
 
 ------
 <i class="icon-user"></i> :busts_in_silhouette: **Contributors**
