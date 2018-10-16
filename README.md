@@ -62,7 +62,7 @@ The game's aim is to reach the Heart of the Temple of the light. In order to do 
 <table>
   <tbody>
     <tr>
-      <td align="center"><img src="https://raw.githubusercontent.com/BraveKids/CLANG/master/Documents/Resources/image3.png" width="150" height="150" /></td>
+      <td align="center"><img src="https://raw.githubusercontent.com/andrea29292/PGRT_Project/master/images/icon/me.png" width="150" height="150" /></td>
       <td>
       <dl>
 <dt><b>Andrea Ceccarelli</b></dt>
@@ -83,10 +83,10 @@ The game's aim is to reach the Heart of the Temple of the light. In order to do 
 <dd>https://www.linkedin.com/in/tommaso-celata-315388ba</dd>
 </dl>
       </td>
-      <td align="center"><img src="https://raw.githubusercontent.com/BraveKids/CLANG/master/Documents/Resources/image6.png" width="150" height="150" /></td>
+      <td align="center"><img src="https://raw.githubusercontent.com/andrea29292/PGRT_Project/master/images/icon/tommaso.png" width="150" height="150" /></td>
     </tr>
     <tr>
-      <td align="center"><img src="https://raw.githubusercontent.com/BraveKids/CLANG/master/Documents/Resources/image5.png" width="150" height="150" /></td>
+      <td align="center"><img src="https://raw.githubusercontent.com/andrea29292/PGRT_Project/master/images/icon/rocco.png" width="150" height="150" /></td>
       <td>
       <dl>
 <dt><b>Rocco Dereviziis</b></dt>
